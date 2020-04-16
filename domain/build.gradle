@@ -10,6 +10,26 @@ dependencies {
 
     implementation project(":data")
     implementation projectDependencies.kotlinStdlib
+
+    testImplementation testDependencies.mockk
+    testRuntime testDependencies.junit
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacoco {
+    reports {
+        html {
+            enabled true
+            destination file('build/reports/jacoco/html')
+        }
+        xml {
+            enabled true
+            destination file('build/reports/jacoco/jacocoTestReport.xml')
+        }
+    }
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

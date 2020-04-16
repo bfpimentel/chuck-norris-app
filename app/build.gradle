@@ -60,3 +60,48 @@ dependencies {
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junit
 }
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ["testDebugUnitTest"]) {
+    final fileExclusions = [
+            'android/**/*.*',
+            '**/BuildConfig.*',
+            '**/R.class',
+            '**/R$*.class',
+            '**/*Adapter*.*',
+            '**/*ViewHolder*.*',
+            '**/*Module*.*',
+            '**/*Activity*.*',
+            '**/*Fragment*.*',
+            '**/*Application*.*',
+            '**/SchedulerProvider**.*',
+            '**/ViewBindingHolder**.*',
+            '**/RequestInterceptor.*'
+    ]
+
+    final classDirectoryTree = fileTree(
+            dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug",
+            excludes: fileExclusions
+    )
+
+    final coverageSourceDir = "${project.rootDir}/app/src/main/java"
+
+    final executionDataDir = "${project.rootDir}/app/src/main/java"
+
+    reports {
+        html {
+            enabled true
+            destination file('build/reports/jacoco/html')
+        }
+        xml {
+            enabled true
+            destination file('build/reports/jacoco/jacocoTestReport.xml')
+        }
+    }
+
+    classDirectories.setFrom(files(classDirectoryTree))
+
+    sourceDirectories.setFrom(files(coverageSourceDir))
+    additionalSourceDirs.setFrom(files(coverageSourceDir))
+
+    executionData.setFrom(files(executionDataDir))
+}

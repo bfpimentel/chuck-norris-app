@@ -9,6 +9,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation projectDependencies.kotlinStdlib
+
+    testImplementation testDependencies.mockk
+    testRuntime testDependencies.junit
+}
+
+test {
+    useJUnitPlatform()
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

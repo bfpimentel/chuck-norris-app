@@ -29,7 +29,6 @@ project.afterEvaluate {
     subprojects.stream()
             .map { it.name }
             .forEach { moduleName ->
-                unitTestTasks.add(":${moduleName}:testDebugUnitTest")
 
                 classDirectoriesTrees.add(
                         fileTree(
@@ -40,7 +39,15 @@ project.afterEvaluate {
 
                 coverageSourceDirs.add("${project.rootDir}/$moduleName/src/main/java")
 
-                executionDataDirs.add("${project.rootDir}/$moduleName/build/jacoco/testDebugUnitTest.exec")
+                if (moduleName == "app") {
+                    unitTestTasks.add(":${moduleName}:testDebugUnitTest")
+
+                    executionDataDirs.add("${project.rootDir}/$moduleName/src/main/java")
+                } else {
+                    unitTestTasks.add(":${moduleName}:test")
+
+                    executionDataDirs.add("${project.rootDir}/$moduleName/build/jacoco/test.exec")
+                }
             }
 
     task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTasks) {
