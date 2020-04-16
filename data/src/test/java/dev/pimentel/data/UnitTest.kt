@@ -1,12 +1,14 @@
 package dev.pimentel.data
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class UnitTest {
 
     @Test
-    fun `should return sum`() {
-        assertEquals(2 + 2, 4)
+    fun `should return two`() {
+        val testClass = TestClass()
+
+        assertEquals(2, testClass.returnTwo())
     }
 }

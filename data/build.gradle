@@ -5,13 +5,20 @@ plugins {
 
 apply(from: "../dependencies.gradle")
 
+//sourceSets {
+//    main.java.srcDirs = ['src']
+//    test.java.srcDirs = ['test']
+//}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation projectDependencies.kotlinStdlib
 
     testImplementation testDependencies.mockk
-    testRuntime testDependencies.junit
+    testImplementation testDependencies.junitAPI
+    testImplementation testDependencies.junitParams
+    testRuntime testDependencies.junitEngine
 }
 
 test {
