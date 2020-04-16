@@ -63,7 +63,7 @@ dependencies {
     implementation projectDependencies.appCompat
     implementation projectDependencies.koin
     implementation projectDependencies.navigationFragment
-    implementation projectDependencies.navigationFragment
+    implementation projectDependencies.navigationUI
     implementation projectDependencies.rxJava
     implementation projectDependencies.rxAndroid
 

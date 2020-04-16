@@ -1,8 +1,8 @@
-package dev.pimentel.chucknorris.facts
+package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsFragmentLayoutBinding
-import dev.pimentel.chucknorris.shared.abstractions.BaseFragment
+import dev.pimentel.chucknorris.testshared.abstractions.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsFragmentLayoutBinding>(

@@ -1,11 +1,11 @@
-package dev.pimentel.chucknorris.shared.abstractions
+package dev.pimentel.chucknorris.testshared.abstractions
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.testshared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.ErrorType
 import dev.pimentel.domain.usecases.GetErrorType
 import dev.pimentel.domain.usecases.GetErrorTypeParams

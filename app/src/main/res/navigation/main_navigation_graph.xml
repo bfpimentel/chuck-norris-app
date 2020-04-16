@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/facts_fragment"
-        android:name="dev.pimentel.chucknorris.facts.FactsFragment"
+        android:name="dev.pimentel.chucknorris.presentation.facts.FactsFragment"
         android:label="FactsFragment"
         tools:layout="@layout/facts_fragment_layout" />
 

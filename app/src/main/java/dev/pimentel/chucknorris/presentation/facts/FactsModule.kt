@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.facts
+package dev.pimentel.chucknorris.presentation.facts
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

@@ -1,6 +1,6 @@
-package dev.pimentel.chucknorris.facts
+package dev.pimentel.chucknorris.presentation.facts
 
-import dev.pimentel.chucknorris.shared.ViewModelTest
+import dev.pimentel.chucknorris.testshared.ViewModelTest
 import org.junit.jupiter.api.Assertions.assertNotNull
 
 class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {

@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared.schedulerprovider
+package dev.pimentel.chucknorris.testshared.schedulerprovider
 
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers

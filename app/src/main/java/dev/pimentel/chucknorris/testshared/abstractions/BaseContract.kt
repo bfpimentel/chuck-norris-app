@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared.abstractions
+package dev.pimentel.chucknorris.testshared.abstractions
 
 import androidx.lifecycle.LiveData
 
