@@ -16,8 +16,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class TestCompletable : UseCase<NoParams, Completable> {
 
