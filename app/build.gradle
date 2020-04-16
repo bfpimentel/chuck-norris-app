@@ -55,4 +55,8 @@ dependencies {
     implementation projectDependencies.navigationFragment
     implementation projectDependencies.rxJava
     implementation projectDependencies.rxAndroid
+
+    testImplementation testDependencies.androidTestCore
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.junit
 }

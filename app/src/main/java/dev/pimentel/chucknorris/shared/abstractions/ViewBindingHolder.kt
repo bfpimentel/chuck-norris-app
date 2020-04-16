@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.presentation.abstractions
+package dev.pimentel.chucknorris.shared.abstractions
 
 import android.view.View
 import androidx.lifecycle.Lifecycle
