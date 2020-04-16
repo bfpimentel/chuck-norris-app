@@ -6,6 +6,6 @@ interface BaseContract {
 
     interface ViewModel {
         fun isLoading(): LiveData<Boolean>
-        fun error(): LiveData<String>
+        fun error(): LiveData<Int>
     }
 }

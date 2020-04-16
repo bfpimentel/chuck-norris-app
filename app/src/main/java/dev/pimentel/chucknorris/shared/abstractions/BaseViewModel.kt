@@ -1,11 +1,14 @@
 package dev.pimentel.chucknorris.shared.abstractions
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.usecases.GetErrorMessage
-import dev.pimentel.domain.usecases.GetErrorMessageParams
+import dev.pimentel.domain.entities.ErrorType
+import dev.pimentel.domain.usecases.GetErrorTypeParams
+import dev.pimentel.domain.usecases.GetErrorType
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
 import io.reactivex.Single
@@ -14,15 +17,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseViewModel(
     private val schedulerProvider: SchedulerProvider? = null,
-    private val getErrorMessage: GetErrorMessage? = null
+    private val getErrorType: GetErrorType? = null
 ) : ViewModel(), BaseContract.ViewModel {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val error = MutableLiveData<String>()
+    private val error = MutableLiveData<@StringRes Int>()
     protected val isLoading = MutableLiveData<Boolean>()
 
-    override fun error(): LiveData<String> = error
+    override fun error(): LiveData<Int> = error
 
     override fun isLoading(): LiveData<Boolean> = isLoading
 
@@ -32,7 +35,12 @@ abstract class BaseViewModel(
     }
 
     protected fun postErrorMessage(throwable: Throwable) {
-        error.postValue(getErrorMessage!!(GetErrorMessageParams(throwable)))
+        getErrorType!!(GetErrorTypeParams(throwable)).let { errorType ->
+            when (errorType) {
+                ErrorType.NO_CONNECTION -> R.string.error_message_no_connection
+                ErrorType.DEFAULT -> R.string.error_message_default
+            }
+        }.also(error::postValue)
     }
 
     protected fun <T> Single<T>.handle(
