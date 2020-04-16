@@ -30,7 +30,7 @@ project.afterEvaluate {
     final classDirectoriesTrees = [
             fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
             fileTree(dir: "${project.rootDir}/domain/build/classes/kotlin/main"),
-            fileTree(dir: "${project.rootDir}/data/build/classes/kotlin/main"),
+            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug"),
     ]
 
     final coverageSourceDirs = [
