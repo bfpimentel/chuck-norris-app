@@ -1,11 +1,11 @@
-package dev.pimentel.chucknorris.testshared.abstractions
+package dev.pimentel.chucknorris.shared.abstractions
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.testshared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.ErrorType
 import dev.pimentel.domain.usecases.GetErrorType
 import dev.pimentel.domain.usecases.GetErrorTypeParams
@@ -18,7 +18,8 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class BaseViewModel(
     private val schedulerProvider: SchedulerProvider? = null,
     private val getErrorType: GetErrorType? = null
-) : ViewModel(), BaseContract.ViewModel {
+) : ViewModel(),
+    BaseContract.ViewModel {
 
     private val compositeDisposable = CompositeDisposable()
 

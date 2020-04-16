@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import dev.pimentel.chucknorris.databinding.MainActivityLayoutBinding
-import dev.pimentel.chucknorris.testshared.navigator.Navigator
-import dev.pimentel.chucknorris.testshared.navigator.NavigatorBinder
+import dev.pimentel.chucknorris.shared.navigator.Navigator
+import dev.pimentel.chucknorris.shared.navigator.NavigatorBinder
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {

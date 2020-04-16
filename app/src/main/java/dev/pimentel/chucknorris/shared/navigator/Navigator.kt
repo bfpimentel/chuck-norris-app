@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.testshared.navigator
+package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
@@ -15,7 +15,8 @@ interface NavigatorRouter {
     )
 }
 
-interface Navigator : NavigatorBinder, NavigatorRouter
+interface Navigator : NavigatorBinder,
+    NavigatorRouter
 
 class NavigatorImpl : Navigator {
 

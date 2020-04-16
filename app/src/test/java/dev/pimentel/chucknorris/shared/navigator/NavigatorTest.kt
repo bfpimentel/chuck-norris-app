@@ -2,8 +2,8 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.navigation.NavController
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.testshared.navigator.Navigator
-import dev.pimentel.chucknorris.testshared.navigator.NavigatorImpl
+import dev.pimentel.chucknorris.shared.navigator.Navigator
+import dev.pimentel.chucknorris.shared.navigator.NavigatorImpl
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach

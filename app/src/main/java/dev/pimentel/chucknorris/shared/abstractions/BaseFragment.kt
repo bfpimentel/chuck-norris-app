@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.testshared.abstractions
+package dev.pimentel.chucknorris.shared.abstractions
 
 import android.os.Bundle
 import android.view.LayoutInflater
