@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared
+package dev.pimentel.chucknorris.testshared
 
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import io.reactivex.Scheduler

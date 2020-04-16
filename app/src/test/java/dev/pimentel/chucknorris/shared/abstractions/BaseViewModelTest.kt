@@ -1,9 +1,9 @@
-package dev.pimentel.chucknorris.abstractions
+package dev.pimentel.chucknorris.shared.abstractions
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.shared.ViewModelTest
+import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
@@ -18,7 +18,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

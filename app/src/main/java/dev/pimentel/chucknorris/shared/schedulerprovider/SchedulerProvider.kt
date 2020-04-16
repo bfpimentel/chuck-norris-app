@@ -9,7 +9,8 @@ interface SchedulerProvider {
     val ui: Scheduler
 }
 
-class SchedulerProviderImpl : SchedulerProvider {
+class SchedulerProviderImpl :
+    SchedulerProvider {
 
     override val io: Scheduler = Schedulers.io()
 

@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared
+package dev.pimentel.chucknorris.testshared
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

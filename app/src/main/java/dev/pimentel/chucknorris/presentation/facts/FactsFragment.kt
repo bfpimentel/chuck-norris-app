@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.facts
+package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsFragmentLayoutBinding

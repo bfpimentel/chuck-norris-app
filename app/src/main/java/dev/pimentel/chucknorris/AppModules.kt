@@ -1,5 +1,7 @@
 package dev.pimentel.chucknorris
 
+import dev.pimentel.chucknorris.shared.navigator.Navigator
+import dev.pimentel.chucknorris.shared.navigator.NavigatorImpl
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProviderImpl
 import dev.pimentel.domain.domainModules
@@ -9,6 +11,11 @@ private val schedulerProviderModule = module {
     single<SchedulerProvider> { SchedulerProviderImpl() }
 }
 
+private val navigatorModule = module {
+    single<Navigator> { NavigatorImpl() }
+}
+
 val appModules = listOf(
-    schedulerProviderModule
+    schedulerProviderModule,
+    navigatorModule
 ) + domainModules

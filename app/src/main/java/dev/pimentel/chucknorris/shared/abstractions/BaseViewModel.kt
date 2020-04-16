@@ -18,7 +18,8 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class BaseViewModel(
     private val schedulerProvider: SchedulerProvider? = null,
     private val getErrorType: GetErrorType? = null
-) : ViewModel(), BaseContract.ViewModel {
+) : ViewModel(),
+    BaseContract.ViewModel {
 
     private val compositeDisposable = CompositeDisposable()
 

@@ -1,6 +1,6 @@
-package dev.pimentel.chucknorris.abstractions
+package dev.pimentel.chucknorris.shared.abstractions
 
-import dev.pimentel.chucknorris.shared.ViewModelTest
+import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import org.junit.jupiter.api.Assertions.assertNotNull
