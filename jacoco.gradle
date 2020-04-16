@@ -21,29 +21,19 @@ project.afterEvaluate {
             '**/RequestInterceptor.*'
     ]
 
-    final unitTestTasks = [
-            "app:testDebugUnitTest",
-            "domain:test",
-            "data:test"
-    ]
+    final unitTestTasks = new ArrayList()
+    final classDirectoriesTrees = new ArrayList()
+    final coverageSourceDirs = new ArrayList()
+    final executionDataDirs = new ArrayList()
 
-    final classDirectoriesTrees = [
-            fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-    ]
-
-    final coverageSourceDirs = [
-            "${project.rootDir}/app/src/main/java",
-            "${project.rootDir}/domain/src/main/java",
-            "${project.rootDir}/data/src/main/java"
-    ]
-
-    final executionDataDirs = [
-            "${project.rootDir}/app/build/jacoco/testDebugUnitTest.exec",
-            "${project.rootDir}/domain/build/jacoco/testDebugUnitTest.exec",
-            "${project.rootDir}/data/build/jacoco/testDebugUnitTest.exec",
-    ]
+    subprojects.stream()
+            .map { it.name }
+            .forEach { moduleName ->
+                unitTestTasks.add(":${moduleName}:testDebugUnitTest")
+                classDirectoriesTrees.add(fileTree(dir: "${project.rootDir}/$moduleName/build/tmp/kotlin-classes/debug", excludes: fileExclusions))
+                coverageSourceDirs.add("${project.rootDir}/$moduleName/src/main/java")
+                executionDataDirs.add("${project.rootDir}/$moduleName/build/jacoco/testDebugUnitTest.exec")
+            }
 
     task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTasks) {
         reports {
