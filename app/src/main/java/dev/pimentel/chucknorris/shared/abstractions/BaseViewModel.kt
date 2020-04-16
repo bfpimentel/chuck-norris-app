@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.ErrorType
-import dev.pimentel.domain.usecases.GetErrorTypeParams
 import dev.pimentel.domain.usecases.GetErrorType
+import dev.pimentel.domain.usecases.GetErrorTypeParams
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
 import io.reactivex.Single

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/facts_fragment">
+
+    <fragment
+        android:id="@+id/facts_fragment"
+        android:name="dev.pimentel.chucknorris.facts.FactsFragment"
+        android:label="FactsFragment"
+        tools:layout="@layout/facts_fragment_layout" />
+
+</navigation>
