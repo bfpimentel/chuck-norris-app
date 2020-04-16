@@ -46,6 +46,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation projectDependencies.kotlinStdlib
+    implementation projectDependencies.kotlinReflect
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat
     implementation projectDependencies.koin
