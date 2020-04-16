@@ -29,8 +29,8 @@ project.afterEvaluate {
 
     final classDirectoriesTrees = [
             fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-            fileTree(dir: "${project.rootDir}/domain/build/classes/kotlin/main"),
-            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug"),
+            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
+            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
     ]
 
     final coverageSourceDirs = [
@@ -41,8 +41,8 @@ project.afterEvaluate {
 
     final executionDataDirs = [
             "${project.rootDir}/app/build/jacoco/testDebugUnitTest.exec",
-            "${project.rootDir}/domain/build/jacoco/test.exec",
-            "${project.rootDir}/data/build/jacoco/test.exec",
+            "${project.rootDir}/domain/build/jacoco/testDebugUnitTest.exec",
+            "${project.rootDir}/data/build/jacoco/testDebugUnitTest.exec",
     ]
 
     task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTasks) {
