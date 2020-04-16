@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorrisapp
+package dev.pimentel.chucknorris
 
 import org.junit.Test
 

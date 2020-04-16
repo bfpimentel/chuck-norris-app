@@ -1,0 +1,65 @@
+apply(plugin: "jacoco")
+
+subprojects {
+    apply(plugin: "jacoco")
+}
+
+project.afterEvaluate {
+    final fileExclusions = [
+            'android/**/*.*',
+            '**/BuildConfig.*',
+            '**/R.class',
+            '**/R$*.class',
+            '**/*Adapter*.*',
+            '**/*ViewHolder*.*',
+            '**/*Module*.*',
+            '**/*Activity*.*',
+            '**/*Fragment*.*',
+            '**/*Application*.*',
+            '**/SchedulerProvider**.*',
+            '**/ViewBindingHolder**.*',
+            '**/RequestInterceptor.*'
+    ]
+
+    final unitTestTasks = new ArrayList()
+    final classDirectoriesTrees = new ArrayList()
+    final coverageSourceDirs = new ArrayList()
+    final executionDataDirs = new ArrayList()
+
+    subprojects.stream()
+            .map { it.name }
+            .forEach { moduleName ->
+                unitTestTasks.add(":${moduleName}:testDebugUnitTest")
+
+                classDirectoriesTrees.add(
+                        fileTree(
+                                dir: "${project.rootDir}/$moduleName/build/tmp/kotlin-classes/debug",
+                                excludes: fileExclusions
+                        )
+                )
+
+                coverageSourceDirs.add("${project.rootDir}/$moduleName/src/main/java")
+
+                executionDataDirs.add("${project.rootDir}/$moduleName/build/jacoco/testDebugUnitTest.exec")
+            }
+
+    task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTasks) {
+        reports {
+            html {
+                enabled true
+                destination file('build/reports/jacoco/html')
+            }
+            xml {
+                enabled true
+                destination file('build/reports/jacoco/jacocoTestReport.xml')
+            }
+        }
+
+        classDirectories.setFrom(files(classDirectoriesTrees))
+
+        additionalSourceDirs.setFrom(files(coverageSourceDirs))
+        sourceDirectories.setFrom(files(coverageSourceDirs))
+
+        executionData.setFrom(files(executionDataDirs))
+    }
+}
