@@ -4,7 +4,11 @@ subprojects {
     apply(plugin: "jacoco")
 }
 
-project.afterEvaluate {
+task jacocoTestReport(type: JacocoReport, dependsOn: [
+        "app:testDebugUnitTest",
+        "domain:testDebugUnitTest",
+        "data:testDebugUnitTest"
+]) {
     final fileExclusions = [
             'android/**/*.*',
             '**/BuildConfig.*',
@@ -17,38 +21,39 @@ project.afterEvaluate {
             '**/*Fragment*.*',
             '**/*Application*.*',
             '**/SchedulerProvider**.*',
-            '**/ViewBindingHolder**.*',
-            '**/RequestInterceptor.*'
+            '**/ViewBindingHolder**.*'
     ]
 
-    final unitTestTasks = new ArrayList()
-    final classDirectoriesTrees = new ArrayList()
-    final coverageSourceDirs = new ArrayList()
-    final executionDataDirs = new ArrayList()
+    final classDirectoriesTrees = [
+            fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
+            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
+            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: fileExclusions)
+    ]
 
-    subprojects.stream()
-            .map { it.name }
-            .forEach { moduleName ->
-                unitTestTasks.add(":${moduleName}:testDebugUnitTest")
-                classDirectoriesTrees.add(fileTree(dir: "${project.rootDir}/$moduleName/build/tmp/kotlin-classes/debug", excludes: fileExclusions))
-                coverageSourceDirs.add("${project.rootDir}/$moduleName/src/main/java")
-                executionDataDirs.add("${project.rootDir}/$moduleName/build/jacoco/testDebugUnitTest.exec")
-            }
+    final coverageSourceDirs = [
+            "${project.rootDir}/app/src/main/java",
+            "${project.rootDir}/domain/src/main/java",
+            "${project.rootDir}/data/src/main/java"
+    ]
 
-    task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTasks) {
-        reports {
-            html {
-                enabled true
-                destination file('build/reports/jacoco/html')
-            }
-            xml {
-                enabled true
-                destination file('build/reports/jacoco/jacocoTestReport.xml')
-            }
+    final executionDataDirs = [
+            "${project.rootDir}/app/build/jacoco/testDebugUnitTest.exec",
+            "${project.rootDir}/domain/build/jacoco/testDebugUnitTest.exec",
+            "${project.rootDir}/data/build/jacoco/testDebugUnitTest.exec"
+    ]
+
+    reports {
+        html {
+            enabled true
+            destination file('build/reports/jacoco/html')
         }
-
-        classDirectories.setFrom(files(classDirectoriesTrees))
-        sourceDirectories.setFrom(files(coverageSourceDirs))
-        executionData.setFrom(files(executionDataDirs))
+        xml {
+            enabled true
+            destination file('build/reports/jacoco/jacocoTestReport.xml')
+        }
     }
+
+    classDirectories.setFrom(files(classDirectoriesTrees))
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+    executionData.setFrom(files(executionDataDirs))
 }

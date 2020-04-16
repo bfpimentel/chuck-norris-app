@@ -1,6 +1,6 @@
 package dev.pimentel.data
 
-class TestClass {
+class SumClass {
 
     @Suppress("FunctionOnlyReturningConstant")
     fun returnTwo() = 2

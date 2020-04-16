@@ -7,7 +7,7 @@ class UnitTest {
 
     @Test
     fun `should return two`() {
-        val testClass = TestClass()
+        val testClass = SumClass()
 
         assertEquals(2, testClass.returnTwo())
     }
