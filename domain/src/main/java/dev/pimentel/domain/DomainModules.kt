@@ -6,10 +6,11 @@ import org.koin.dsl.module
 
 private val useCasesModule = module {
     single { GetErrorType() }
+    single { ShuffleList() }
     single { FetchAllCategories(get()) }
     single { FetchAllCategoriesNames(get()) }
     single { SaveAllCategories(get()) }
-    single { GetCategorySuggestions(get(), get(), get()) }
+    single { GetCategorySuggestions(get(), get(), get(), get()) }
 }
 
 val domainModules = listOf(
