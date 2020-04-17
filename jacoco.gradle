@@ -28,7 +28,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
     ]
 
     final dataFileExclusions = [
-            '**/*Database**.kt'
+            '**/*Database**.*'
     ]
 
     final classDirectoriesTrees = [
