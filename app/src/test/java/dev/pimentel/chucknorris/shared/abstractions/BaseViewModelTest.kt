@@ -4,14 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.testshared.ViewModelTest
-import dev.pimentel.chucknorris.shared.abstractions.BaseContract
-import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.ErrorType
 import dev.pimentel.domain.usecases.GetErrorTypeParams
 import dev.pimentel.domain.usecases.GetErrorType
-import dev.pimentel.domain.usecases.NoParams
-import dev.pimentel.domain.usecases.UseCase
+import dev.pimentel.domain.usecases.shared.NoParams
+import dev.pimentel.domain.usecases.shared.UseCase
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -21,12 +19,14 @@ import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class TestCompletable : UseCase<NoParams, Completable> {
+class TestCompletable :
+    UseCase<NoParams, Completable> {
 
     override fun invoke(params: NoParams): Completable = Completable.complete()
 }
 
-class TestSingle : UseCase<NoParams, Single<String>> {
+class TestSingle :
+    UseCase<NoParams, Single<String>> {
 
     override fun invoke(params: NoParams): Single<String> = Single.just("")
 }
