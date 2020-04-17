@@ -9,11 +9,15 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsFragmentLayoutB
     R.layout.facts_fragment_layout
 ) {
 
-    override val modules = factsModule
+    override val module = factsModule
     override val viewModel: FactsContract.ViewModel by viewModel<FactsViewModel>()
 
     override fun bindView() = initBinding(
         FactsFragmentLayoutBinding.inflate(layoutInflater),
         this
-    ) { }
+    ) {
+        factsMbGoToSearch.setOnClickListener {
+            viewModel.navigateToSearch()
+        }
+    }
 }
