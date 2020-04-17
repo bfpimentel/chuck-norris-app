@@ -10,11 +10,11 @@ class SaveAllCategories(
 ) : UseCase<SaveAllCategories.Params, Completable> {
 
     override fun invoke(params: Params): Completable = Completable.create { emitter ->
-        categoriesRepository.saveAllCategories(params.categories)
+        categoriesRepository.saveAllCategories(params.categoriesNames.map(::Category))
         emitter.onComplete()
     }
 
     data class Params(
-        val categories: List<Category>
+        val categoriesNames: List<String>
     )
 }
