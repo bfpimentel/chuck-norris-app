@@ -1,5 +1,9 @@
 package dev.pimentel.data
 
+import androidx.room.Room
+import dev.pimentel.data.repositories.CategoriesRepository
+import dev.pimentel.data.repositories.CategoriesRepositoryImpl
+import dev.pimentel.data.sources.CategoriesRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -34,6 +38,32 @@ private val networkModule = module {
     }
 }
 
+private val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            ChuckNorrisDatabase::class.java,
+            ChuckNorrisDatabase::class.simpleName!!
+        ).build()
+    }
+}
+
+private val remoteDataSourceModule = module {
+    single { get<Retrofit>().create(CategoriesRemoteDataSource::class.java) }
+}
+
+private val localDataSourceModule = module {
+    single { get<ChuckNorrisDatabase>().categoriesLocalDataSource() }
+}
+
+private val repositoryModule = module {
+    single<CategoriesRepository> { CategoriesRepositoryImpl(get(), get()) }
+}
+
 val dataModules = listOf(
-    networkModule
+    networkModule,
+    databaseModule,
+    remoteDataSourceModule,
+    localDataSourceModule,
+    repositoryModule
 )
