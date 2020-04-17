@@ -13,5 +13,5 @@ interface CategoriesLocalDataSource {
     fun fetchAllCategories(): Single<List<Category>>
 
     @Insert
-    fun insertAllCategories(categories: List<Category>)
+    fun saveAllCategories(categories: List<Category>)
 }

@@ -7,7 +7,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
     override lateinit var viewModel: FactsContract.ViewModel
 
-    override fun setupSubject() {
+    override fun `setup subject`() {
         viewModel = FactsViewModel(getErrorType, schedulerProvider)
 
         assertNotNull(viewModel)

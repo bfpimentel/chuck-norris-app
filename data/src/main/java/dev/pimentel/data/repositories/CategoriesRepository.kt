@@ -23,5 +23,5 @@ class CategoriesRepositoryImpl(
         remoteDataSource.fetchAllCategoriesNames()
 
     override fun saveAllCategories(categories: List<Category>) =
-        localDataSource.insertAllCategories(categories)
+        localDataSource.saveAllCategories(categories)
 }

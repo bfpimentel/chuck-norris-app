@@ -79,7 +79,7 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
 
     override lateinit var viewModel: TestContract.ViewModel
 
-    override fun setupSubject() {
+    override fun `setup subject`() {
         viewModel = TestViewModel(
             testCompletable,
             testSingle,
