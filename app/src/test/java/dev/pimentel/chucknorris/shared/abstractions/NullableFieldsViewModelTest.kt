@@ -16,7 +16,7 @@ class NullableFieldsViewModelTest : ViewModelTest<NullableFieldsContract.ViewMod
 
     override lateinit var viewModel: NullableFieldsContract.ViewModel
 
-    override fun setupSubject() {
+    override fun `setup subject`() {
         viewModel = NullableFieldsViewModel()
 
         assertNotNull(viewModel)

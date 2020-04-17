@@ -43,17 +43,19 @@ abstract class ViewModelTest<ViewModelType : BaseContract.ViewModel> {
 
     abstract val viewModel: ViewModelType
 
-    abstract fun setupSubject()
+    abstract fun `setup subject`()
 
     @Test
     @BeforeEach
-    fun setupTest() {
+    fun `should setup test and its dependencies must not be null`() {
         testScheduler = TestScheduler()
         schedulerProvider = TestSchedulerProvider(testScheduler)
         getErrorType = mockk()
 
-        setupSubject()
+        `setup subject`()
 
         assertNotNull(viewModel)
+        assertNotNull(testScheduler)
+        assertNotNull(getErrorType)
     }
 }

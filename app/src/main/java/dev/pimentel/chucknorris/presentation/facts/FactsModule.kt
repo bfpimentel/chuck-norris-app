@@ -1,12 +1,9 @@
 package dev.pimentel.chucknorris.presentation.facts
 
+import dev.pimentel.chucknorris.shared.navigator.Navigator
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-private val viewModelModule = module {
-    viewModel { FactsViewModel(get(), get()) }
+val factsModule = module {
+    viewModel { FactsViewModel(get<Navigator>(), get(), get()) }
 }
-
-val factsModule = listOf(
-    viewModelModule
-)

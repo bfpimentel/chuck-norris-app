@@ -9,14 +9,17 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
         "domain:testDebugUnitTest",
         "data:testDebugUnitTest"
 ]) {
-    final fileExclusions = [
+    final commonFileExclusions = [
+            '**/*Module*.*'
+    ]
+
+    final appFileExclusions = [
             'android/**/*.*',
             '**/BuildConfig.*',
             '**/R.class',
             '**/R$*.class',
             '**/*Adapter*.*',
             '**/*ViewHolder*.*',
-            '**/*Module*.*',
             '**/*Activity*.*',
             '**/*Fragment*.*',
             '**/*Application*.*',
@@ -24,10 +27,14 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/ViewBindingHolder**.*'
     ]
 
+    final dataFileExclusions = [
+            '**/*Database**.*'
+    ]
+
     final classDirectoriesTrees = [
-            fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: fileExclusions),
-            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: fileExclusions)
+            fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: appFileExclusions + commonFileExclusions),
+            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: commonFileExclusions),
+            fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: dataFileExclusions + commonFileExclusions)
     ]
 
     final coverageSourceDirs = [

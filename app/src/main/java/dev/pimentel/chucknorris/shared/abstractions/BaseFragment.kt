@@ -19,7 +19,7 @@ abstract class BaseFragment<ViewModelType, BindingType>(
         where ViewModelType : BaseContract.ViewModel,
               BindingType : ViewBinding {
 
-    abstract val modules: List<Module>
+    abstract val module: Module
     abstract val viewModel: ViewModelType
 
     override fun onCreateView(
@@ -27,13 +27,13 @@ abstract class BaseFragment<ViewModelType, BindingType>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        loadKoinModules(modules)
+        loadKoinModules(module)
         return bindView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unloadKoinModules(modules)
+        unloadKoinModules(module)
         unbindView()
     }
 

@@ -40,6 +40,7 @@ dependencies {
     implementation projectDependencies.retrofitGson
     implementation projectDependencies.loggingInterceptor
     implementation projectDependencies.roomRuntime
+    implementation projectDependencies.roomRxJavaAdapter
     kapt projectDependencies.roomCompiler
 
     testImplementation testDependencies.mockk
