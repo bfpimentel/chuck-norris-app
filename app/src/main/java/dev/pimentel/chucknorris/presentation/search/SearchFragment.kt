@@ -1,6 +1,7 @@
 package dev.pimentel.chucknorris.presentation.search
 
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.databinding.SearchFragmentCategoriesItemLayoutBinding
 import dev.pimentel.chucknorris.databinding.SearchFragmentLayoutBinding
 import dev.pimentel.chucknorris.shared.abstractions.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,5 +17,15 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
     override fun bindView() = initBinding(
         SearchFragmentLayoutBinding.inflate(layoutInflater),
         this
-    ) { }
+    ) {
+        viewModel.categorySuggestions().observe { categorySuggestions ->
+            categorySuggestions.forEach { suggestion ->
+                val chipBinding = SearchFragmentCategoriesItemLayoutBinding.inflate(layoutInflater)
+                chipBinding.searchCategoriesItemChip.text = suggestion.name
+                searchCgSuggestions.addView(chipBinding.root)
+            }
+        }
+
+        viewModel.getCategorySuggestions()
+    }
 }
