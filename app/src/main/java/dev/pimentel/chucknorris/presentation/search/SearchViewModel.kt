@@ -6,16 +6,16 @@ import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.CategorySuggestion
 import dev.pimentel.domain.usecases.GetCategorySuggestions
-import dev.pimentel.domain.usecases.GetErrorType
+import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.shared.NoParams
 
 class SearchViewModel(
     private val getCategorySuggestions: GetCategorySuggestions,
-    getErrorType: GetErrorType,
+    getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
 ) : BaseViewModel(
     schedulerProvider,
-    getErrorType
+    getErrorMessage
 ), SearchContract.ViewModel {
 
     private val categorySuggestions = MutableLiveData<List<CategorySuggestion>>()

@@ -2,12 +2,9 @@ package dev.pimentel.chucknorris.shared.abstractions
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.entities.ErrorType
-import dev.pimentel.domain.usecases.GetErrorTypeParams
-import dev.pimentel.domain.usecases.GetErrorType
+import dev.pimentel.chucknorris.testshared.ViewModelTest
+import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.mockk.confirmVerified
@@ -16,17 +13,18 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class TestCompletable :
-    UseCase<NoParams, Completable> {
+class TestCompletable : UseCase<NoParams, Completable> {
 
     override fun invoke(params: NoParams): Completable = Completable.complete()
 }
 
-class TestSingle :
-    UseCase<NoParams, Single<String>> {
+class TestSingle : UseCase<NoParams, Single<String>> {
 
     override fun invoke(params: NoParams): Single<String> = Single.just("")
 }
@@ -44,11 +42,11 @@ interface TestContract {
 class TestViewModel(
     private val testCompletable: TestCompletable,
     private val testSingle: TestSingle,
-    getErrorType: GetErrorType,
+    getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
 ) : BaseViewModel(
     schedulerProvider,
-    getErrorType
+    getErrorMessage
 ), TestContract.ViewModel {
 
     private val testOutput = MutableLiveData<String>()
@@ -83,7 +81,7 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         viewModel = TestViewModel(
             testCompletable,
             testSingle,
-            getErrorType,
+            getErrorMessage,
             schedulerProvider
         )
     }
@@ -91,10 +89,11 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
     @Test
     fun `should show and hide loading and post default error message after failing to test completable`() {
         val error = IllegalArgumentException()
-        val params = GetErrorTypeParams(error)
+        val params = GetErrorMessage.Params(error)
+        val message = "message"
 
         every { testCompletable(NoParams) } returns Completable.error(error)
-        every { getErrorType(params) } returns ErrorType.DEFAULT
+        every { getErrorMessage(params) } returns message
 
         viewModel.testInputForCompletable("")
 
@@ -103,15 +102,15 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
-        assertEquals(viewModel.error().value, R.string.error_message_default)
+        assertEquals(viewModel.error().value, message)
 
         assertFalse(viewModel.isLoading().value!!)
 
         verify {
             testCompletable(NoParams)
-            getErrorType(params)
+            getErrorMessage(params)
         }
-        confirmVerified(testCompletable, testSingle, getErrorType)
+        confirmVerified(testCompletable, testSingle, getErrorMessage)
     }
 
     @Test
@@ -134,16 +133,17 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         verify {
             testCompletable(NoParams)
         }
-        confirmVerified(testCompletable, testSingle, getErrorType)
+        confirmVerified(testCompletable, testSingle, getErrorMessage)
     }
 
     @Test
     fun `should show and hide loading and post default error message after failing to test single`() {
         val error = IllegalArgumentException()
-        val params = GetErrorTypeParams(error)
+        val params = GetErrorMessage.Params(error)
+        val message = "message"
 
         every { testSingle(NoParams) } returns Single.error(error)
-        every { getErrorType(params) } returns ErrorType.DEFAULT
+        every { getErrorMessage(params) } returns message
 
         viewModel.testInputForSingle()
 
@@ -152,24 +152,25 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
-        assertEquals(viewModel.error().value, R.string.error_message_default)
+        assertEquals(viewModel.error().value, message)
 
         assertFalse(viewModel.isLoading().value!!)
 
         verify {
             testSingle(NoParams)
-            getErrorType(params)
+            getErrorMessage(params)
         }
-        confirmVerified(testCompletable, testSingle, getErrorType)
+        confirmVerified(testCompletable, testSingle, getErrorMessage)
     }
 
     @Test
     fun `should show and hide loading and post no connection error message after failing to test single`() {
         val error = IllegalArgumentException()
-        val params = GetErrorTypeParams(error)
+        val params = GetErrorMessage.Params(error)
+        val message = "message"
 
         every { testSingle(NoParams) } returns Single.error(error)
-        every { getErrorType(params) } returns ErrorType.NO_CONNECTION
+        every { getErrorMessage(params) } returns message
 
         viewModel.testInputForSingle()
 
@@ -178,15 +179,15 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
-        assertEquals(viewModel.error().value, R.string.error_message_no_connection)
+        assertEquals(viewModel.error().value, message)
 
         assertFalse(viewModel.isLoading().value!!)
 
         verify {
             testSingle(NoParams)
-            getErrorType(params)
+            getErrorMessage(params)
         }
-        confirmVerified(testCompletable, testSingle, getErrorType)
+        confirmVerified(testCompletable, testSingle, getErrorMessage)
     }
 
     @Test
@@ -209,6 +210,6 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         verify {
             testSingle(NoParams)
         }
-        confirmVerified(testCompletable, testSingle, getErrorType)
+        confirmVerified(testCompletable, testSingle, getErrorMessage)
     }
 }

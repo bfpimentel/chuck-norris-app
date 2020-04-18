@@ -22,7 +22,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
     override fun `setup subject`() {
         viewModel = SearchViewModel(
             getCategorySuggestions,
-            getErrorType,
+            getErrorMessage,
             schedulerProvider
         )
     }
@@ -42,6 +42,6 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
 
         verify(exactly = 1) { getCategorySuggestions(NoParams) }
-        confirmVerified(getCategorySuggestions, getErrorType)
+        confirmVerified(getCategorySuggestions, getErrorMessage)
     }
 }
