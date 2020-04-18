@@ -4,15 +4,15 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.usecases.GetErrorType
+import dev.pimentel.domain.usecases.GetErrorMessage
 
 class FactsViewModel(
     private val navigator: NavigatorRouter,
-    getErrorType: GetErrorType,
+    getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
 ) : BaseViewModel(
     schedulerProvider,
-    getErrorType
+    getErrorMessage
 ), FactsContract.ViewModel {
 
     override fun navigateToSearch() {

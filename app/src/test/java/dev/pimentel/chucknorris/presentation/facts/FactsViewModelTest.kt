@@ -14,7 +14,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
     override fun `setup subject`() {
         viewModel = FactsViewModel(
             navigator,
-            getErrorType,
+            getErrorMessage,
             schedulerProvider
         )
     }
@@ -26,6 +26,6 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         viewModel.navigateToSearch()
 
         verify(exactly = 1) { navigator.navigate(R.id.search_fragment) }
-        confirmVerified(navigator, getErrorType)
+        confirmVerified(navigator, getErrorMessage)
     }
 }
