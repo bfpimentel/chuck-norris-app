@@ -12,10 +12,18 @@
         android:hint="Search">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_et_search_term"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/search_bt_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:textColor="@color/colorAccent" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/search_cg_suggestions"

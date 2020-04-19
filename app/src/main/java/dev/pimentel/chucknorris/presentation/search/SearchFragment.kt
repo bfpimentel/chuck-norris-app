@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import android.widget.Toast
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchFragmentCategoriesItemLayoutBinding
 import dev.pimentel.chucknorris.databinding.SearchFragmentLayoutBinding
@@ -24,6 +25,14 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
                 chipBinding.searchCategoriesItemChip.text = suggestion.name
                 searchCgSuggestions.addView(chipBinding.root)
             }
+        }
+
+        viewModel.searchTermSuccess().observe {
+            Toast.makeText(requireContext(), "testestetete", Toast.LENGTH_SHORT).show()
+        }
+
+        searchBtSend.setOnClickListener {
+            viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
         }
 
         viewModel.getCategorySuggestions()

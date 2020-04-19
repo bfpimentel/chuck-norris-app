@@ -7,10 +7,12 @@ import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.CategorySuggestion
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
+import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.shared.NoParams
 
 class SearchViewModel(
     private val getCategorySuggestions: GetCategorySuggestions,
+    private val handleSearchTermSaving: HandleSearchTermSaving,
     getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
 ) : BaseViewModel(
@@ -19,6 +21,7 @@ class SearchViewModel(
 ), SearchContract.ViewModel {
 
     private val categorySuggestions = MutableLiveData<List<CategorySuggestion>>()
+    private val searchTermSuccess = MutableLiveData<Unit>()
 
     override fun getCategorySuggestions() {
         getCategorySuggestions(NoParams)
@@ -28,5 +31,13 @@ class SearchViewModel(
             .handle(categorySuggestions::postValue, ::postErrorMessage)
     }
 
+    override fun saveSearchTerm(term: String) {
+        handleSearchTermSaving(HandleSearchTermSaving.Params(term))
+            .compose(observeOnUIAfterCompletableResult())
+            .handle({ searchTermSuccess.postValue(Unit) }, ::postErrorMessage)
+    }
+
     override fun categorySuggestions(): LiveData<List<CategorySuggestion>> = categorySuggestions
+
+    override fun searchTermSuccess(): LiveData<Unit> = searchTermSuccess
 }
