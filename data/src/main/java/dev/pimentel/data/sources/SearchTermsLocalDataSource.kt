@@ -9,6 +9,9 @@ import io.reactivex.Single
 @Dao
 interface SearchTermsLocalDataSource {
 
+    @Query("SELECT * FROM SearchTerm ORDER BY id DESC LIMIT 1")
+    fun getSearchTerm(): Single<SearchTerm>
+
     @Query("SELECT id, term FROM SearchTerm where term = :term")
     fun getSearchTermsByTerm(term: String): Single<List<SearchTerm>>
 

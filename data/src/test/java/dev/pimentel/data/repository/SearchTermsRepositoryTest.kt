@@ -29,6 +29,21 @@ class SearchTermsRepositoryTest {
     }
 
     @Test
+    fun `should route getSearchTerm call to localDataSource`() {
+        val searchTerm = SearchTerm(0, "term")
+
+        every { localDataSource.getSearchTerm() } returns Single.just(searchTerm)
+
+        searchTermsRepository.getSearchTerm()
+            .test()
+            .assertNoErrors()
+            .assertResult(searchTerm)
+
+        verify(exactly = 1) { localDataSource.getSearchTerm() }
+        confirmVerified(localDataSource)
+    }
+
+    @Test
     fun `should route getSearchTermsByTerm call to localDataSource`() {
         val term = "term"
         val searchTerms = listOf(
