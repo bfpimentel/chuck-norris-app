@@ -42,6 +42,6 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
             viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
         }
 
-        viewModel.getCategorySuggestions()
+        viewModel.initialize()
     }
 }

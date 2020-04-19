@@ -6,7 +6,7 @@ import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 interface SearchContract {
 
     interface ViewModel : BaseContract.ViewModel {
-        fun getCategorySuggestions()
+        fun initialize()
         fun saveSearchTerm(term: String)
 
         fun categorySuggestions(): LiveData<List<String>>

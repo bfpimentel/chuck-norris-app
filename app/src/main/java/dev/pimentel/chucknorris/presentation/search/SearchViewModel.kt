@@ -9,6 +9,8 @@ import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 
 class SearchViewModel(
     private val getCategorySuggestions: GetCategorySuggestions,
@@ -28,14 +30,17 @@ class SearchViewModel(
 
     override fun searchTerms(): LiveData<List<String>> = searchTerms
 
-    override fun getCategorySuggestions() {
-        getCategorySuggestions(NoParams)
-            .compose(observeOnUIAfterSingleResult())
+    override fun initialize() {
+        Single.zip(
+            getCategorySuggestions(NoParams),
+            getLastSearchTerms(NoParams),
+            BiFunction(::InitializeData)
+        ).compose(observeOnUIAfterSingleResult())
             .doOnSubscribe { isLoading.postValue(true) }
             .doFinally { isLoading.postValue(false) }
-            .handle({ suggestions ->
-                categorySuggestions.postValue(suggestions)
-                getLastSearchTerms()
+            .handle({ data ->
+                categorySuggestions.postValue(data.suggestions)
+                searchTerms.postValue(data.searchTerms)
             }, ::postErrorMessage)
     }
 
@@ -45,9 +50,8 @@ class SearchViewModel(
             .handle({ }, ::postErrorMessage)
     }
 
-    private fun getLastSearchTerms() {
-        getLastSearchTerms(NoParams)
-            .compose(observeOnUIAfterSingleResult())
-            .handle(searchTerms::postValue, ::postErrorMessage)
-    }
+    private data class InitializeData(
+        val suggestions: List<String>,
+        val searchTerms: List<String>
+    )
 }
