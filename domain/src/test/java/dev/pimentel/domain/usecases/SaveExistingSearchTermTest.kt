@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.DeleteSearchTerm
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk

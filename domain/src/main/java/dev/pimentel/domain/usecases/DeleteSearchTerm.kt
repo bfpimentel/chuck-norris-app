@@ -1,4 +1,4 @@
-package dev.pimentel.domain
+package dev.pimentel.domain.usecases
 
 import dev.pimentel.data.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.UseCase

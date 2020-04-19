@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.DeleteSearchTerm
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Completable
 

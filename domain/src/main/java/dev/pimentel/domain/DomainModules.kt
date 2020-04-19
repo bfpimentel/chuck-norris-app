@@ -3,6 +3,7 @@ package dev.pimentel.domain
 import dev.pimentel.data.dataModules
 import dev.pimentel.domain.usecases.AreSearchTermsOnLimit
 import dev.pimentel.domain.usecases.DeleteLastSearchTerm
+import dev.pimentel.domain.usecases.DeleteSearchTerm
 import dev.pimentel.domain.usecases.DoesSearchTermExist
 import dev.pimentel.domain.usecases.GetAllCategories
 import dev.pimentel.domain.usecases.GetAllCategoriesNames
