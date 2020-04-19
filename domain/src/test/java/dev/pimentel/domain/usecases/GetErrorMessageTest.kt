@@ -11,10 +11,14 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
-class GetErrorMessageTest {
+class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
     private val context = mockk<Context>(relaxed = true)
-    private val getErrorType = GetErrorMessage(context)
+    override lateinit var useCase: GetErrorMessage
+
+    override fun `setup subject`() {
+        useCase = GetErrorMessage(context)
+    }
 
     @Test
     fun `should return no connection error type when throwable is an instance of IOException`() {
@@ -24,7 +28,7 @@ class GetErrorMessageTest {
 
         assertEquals(
             message,
-            getErrorType(GetErrorMessage.Params(IOException()))
+            useCase(GetErrorMessage.Params(IOException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_no_connection) }
@@ -39,7 +43,7 @@ class GetErrorMessageTest {
 
         assertEquals(
             message,
-            getErrorType(GetErrorMessage.Params(IllegalArgumentException()))
+            useCase(GetErrorMessage.Params(IllegalArgumentException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_default) }

@@ -29,39 +29,39 @@ class SearchTermsRepositoryTest {
     }
 
     @Test
-    fun `should route fetchSearchTermsByTerm call to localDataSource`() {
+    fun `should route getSearchTermsByTerm call to localDataSource`() {
         val term = "term"
         val searchTerms = listOf(
             SearchTerm(1, "query1"),
             SearchTerm(2, "query2")
         )
 
-        every { localDataSource.fetchSearchTermsByTerm(term) } returns Single.just(searchTerms)
+        every { localDataSource.getSearchTermsByTerm(term) } returns Single.just(searchTerms)
 
-        searchTermsRepository.fetchSearchTermByTerm(term)
+        searchTermsRepository.getSearchTermByTerm(term)
             .test()
             .assertNoErrors()
             .assertResult(searchTerms)
 
-        verify(exactly = 1) { localDataSource.fetchSearchTermsByTerm(term) }
+        verify(exactly = 1) { localDataSource.getSearchTermsByTerm(term) }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route fetchLastSearchTerms call to localDataSource`() {
+    fun `should route getLastSearchTerms call to localDataSource`() {
         val searchTerms = listOf(
             SearchTerm(1, "query1"),
             SearchTerm(2, "query2")
         )
 
-        every { localDataSource.fetchLastSearchTerms() } returns Single.just(searchTerms)
+        every { localDataSource.getLastSearchTerms() } returns Single.just(searchTerms)
 
-        searchTermsRepository.fetchLastSearchTerms()
+        searchTermsRepository.getLastSearchTerms()
             .test()
             .assertNoErrors()
             .assertResult(searchTerms)
 
-        verify(exactly = 1) { localDataSource.fetchLastSearchTerms() }
+        verify(exactly = 1) { localDataSource.getLastSearchTerms() }
         confirmVerified(localDataSource)
     }
 
@@ -71,7 +71,7 @@ class SearchTermsRepositoryTest {
 
         every { localDataSource.insertSearchTerm(searchTerm) } just runs
 
-        searchTermsRepository.insertSearchTerm(searchTerm)
+        searchTermsRepository.saveSearchTerm(searchTerm)
 
         verify(exactly = 1) { localDataSource.insertSearchTerm(searchTerm) }
         confirmVerified(localDataSource)

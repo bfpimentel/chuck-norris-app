@@ -6,8 +6,8 @@ import dev.pimentel.data.sources.CategoriesRemoteDataSource
 import io.reactivex.Single
 
 interface CategoriesRepository {
-    fun fetchAllCategories(): Single<List<Category>>
-    fun fetchAllCategoriesNames(): Single<List<String>>
+    fun getAllCategories(): Single<List<Category>>
+    fun getAllCategoriesNames(): Single<List<String>>
     fun saveAllCategories(categories: List<Category>)
 }
 
@@ -16,11 +16,11 @@ class CategoriesRepositoryImpl(
     private val remoteDataSource: CategoriesRemoteDataSource
 ) : CategoriesRepository {
 
-    override fun fetchAllCategories(): Single<List<Category>> =
-        localDataSource.fetchAllCategories()
+    override fun getAllCategories(): Single<List<Category>> =
+        localDataSource.getAllCategories()
 
-    override fun fetchAllCategoriesNames(): Single<List<String>> =
-        remoteDataSource.fetchAllCategoriesNames()
+    override fun getAllCategoriesNames(): Single<List<String>> =
+        remoteDataSource.getAllCategoriesNames()
 
     override fun saveAllCategories(categories: List<Category>) =
         localDataSource.saveAllCategories(categories)

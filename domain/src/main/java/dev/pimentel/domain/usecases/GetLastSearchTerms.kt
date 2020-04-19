@@ -11,7 +11,7 @@ class GetLastSearchTerms(
 ) : UseCase<NoParams, Single<List<String>>> {
 
     override fun invoke(params: NoParams): Single<List<String>> =
-        searchTermsRepository.fetchLastSearchTerms().map { lastTerms ->
+        searchTermsRepository.getLastSearchTerms().map { lastTerms ->
             lastTerms.map(SearchTerm::term)
         }
 }

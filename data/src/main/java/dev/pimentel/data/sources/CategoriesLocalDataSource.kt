@@ -10,7 +10,7 @@ import io.reactivex.Single
 interface CategoriesLocalDataSource {
 
     @Query("SELECT * FROM Category")
-    fun fetchAllCategories(): Single<List<Category>>
+    fun getAllCategories(): Single<List<Category>>
 
     @Insert
     fun saveAllCategories(categories: List<Category>)

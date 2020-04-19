@@ -8,38 +8,32 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Single
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class FetchAllCategoriesTest {
+class GetAllCategoriesTest : UseCaseTest<GetAllCategories>() {
 
     private val categoriesRepository = mockk<CategoriesRepository>()
-    private lateinit var fetchAllCategories: FetchAllCategories
+    override lateinit var useCase: GetAllCategories
 
-    @BeforeEach
-    @Test
-    fun `should setup subject and it must not be null`() {
-        fetchAllCategories = FetchAllCategories(categoriesRepository)
-
-        assertNotNull(categoriesRepository)
+    override fun `setup subject`() {
+        useCase = GetAllCategories(categoriesRepository)
     }
 
     @Test
-    fun `should route fetchAllCategories call to categoriesRepository`() {
+    fun `should return a list of categories`() {
         val categories = listOf(
             Category("name1"),
             Category("name2")
         )
 
-        every { categoriesRepository.fetchAllCategories() } returns Single.just(categories)
+        every { categoriesRepository.getAllCategories() } returns Single.just(categories)
 
-        fetchAllCategories(NoParams)
+        useCase(NoParams)
             .test()
             .assertNoErrors()
             .assertResult(categories)
 
-        verify(exactly = 1) { categoriesRepository.fetchAllCategories() }
+        verify(exactly = 1) { categoriesRepository.getAllCategories() }
         confirmVerified(categoriesRepository)
     }
 }

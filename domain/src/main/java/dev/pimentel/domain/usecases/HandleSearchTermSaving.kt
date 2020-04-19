@@ -4,7 +4,7 @@ import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Completable
 
 class HandleSearchTermSaving(
-    private val doesSearchTermExist: DoesSearchTermExist,
+    private  val doesSearchTermExist: DoesSearchTermExist,
     private val saveExistingSearchTerm: SaveExistingSearchTerm,
     private val saveNonExistingSearchTerm: SaveNonExistingSearchTerm
 ) : UseCase<HandleSearchTermSaving.Params, Completable> {

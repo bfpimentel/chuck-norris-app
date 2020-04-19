@@ -10,11 +10,11 @@ class SaveSearchTerm(
 ) : UseCase<SaveSearchTerm.Params, Completable> {
 
     override fun invoke(params: Params): Completable = Completable.create { emitter ->
-        searchTermsRepository.insertSearchTerm(SearchTerm(term = params.query))
+        searchTermsRepository.saveSearchTerm(SearchTerm(term = params.term))
         emitter.onComplete()
     }
 
     data class Params(
-        val query: String
+        val term: String
     )
 }

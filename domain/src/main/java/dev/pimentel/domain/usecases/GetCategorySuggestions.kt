@@ -6,14 +6,14 @@ import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Single
 
 class GetCategorySuggestions(
-    private val fetchAllCategories: FetchAllCategories,
-    private val fetchAllCategoriesNames: FetchAllCategoriesNames,
+    private val getAllCategories: GetAllCategories,
+    private val getAllCategoriesNames: GetAllCategoriesNames,
     private val saveAllCategories: SaveAllCategories,
     private val shuffleList: ShuffleList
 ) : UseCase<NoParams, Single<List<String>>> {
 
     override fun invoke(params: NoParams): Single<List<String>> =
-        fetchAllCategories(NoParams).flatMap { savedCategories ->
+        getAllCategories(NoParams).flatMap { savedCategories ->
             if (savedCategories.isNotEmpty()) {
                 Single.just(
                     shuffleList(ShuffleList.Params(savedCategories))
@@ -21,7 +21,7 @@ class GetCategorySuggestions(
                         .map(Category::name)
                 )
             } else {
-                fetchAllCategoriesNames(NoParams).flatMap { categoriesNames ->
+                getAllCategoriesNames(NoParams).flatMap { categoriesNames ->
                     saveAllCategories(SaveAllCategories.Params(categoriesNames))
                         .andThen(invoke(NoParams))
                 }

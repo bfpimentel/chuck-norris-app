@@ -4,8 +4,8 @@ import dev.pimentel.data.dataModules
 import dev.pimentel.domain.usecases.AreSearchTermsOnLimit
 import dev.pimentel.domain.usecases.DeleteLastSearchTerm
 import dev.pimentel.domain.usecases.DoesSearchTermExist
-import dev.pimentel.domain.usecases.FetchAllCategories
-import dev.pimentel.domain.usecases.FetchAllCategoriesNames
+import dev.pimentel.domain.usecases.GetAllCategories
+import dev.pimentel.domain.usecases.GetAllCategoriesNames
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
@@ -21,8 +21,8 @@ import org.koin.dsl.module
 private val useCasesModule = module {
     single { GetErrorMessage(androidContext()) }
     single { ShuffleList() }
-    single { FetchAllCategories(get()) }
-    single { FetchAllCategoriesNames(get()) }
+    single { GetAllCategories(get()) }
+    single { GetAllCategoriesNames(get()) }
     single { SaveAllCategories(get()) }
     single { GetCategorySuggestions(get(), get(), get(), get()) }
     single { SaveSearchTerm(get()) }

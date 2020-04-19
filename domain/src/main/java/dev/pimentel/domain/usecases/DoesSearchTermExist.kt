@@ -9,7 +9,7 @@ class DoesSearchTermExist(
 ) : UseCase<DoesSearchTermExist.Params, Single<Boolean>> {
 
     override fun invoke(params: Params): Single<Boolean> =
-        searchTermsRepository.fetchSearchTermByTerm(params.term).map { searchTerms ->
+        searchTermsRepository.getSearchTermByTerm(params.term).map { searchTerms ->
             searchTerms.isNotEmpty()
         }
 

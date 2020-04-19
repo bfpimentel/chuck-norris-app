@@ -5,7 +5,12 @@ import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.sources.CategoriesLocalDataSource
 import dev.pimentel.data.sources.CategoriesRemoteDataSource
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -29,38 +34,38 @@ class CategoriesRepositoryTest {
     }
 
     @Test
-    fun `should route fetchAllCategories call to localDataSource`() {
+    fun `should route getAllCategories call to localDataSource`() {
         val categories = listOf(
             Category("name1"),
             Category("name2")
         )
 
-        every { localDataSource.fetchAllCategories() } returns Single.just(categories)
+        every { localDataSource.getAllCategories() } returns Single.just(categories)
 
-        categoriesRepository.fetchAllCategories()
+        categoriesRepository.getAllCategories()
             .test()
             .assertNoErrors()
             .assertResult(categories)
 
-        verify(exactly = 1) { localDataSource.fetchAllCategories() }
+        verify(exactly = 1) { localDataSource.getAllCategories() }
         confirmVerified(localDataSource, remoteDataSource)
     }
 
     @Test
-    fun `should route fetchAllCategoriesNames call to remoteDataSource`() {
+    fun `should route getAllCategoriesNames call to remoteDataSource`() {
         val categoriesNames = listOf(
             "name1",
             "name2"
         )
 
-        every { remoteDataSource.fetchAllCategoriesNames() } returns Single.just(categoriesNames)
+        every { remoteDataSource.getAllCategoriesNames() } returns Single.just(categoriesNames)
 
-        categoriesRepository.fetchAllCategoriesNames()
+        categoriesRepository.getAllCategoriesNames()
             .test()
             .assertNoErrors()
             .assertResult(categoriesNames)
 
-        verify(exactly = 1) { remoteDataSource.fetchAllCategoriesNames() }
+        verify(exactly = 1) { remoteDataSource.getAllCategoriesNames() }
         confirmVerified(localDataSource, remoteDataSource)
     }
 

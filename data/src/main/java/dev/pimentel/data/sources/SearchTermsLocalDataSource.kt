@@ -10,7 +10,7 @@ import io.reactivex.Single
 interface SearchTermsLocalDataSource {
 
     @Query("SELECT id, term FROM SearchTerm where term = :term")
-    fun fetchSearchTermsByTerm(term: String): Single<List<SearchTerm>>
+    fun getSearchTermsByTerm(term: String): Single<List<SearchTerm>>
 
     @Insert
     fun insertSearchTerm(searchTerm: SearchTerm)
@@ -19,7 +19,7 @@ interface SearchTermsLocalDataSource {
     fun deleteSearchTermByTerm(term: String)
 
     @Query("SELECT * FROM SearchTerm ORDER BY id DESC")
-    fun fetchLastSearchTerms(): Single<List<SearchTerm>>
+    fun getLastSearchTerms(): Single<List<SearchTerm>>
 
     @Query("SELECT COUNT(id) from SearchTerm")
     fun getNumberOfSearchTerms(): Single<Int>

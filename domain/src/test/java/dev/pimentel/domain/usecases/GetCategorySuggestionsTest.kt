@@ -8,29 +8,23 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetCategorySuggestionsTest {
+class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
 
-    private val fetchAllCategories = mockk<FetchAllCategories>()
-    private val fetchAllCategoriesNames = mockk<FetchAllCategoriesNames>()
+    private val fetchAllCategories = mockk<GetAllCategories>()
+    private val fetchAllCategoriesNames = mockk<GetAllCategoriesNames>()
     private val saveAllCategories = mockk<SaveAllCategories>()
     private val shuffleList = mockk<ShuffleList>()
-    private lateinit var getCategorySuggestions: GetCategorySuggestions
+    override lateinit var useCase: GetCategorySuggestions
 
-    @BeforeEach
-    @Test
-    fun `should setup subject and it must not be null`() {
-        getCategorySuggestions = GetCategorySuggestions(
+    override fun `setup subject`() {
+        useCase = GetCategorySuggestions(
             fetchAllCategories,
             fetchAllCategoriesNames,
             saveAllCategories,
             shuffleList
         )
-
-        assertNotNull(getCategorySuggestions)
     }
 
     @Test
@@ -40,7 +34,7 @@ class GetCategorySuggestionsTest {
         every { fetchAllCategories(NoParams) } returns Single.just(allCategories)
         every { shuffleList(shuffleListParams) } returns allCategories
 
-        getCategorySuggestions(NoParams)
+        useCase(NoParams)
             .test()
             .assertNoErrors()
             .assertResult(categorySuggestions)
@@ -76,7 +70,7 @@ class GetCategorySuggestionsTest {
         every { saveAllCategories(saveAllCategoriesParams) } returns Completable.complete()
         every { shuffleList(shuffleListParams) } returns allCategories
 
-        getCategorySuggestions(NoParams)
+        useCase(NoParams)
             .test()
             .assertNoErrors()
             .assertResult(categorySuggestions)
@@ -105,14 +99,14 @@ class GetCategorySuggestionsTest {
         )
 
         val categorySuggestions = listOf(
-            CategorySuggestion("name0"),
-            CategorySuggestion("name1"),
-            CategorySuggestion("name2"),
-            CategorySuggestion("name3"),
-            CategorySuggestion("name4"),
-            CategorySuggestion("name5"),
-            CategorySuggestion("name6"),
-            CategorySuggestion("name7")
+            "name0",
+            "name1",
+            "name2",
+            "name3",
+            "name4",
+            "name5",
+            "name6",
+            "name7"
         )
     }
 }
