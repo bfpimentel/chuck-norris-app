@@ -73,9 +73,10 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getSearchTerm(NoParams) } returns Single.just(term)
         every { getFacts(getFactsParams) } returns Single.just(facts)
 
-        viewModel.initialize()
+        viewModel.setupFacts()
         testScheduler.triggerActions()
 
+        assertEquals(viewModel.searchTerm().value, term)
         assertEquals(viewModel.facts().value, factsDisplays)
 
         verify(exactly = 1) {

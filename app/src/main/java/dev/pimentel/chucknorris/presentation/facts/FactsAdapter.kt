@@ -35,6 +35,8 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
                     TypedValue.COMPLEX_UNIT_PX,
                     itemView.resources.getDimension(factDisplay.fontSize)
                 )
+                it.setOnClickListener {
+                }
             }
         }
     }

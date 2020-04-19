@@ -2,4 +2,12 @@
 
     <string name="app_name">Chuck Norris Facts</string>
 
+    <!-- Facts Fragment -->
+    <string name="facts_tv_first_access">
+        This is where your facts are going to be listed.\n
+        But first, you need to tap the search icon below to configure the search criteria.
+    </string>
+    <string name="facts_tv_error_message">%s\nYou can tap here to try again.</string>
+    <!-- Facts Fragment -->
+
 </resources>

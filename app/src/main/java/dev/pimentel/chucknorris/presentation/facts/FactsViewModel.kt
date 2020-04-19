@@ -24,15 +24,17 @@ class FactsViewModel(
     getErrorMessage
 ), FactsContract.ViewModel {
 
+    private val firstAccess = MutableLiveData<Unit>()
     private val searchTerm = MutableLiveData<String>()
-
     private val facts = MutableLiveData<List<FactDisplay>>()
+
+    override fun firstAccess(): LiveData<Unit> = firstAccess
 
     override fun searchTerm(): LiveData<String> = searchTerm
 
     override fun facts(): LiveData<List<FactDisplay>> = facts
 
-    override fun initialize() {
+    override fun setupFacts() {
         getSearchTerm(NoParams).flatMap { searchTerm ->
             getFacts(GetFacts.Params(searchTerm)).map { facts ->
                 InitializeData(
@@ -54,7 +56,13 @@ class FactsViewModel(
                         else R.dimen.text_large
                     )
                 }.also(facts::postValue)
-            }, ::postErrorMessage)
+            }, { error ->
+                if (error is GetSearchTerm.SearchTermNotFoundException) {
+                    firstAccess.postValue(Unit)
+                } else {
+                    postErrorMessage(error)
+                }
+            })
     }
 
     override fun navigateToSearch() {
