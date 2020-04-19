@@ -9,7 +9,7 @@
         android:id="@+id/facts_fragment"
         android:name="dev.pimentel.chucknorris.presentation.facts.FactsFragment"
         android:label="FactsFragment"
-        tools:layout="@layout/facts_fragment_layout">
+        tools:layout="@layout/facts_layout">
         <action
             android:id="@+id/action_facts_fragment_to_searchFragment"
             app:destination="@id/search_fragment" />
@@ -19,6 +19,6 @@
         android:id="@+id/search_fragment"
         android:name="dev.pimentel.chucknorris.presentation.search.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/search_fragment_layout" />
+        tools:layout="@layout/search_layout" />
 
 </navigation>

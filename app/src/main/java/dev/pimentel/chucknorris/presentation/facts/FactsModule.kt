@@ -5,5 +5,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val factsModule = module {
-    viewModel { FactsViewModel(get<Navigator>(), get(), get()) }
+    factory { FactsAdapter() }
+    viewModel { FactsViewModel(get<Navigator>(), get(), get(), get()) }
 }

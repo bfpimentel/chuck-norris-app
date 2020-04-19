@@ -2,15 +2,15 @@ package dev.pimentel.chucknorris.presentation.search
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.databinding.SearchFragmentCategoriesItemLayoutBinding
-import dev.pimentel.chucknorris.databinding.SearchFragmentLayoutBinding
+import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
+import dev.pimentel.chucknorris.databinding.SearchLayoutBinding
 import dev.pimentel.chucknorris.shared.abstractions.BaseFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
 
-class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayoutBinding>(
-    R.layout.search_fragment_layout
+class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBinding>(
+    R.layout.search_layout
 ) {
 
     override val module: Module = searchModule
@@ -18,7 +18,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
     private val adapter: SearchTermsAdapter by inject()
 
     override fun bindView() = initBinding(
-        SearchFragmentLayoutBinding.inflate(layoutInflater),
+        SearchLayoutBinding.inflate(layoutInflater),
         this
     ) {
         searchRvLastSearchTerms.also {
@@ -28,7 +28,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
 
         viewModel.categorySuggestions().observe { categorySuggestions ->
             categorySuggestions.forEach { suggestion ->
-                val chipBinding = SearchFragmentCategoriesItemLayoutBinding.inflate(layoutInflater)
+                val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
                 chipBinding.searchCategoriesItemChip.text = suggestion
                 searchCgSuggestions.addView(chipBinding.root)
             }

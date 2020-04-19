@@ -1,6 +1,6 @@
 package dev.pimentel.data.sources
 
-import dev.pimentel.data.models.Fact
+import dev.pimentel.data.models.FactsResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface FactsRemoteDataSource {
 
     @GET("/jokes/search")
-    fun getFacts(@Query("query") searchTerm: String): Single<List<Fact>>
+    fun getFacts(@Query("query") searchTerm: String): Single<FactsResponse>
 }

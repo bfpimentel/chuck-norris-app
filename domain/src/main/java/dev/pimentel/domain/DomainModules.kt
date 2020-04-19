@@ -38,7 +38,7 @@ private val useCasesModule = module {
     single { HandleSearchTermSaving(get(), get(), get()) }
     single { GetLastSearchTerms(get()) }
     single { GetSearchTerm(get()) }
-    single { GetFacts(get(), get()) }
+    single { GetFacts(get(), get(), androidContext()) }
 }
 
 val domainModules = listOf(
