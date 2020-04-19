@@ -35,7 +35,7 @@ class GetLastSearchTermsTest : UseCaseTest<GetLastSearchTerms>() {
         useCase(NoParams)
             .test()
             .assertNoErrors()
-            .assertComplete()
+            .assertResult(terms)
 
         verify(exactly = 1) { searchTermsRepository.getLastSearchTerms() }
         confirmVerified(searchTermsRepository)
