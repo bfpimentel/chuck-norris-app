@@ -20,7 +20,7 @@ class GetSearchTermTest : UseCaseTest<GetSearchTerm>() {
     }
 
     @Test
-    fun `should get search term and map it to string`() {
+    fun `should get search term and map it to string after getting it successfully from repository`() {
         val term = "term"
         val searchTerm = SearchTerm(0, term)
 
@@ -30,6 +30,20 @@ class GetSearchTermTest : UseCaseTest<GetSearchTerm>() {
             .test()
             .assertNoErrors()
             .assertResult(term)
+
+        verify(exactly = 1) { searchTermsRepository.getSearchTerm() }
+        confirmVerified(searchTermsRepository)
+    }
+
+    @Test
+    fun `should return SearchTermNotFoundException when failing to get search term from repository`() {
+        every {
+            searchTermsRepository.getSearchTerm()
+        } returns Single.error(GetSearchTerm.SearchTermNotFoundException())
+
+        useCase(NoParams)
+            .test()
+            .assertError(GetSearchTerm.SearchTermNotFoundException::class.java)
 
         verify(exactly = 1) { searchTermsRepository.getSearchTerm() }
         confirmVerified(searchTermsRepository)

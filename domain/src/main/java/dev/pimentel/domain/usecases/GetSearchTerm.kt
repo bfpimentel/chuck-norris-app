@@ -11,5 +11,9 @@ class GetSearchTerm(
 ) : UseCase<NoParams, Single<String>> {
 
     override fun invoke(params: NoParams): Single<String> =
-        searchTermsRepository.getSearchTerm().map(SearchTerm::term)
+        searchTermsRepository.getSearchTerm()
+            .map(SearchTerm::term)
+            .onErrorResumeNext { Single.error(SearchTermNotFoundException()) }
+
+    class SearchTermNotFoundException : Exception()
 }
