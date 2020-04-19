@@ -50,7 +50,7 @@ class FactsViewModel(
 
                 data.facts.map { fact ->
                     FactDisplay(
-                        fact.category,
+                        fact.category.capitalize(),
                         fact.value,
                         if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
                         else R.dimen.text_large

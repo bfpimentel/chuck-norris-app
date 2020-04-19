@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/facts_abl_search_term"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
         app:elevation="0dp">
 
@@ -27,14 +25,12 @@
                 android:id="@+id/facts_tv_searching_for"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Searching for:"
-                android:textColor="@color/colorPrimaryDark" />
+                android:text="Searching for:" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/facts_tv_search_term"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryDark" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

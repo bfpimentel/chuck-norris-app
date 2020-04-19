@@ -57,16 +57,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         val facts = listOf(
             Fact("category1", "url1", "smallValue"),
             Fact(
-                "category1",
+                "category2",
                 "url2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue"
             )
         )
 
         val factsDisplays = listOf(
-            FactsViewModel.FactDisplay("category1", "smallValue", R.dimen.text_large),
+            FactsViewModel.FactDisplay("Category1", "smallValue", R.dimen.text_large),
             FactsViewModel.FactDisplay(
-                "category1",
+                "Category2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
                 R.dimen.text_normal
             )
