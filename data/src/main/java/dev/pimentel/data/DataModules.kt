@@ -3,9 +3,12 @@ package dev.pimentel.data
 import androidx.room.Room
 import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
+import dev.pimentel.data.repositories.FactsRepository
+import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.repositories.SearchTermsRepository
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
 import dev.pimentel.data.sources.CategoriesRemoteDataSource
+import dev.pimentel.data.sources.FactsRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -52,6 +55,7 @@ private val databaseModule = module {
 
 private val remoteDataSourceModule = module {
     single { get<Retrofit>().create(CategoriesRemoteDataSource::class.java) }
+    single { get<Retrofit>().create(FactsRemoteDataSource::class.java) }
 }
 
 private val localDataSourceModule = module {
@@ -62,6 +66,7 @@ private val localDataSourceModule = module {
 private val repositoryModule = module {
     single<CategoriesRepository> { CategoriesRepositoryImpl(get(), get()) }
     single<SearchTermsRepository> { SearchTermsRepositoryImpl(get()) }
+    single<FactsRepository> { FactsRepositoryImpl(get()) }
 }
 
 val dataModules = listOf(

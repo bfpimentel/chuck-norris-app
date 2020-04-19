@@ -9,6 +9,7 @@ import dev.pimentel.domain.usecases.GetAllCategories
 import dev.pimentel.domain.usecases.GetAllCategoriesNames
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
+import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
@@ -37,6 +38,7 @@ private val useCasesModule = module {
     single { HandleSearchTermSaving(get(), get(), get()) }
     single { GetLastSearchTerms(get()) }
     single { GetSearchTerm(get()) }
+    single { GetFacts(get(), get()) }
 }
 
 val domainModules = listOf(
