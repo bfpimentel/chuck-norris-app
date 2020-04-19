@@ -16,6 +16,7 @@ import io.mockk.runs
 import io.mockk.verify
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
@@ -72,5 +73,18 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         verify(exactly = 1) { getFacts(NoParams) }
         confirmVerified(navigator, getFacts)
+    }
+
+    @Test
+    fun `FactDisplay must not contain any null properties`() {
+        val factDisplay = FactsViewModel.FactDisplay(
+            "category",
+            "value",
+            R.dimen.text_normal
+        )
+
+        assertNotNull(factDisplay.category)
+        assertNotNull(factDisplay.value)
+        assertNotNull(factDisplay.fontSize)
     }
 }
