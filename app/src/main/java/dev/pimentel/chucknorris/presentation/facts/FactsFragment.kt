@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts
 
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsLayoutBinding
@@ -24,14 +25,40 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        viewModel.firstAccess().observe {
+            factsAblSearchTerm.isVisible = false
+            factsRvFacts.isVisible = false
+            factsTvFirstAccess.isVisible = true
+            factsTvError.isVisible = false
+        }
+
+        viewModel.searchTerm().observe { searchTerm ->
+            factsTvSearchTerm.text = searchTerm
+            factsAblSearchTerm.isVisible = true
+        }
+
         viewModel.facts().observe { facts ->
             adapter.submitList(facts)
+            factsRvFacts.isVisible = true
+            factsTvFirstAccess.isVisible = false
+            factsTvError.isVisible = false
+        }
+
+        viewModel.error().observe { errorMessage ->
+            factsTvError.isVisible = true
+            factsAblSearchTerm.isVisible = false
+            factsRvFacts.isVisible = false
+            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
         }
 
         factsMbGoToSearch.setOnClickListener {
             viewModel.navigateToSearch()
         }
 
-        viewModel.initialize()
+        factsTvError.setOnClickListener {
+            viewModel.setupFacts()
+        }
+
+        viewModel.setupFacts()
     }
 }

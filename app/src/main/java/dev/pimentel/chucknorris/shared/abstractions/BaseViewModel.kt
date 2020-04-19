@@ -31,7 +31,8 @@ abstract class BaseViewModel(
     }
 
     protected fun postErrorMessage(throwable: Throwable) {
-        getErrorMessage!!(GetErrorMessage.Params(throwable)).also(error::postValue)
+        getErrorMessage!!(GetErrorMessage.Params(throwable))
+            .also(error::postValue)
     }
 
     protected fun <T> Single<T>.handle(

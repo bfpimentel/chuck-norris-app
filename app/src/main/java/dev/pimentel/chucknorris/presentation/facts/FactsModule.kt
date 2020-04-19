@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 val factsModule = module {
     factory { FactsAdapter() }
-    viewModel { FactsViewModel(get<Navigator>(), get(), get(), get()) }
+    viewModel { FactsViewModel(get<Navigator>(), get(), get(), get(), get()) }
 }
