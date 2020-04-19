@@ -11,6 +11,6 @@ interface SearchContract {
         fun saveSearchTerm(term: String)
 
         fun categorySuggestions(): LiveData<List<CategorySuggestion>>
-        fun searchTermSuccess(): LiveData<Unit>
+        fun searchTerms(): LiveData<List<String>>
     }
 }

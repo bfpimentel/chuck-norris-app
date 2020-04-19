@@ -29,7 +29,7 @@ interface SearchTermsLocalDataSource {
         DELETE FROM SearchTerm
         WHERE id IN (
             SELECT id FROM SearchTerm
-            ORDER BY id DESC
+            ORDER BY id ASC
             LIMIT 1
         )
         """

@@ -47,6 +47,4 @@ dependencies {
     testImplementation testDependencies.junitAPI
     testImplementation testDependencies.junitParams
     testRuntimeOnly testDependencies.junitEngine
-
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
