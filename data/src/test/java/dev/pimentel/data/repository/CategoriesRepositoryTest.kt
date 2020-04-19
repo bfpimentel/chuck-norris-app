@@ -29,7 +29,7 @@ class CategoriesRepositoryTest {
     }
 
     @Test
-    fun `should return a list of categories when fetching all categories`() {
+    fun `should route fetchAllCategories call to localDataSource`() {
         val categories = listOf(
             Category("name1"),
             Category("name2")
@@ -47,7 +47,7 @@ class CategoriesRepositoryTest {
     }
 
     @Test
-    fun `should return a list of categories names when fetching all categories names`() {
+    fun `should route fetchAllCategoriesNames call to remoteDataSource`() {
         val categoriesNames = listOf(
             "name1",
             "name2"
