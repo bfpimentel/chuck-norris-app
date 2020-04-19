@@ -24,6 +24,10 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        viewModel.searchTerm().observe { searchTerm ->
+            factsTvSearchTerm.text = searchTerm
+        }
+
         viewModel.facts().observe { facts ->
             adapter.submitList(facts)
         }

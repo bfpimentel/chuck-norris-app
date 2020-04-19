@@ -7,12 +7,15 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
+import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
 
 class FactsViewModel(
     private val navigator: NavigatorRouter,
+    private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
     getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
@@ -21,17 +24,29 @@ class FactsViewModel(
     getErrorMessage
 ), FactsContract.ViewModel {
 
+    private val searchTerm = MutableLiveData<String>()
+
     private val facts = MutableLiveData<List<FactDisplay>>()
+
+    override fun searchTerm(): LiveData<String> = searchTerm
 
     override fun facts(): LiveData<List<FactDisplay>> = facts
 
     override fun initialize() {
-        getFacts(NoParams)
-            .compose(observeOnUIAfterSingleResult())
+        getSearchTerm(NoParams).flatMap { searchTerm ->
+            getFacts(GetFacts.Params(searchTerm)).map { facts ->
+                InitializeData(
+                    searchTerm,
+                    facts
+                )
+            }
+        }.compose(observeOnUIAfterSingleResult())
             .doOnSubscribe { isLoading.postValue(true) }
             .doFinally { isLoading.postValue(false) }
-            .handle({
-                it.map { fact ->
+            .handle({ data ->
+                searchTerm.postValue(data.searchTerm)
+
+                data.facts.map { fact ->
                     FactDisplay(
                         fact.category,
                         fact.value,
@@ -50,6 +65,11 @@ class FactsViewModel(
         val category: String,
         val value: String,
         @DimenRes val fontSize: Int
+    )
+
+    private data class InitializeData(
+        val searchTerm: String,
+        val facts: List<Fact>
     )
 
     private companion object {

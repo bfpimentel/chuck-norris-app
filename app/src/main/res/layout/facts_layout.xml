@@ -6,12 +6,42 @@
     android:orientation="vertical"
     android:padding="@dimen/spacing_medium">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/facts_mb_go_to_search"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to search fragment"
-        android:textColor="@color/colorAccent" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/facts_mb_go_to_search"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/facts_tv_searching_for"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Searching for:" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/facts_tv_search_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/facts_mb_go_to_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:text="Go"
+            android:textColor="@color/colorAccent" />
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/facts_rv_facts"

@@ -9,6 +9,7 @@ interface FactsContract {
         fun initialize()
         fun navigateToSearch()
 
+        fun searchTerm(): LiveData<String>
         fun facts(): LiveData<List<FactsViewModel.FactDisplay>>
     }
 }
