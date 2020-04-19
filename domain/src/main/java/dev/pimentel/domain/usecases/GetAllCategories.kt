@@ -6,10 +6,10 @@ import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Single
 
-class FetchAllCategories(
+class GetAllCategories(
     private val categoriesRepository: CategoriesRepository
 ) : UseCase<NoParams, Single<List<Category>>> {
 
     override fun invoke(params: NoParams): Single<List<Category>> =
-        categoriesRepository.fetchAllCategories()
+        categoriesRepository.getAllCategories()
 }

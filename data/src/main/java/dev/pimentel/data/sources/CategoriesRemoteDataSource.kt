@@ -6,5 +6,5 @@ import retrofit2.http.GET
 interface CategoriesRemoteDataSource {
 
     @GET("/jokes/categories")
-    fun fetchAllCategoriesNames(): Single<List<String>>
+    fun getAllCategoriesNames(): Single<List<String>>
 }

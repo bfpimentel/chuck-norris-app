@@ -2,22 +2,22 @@ package dev.pimentel.domain.usecases
 
 import dev.pimentel.data.models.Category
 import dev.pimentel.data.repositories.CategoriesRepository
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SaveAllCategoriesTest {
+class SaveAllCategoriesTest : UseCaseTest<SaveAllCategories>() {
 
     private val categoriesRepository = mockk<CategoriesRepository>()
-    private lateinit var saveAllCategories: SaveAllCategories
+    override lateinit var useCase: SaveAllCategories
 
-    @BeforeEach
-    @Test
-    fun `should setup subject and it must not be null`() {
-        saveAllCategories = SaveAllCategories(categoriesRepository)
-
-        assertNotNull(saveAllCategories)
+    override fun `setup subject`() {
+        useCase = SaveAllCategories(categoriesRepository)
     }
 
     @Test
@@ -34,7 +34,7 @@ class SaveAllCategoriesTest {
 
         every { categoriesRepository.saveAllCategories(categories) } just runs
 
-        saveAllCategories(SaveAllCategories.Params(categoriesNames))
+        useCase(SaveAllCategories.Params(categoriesNames))
             .test()
             .assertNoErrors()
             .assertComplete()

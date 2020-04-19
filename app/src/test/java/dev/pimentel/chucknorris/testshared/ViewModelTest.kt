@@ -49,7 +49,10 @@ abstract class ViewModelTest<ViewModelType : BaseContract.ViewModel> {
     @BeforeEach
     fun `should setup test and its dependencies must not be null`() {
         testScheduler = TestScheduler()
-        schedulerProvider = TestSchedulerProvider(testScheduler)
+        schedulerProvider =
+            TestSchedulerProvider(
+                testScheduler
+            )
         getErrorMessage = mockk()
 
         `setup subject`()
