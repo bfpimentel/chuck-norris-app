@@ -14,7 +14,7 @@ interface SearchTermsRepository {
     fun deleteLastSearchTerm()
 }
 
-class SearchTermsRepositoryImpl(
+internal class SearchTermsRepositoryImpl(
     private val localDataSource: SearchTermsLocalDataSource
 ) : SearchTermsRepository {
 

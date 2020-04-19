@@ -11,7 +11,7 @@ interface CategoriesRepository {
     fun saveAllCategories(categories: List<Category>)
 }
 
-class CategoriesRepositoryImpl(
+internal class CategoriesRepositoryImpl(
     private val localDataSource: CategoriesLocalDataSource,
     private val remoteDataSource: CategoriesRemoteDataSource
 ) : CategoriesRepository {

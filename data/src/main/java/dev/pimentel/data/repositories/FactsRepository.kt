@@ -8,7 +8,7 @@ interface FactsRepository {
     fun getFacts(searchTerm: String): Single<List<Fact>>
 }
 
-class FactsRepositoryImpl(
+internal class FactsRepositoryImpl(
     private val remoteDataSource: FactsRemoteDataSource
 ) : FactsRepository {
 
