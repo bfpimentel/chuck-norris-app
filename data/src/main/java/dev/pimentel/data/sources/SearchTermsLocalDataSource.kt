@@ -18,7 +18,7 @@ interface SearchTermsLocalDataSource {
     @Query("DELETE FROM SearchTerm WHERE term = :term")
     fun deleteSearchTermByTerm(term: String)
 
-    @Query("SELECT * FROM SearchTerm")
+    @Query("SELECT * FROM SearchTerm ORDER BY id DESC")
     fun fetchLastSearchTerms(): Single<List<SearchTerm>>
 
     @Query("SELECT COUNT(id) from SearchTerm")
