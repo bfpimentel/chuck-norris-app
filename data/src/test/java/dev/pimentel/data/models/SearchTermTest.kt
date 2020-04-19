@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test
 class SearchTermTest {
 
     @Test
-    fun `SearchQuery must not contain any null properties`() {
-        val searchQuery = SearchTerm(1, "query")
+    fun `SearchTerm must not contain any null properties`() {
+        val searchTerm = SearchTerm(1, "query")
 
-        assertNotNull(searchQuery.term)
+        assertNotNull(searchTerm.id)
+        assertNotNull(searchTerm.term)
     }
 }

@@ -12,5 +12,5 @@ abstract class ChuckNorrisDatabase : RoomDatabase() {
 
     abstract fun categoriesLocalDataSource(): CategoriesLocalDataSource
 
-    abstract fun searchQueriesLocalDataSource(): SearchTermsLocalDataSource
+    abstract fun searchTermsLocalDataSource(): SearchTermsLocalDataSource
 }

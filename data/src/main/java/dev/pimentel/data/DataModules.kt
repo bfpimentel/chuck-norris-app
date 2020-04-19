@@ -56,7 +56,7 @@ private val remoteDataSourceModule = module {
 
 private val localDataSourceModule = module {
     single { get<ChuckNorrisDatabase>().categoriesLocalDataSource() }
-    single { get<ChuckNorrisDatabase>().searchQueriesLocalDataSource() }
+    single { get<ChuckNorrisDatabase>().searchTermsLocalDataSource() }
 }
 
 private val repositoryModule = module {

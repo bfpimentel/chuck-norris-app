@@ -32,8 +32,8 @@ class SearchTermsRepositoryTest {
     fun `should route getSearchTermsByTerm call to localDataSource`() {
         val term = "term"
         val searchTerms = listOf(
-            SearchTerm(1, "query1"),
-            SearchTerm(2, "query2")
+            SearchTerm(1, "term1"),
+            SearchTerm(2, "term2")
         )
 
         every { localDataSource.getSearchTermsByTerm(term) } returns Single.just(searchTerms)
@@ -50,8 +50,8 @@ class SearchTermsRepositoryTest {
     @Test
     fun `should route getLastSearchTerms call to localDataSource`() {
         val searchTerms = listOf(
-            SearchTerm(1, "query1"),
-            SearchTerm(2, "query2")
+            SearchTerm(1, "term1"),
+            SearchTerm(2, "term2")
         )
 
         every { localDataSource.getLastSearchTerms() } returns Single.just(searchTerms)
@@ -67,7 +67,7 @@ class SearchTermsRepositoryTest {
 
     @Test
     fun `should route insertSearchTerm call to localDataSource`() {
-        val searchTerm = SearchTerm(1, "query")
+        val searchTerm = SearchTerm(1, "term")
 
         every { localDataSource.insertSearchTerm(searchTerm) } just runs
 

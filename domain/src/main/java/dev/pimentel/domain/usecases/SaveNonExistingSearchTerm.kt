@@ -14,13 +14,13 @@ class SaveNonExistingSearchTerm(
         areSearchTermsOnLimit(NoParams).flatMapCompletable { onLimit ->
             if (onLimit) {
                 deleteLastSearchTerm(NoParams)
-                    .andThen(saveSearchTerm(SaveSearchTerm.Params(params.query)))
+                    .andThen(saveSearchTerm(SaveSearchTerm.Params(params.term)))
             } else {
-                saveSearchTerm(SaveSearchTerm.Params(params.query))
+                saveSearchTerm(SaveSearchTerm.Params(params.term))
             }
         }
 
     data class Params(
-        val query: String
+        val term: String
     )
 }

@@ -11,10 +11,10 @@ class AreSearchTermsOnLimit(
 
     override fun invoke(params: NoParams): Single<Boolean> =
         searchTermsRepository.getNumberOfSearchTerms().map { numberOfSearchQueries ->
-            numberOfSearchQueries >= MAX_NUMBER_OF_SEARCH_QUERIES
+            numberOfSearchQueries >= MAX_NUMBER_OF_SEARCH_TERMS
         }
 
     private companion object {
-        const val MAX_NUMBER_OF_SEARCH_QUERIES = 10
+        const val MAX_NUMBER_OF_SEARCH_TERMS = 10
     }
 }
