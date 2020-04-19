@@ -31,8 +31,8 @@ class SearchQueriesRepositoryTest {
     @Test
     fun `should route fetchLastSearchQueries call to localDataSource`() {
         val searchQueries = listOf(
-            SearchQuery("query1"),
-            SearchQuery("query2")
+            SearchQuery(1, "query1"),
+            SearchQuery(2, "query2")
         )
 
         every { localDataSource.fetchLastSearchQueries() } returns Single.just(searchQueries)
@@ -48,7 +48,7 @@ class SearchQueriesRepositoryTest {
 
     @Test
     fun `should route insertSearchQuery call to localDataSource`() {
-        val searchQuery = SearchQuery("query")
+        val searchQuery = SearchQuery(1, "query")
 
         every { localDataSource.insertSearchQuery(searchQuery) } just runs
 
@@ -60,13 +60,23 @@ class SearchQueriesRepositoryTest {
 
     @Test
     fun `should route deleteSearchQuery call to localDataSource`() {
-        val searchQuery = SearchQuery("query")
+        val searchQuery = SearchQuery(1, "query")
 
         every { localDataSource.deleteSearchQuery(searchQuery) } just runs
 
         searchQueriesRepository.deleteSearchQuery(searchQuery)
 
         verify(exactly = 1) { localDataSource.deleteSearchQuery(searchQuery) }
+        confirmVerified(localDataSource)
+    }
+
+    @Test
+    fun `should route deleteLastSearchQuery call to localDataSource`() {
+        every { localDataSource.deleteLastSearchQuery() } just runs
+
+        searchQueriesRepository.deleteLastSearchQuery()
+
+        verify(exactly = 1) { localDataSource.deleteLastSearchQuery() }
         confirmVerified(localDataSource)
     }
 }

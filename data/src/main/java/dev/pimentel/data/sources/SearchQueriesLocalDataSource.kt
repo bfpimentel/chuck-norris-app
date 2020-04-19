@@ -16,6 +16,18 @@ interface SearchQueriesLocalDataSource {
     @Delete
     fun deleteSearchQuery(searchQuery: SearchQuery)
 
-    @Query("SELECT * FROM SearchQuery LIMIT 10")
+    @Query("SELECT * FROM SearchQuery ORDER BY id LIMIT 10")
     fun fetchLastSearchQueries(): Single<List<SearchQuery>>
+
+    @Query(
+        """
+        DELETE FROM SearchQuery
+        WHERE id IN (
+            SELECT id FROM SearchQuery
+            ORDER BY id DESC
+            LIMIT 1
+        )
+        """
+    )
+    fun deleteLastSearchQuery()
 }

@@ -6,5 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SearchQuery(
-    @PrimaryKey @ColumnInfo(name = "query") val query: String
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "query") val query: String
 )

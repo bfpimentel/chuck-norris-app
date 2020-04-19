@@ -7,7 +7,7 @@ class SearchQueryTest {
 
     @Test
     fun `SearchQuery must not contain any null properties`() {
-        val searchQuery = SearchQuery("query")
+        val searchQuery = SearchQuery(1, "query")
 
         assertNotNull(searchQuery.query)
     }

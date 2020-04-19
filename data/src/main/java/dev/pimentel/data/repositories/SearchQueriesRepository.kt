@@ -8,18 +8,22 @@ interface SearchQueriesRepository {
     fun insertSearchQuery(searchQuery: SearchQuery)
     fun deleteSearchQuery(searchQuery: SearchQuery)
     fun fetchLastSearchQueries(): Single<List<SearchQuery>>
+    fun deleteLastSearchQuery()
 }
 
 class SearchQueriesRepositoryImpl(
-    private val remoteDataSource: SearchQueriesLocalDataSource
+    private val localDataSource: SearchQueriesLocalDataSource
 ) : SearchQueriesRepository {
 
     override fun insertSearchQuery(searchQuery: SearchQuery) =
-        remoteDataSource.insertSearchQuery(searchQuery)
+        localDataSource.insertSearchQuery(searchQuery)
 
     override fun deleteSearchQuery(searchQuery: SearchQuery) =
-        remoteDataSource.deleteSearchQuery(searchQuery)
+        localDataSource.deleteSearchQuery(searchQuery)
 
     override fun fetchLastSearchQueries(): Single<List<SearchQuery>> =
-        remoteDataSource.fetchLastSearchQueries()
+        localDataSource.fetchLastSearchQueries()
+
+    override fun deleteLastSearchQuery() =
+        localDataSource.deleteLastSearchQuery()
 }
