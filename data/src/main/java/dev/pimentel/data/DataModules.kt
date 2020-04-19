@@ -3,8 +3,8 @@ package dev.pimentel.data
 import androidx.room.Room
 import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
-import dev.pimentel.data.repositories.SearchQueriesRepository
-import dev.pimentel.data.repositories.SearchQueriesRepositoryImpl
+import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
 import dev.pimentel.data.sources.CategoriesRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -61,7 +61,7 @@ private val localDataSourceModule = module {
 
 private val repositoryModule = module {
     single<CategoriesRepository> { CategoriesRepositoryImpl(get(), get()) }
-    single<SearchQueriesRepository> { SearchQueriesRepositoryImpl(get()) }
+    single<SearchTermsRepository> { SearchTermsRepositoryImpl(get()) }
 }
 
 val dataModules = listOf(
