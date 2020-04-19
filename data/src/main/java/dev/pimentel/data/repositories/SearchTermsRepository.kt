@@ -5,6 +5,7 @@ import dev.pimentel.data.sources.SearchTermsLocalDataSource
 import io.reactivex.Single
 
 interface SearchTermsRepository {
+    fun getSearchTerm(): Single<SearchTerm>
     fun getSearchTermByTerm(term: String): Single<List<SearchTerm>>
     fun saveSearchTerm(searchTerm: SearchTerm)
     fun deleteSearchTermByTerm(term: String)
@@ -13,9 +14,12 @@ interface SearchTermsRepository {
     fun deleteLastSearchTerm()
 }
 
-class SearchTermsRepositoryImpl(
+internal class SearchTermsRepositoryImpl(
     private val localDataSource: SearchTermsLocalDataSource
 ) : SearchTermsRepository {
+
+    override fun getSearchTerm(): Single<SearchTerm> =
+        localDataSource.getSearchTerm()
 
     override fun getSearchTermByTerm(term: String): Single<List<SearchTerm>> =
         localDataSource.getSearchTermsByTerm(term)

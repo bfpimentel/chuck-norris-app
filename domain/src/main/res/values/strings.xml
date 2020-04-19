@@ -5,4 +5,8 @@
     <string name="error_message_default">An unexpected problem happened. Try again later!</string>
     <!-- Error Messages -->
 
+    <!-- Get Facts -->
+    <string name="get_facts_no_category">Uncategorized</string>
+    <!-- Get Facts -->
+
 </resources>
