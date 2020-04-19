@@ -2,7 +2,6 @@ package dev.pimentel.chucknorris.presentation.search
 
 import androidx.lifecycle.LiveData
 import dev.pimentel.chucknorris.shared.abstractions.BaseContract
-import dev.pimentel.domain.entities.CategorySuggestion
 
 interface SearchContract {
 
@@ -10,7 +9,7 @@ interface SearchContract {
         fun getCategorySuggestions()
         fun saveSearchTerm(term: String)
 
-        fun categorySuggestions(): LiveData<List<CategorySuggestion>>
+        fun categorySuggestions(): LiveData<List<String>>
         fun searchTerms(): LiveData<List<String>>
     }
 }

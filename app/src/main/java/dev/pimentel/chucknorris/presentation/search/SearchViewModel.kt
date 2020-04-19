@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.entities.CategorySuggestion
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
@@ -22,10 +21,10 @@ class SearchViewModel(
     getErrorMessage
 ), SearchContract.ViewModel {
 
-    private val categorySuggestions = MutableLiveData<List<CategorySuggestion>>()
+    private val categorySuggestions = MutableLiveData<List<String>>()
     private val searchTerms = MutableLiveData<List<String>>()
 
-    override fun categorySuggestions(): LiveData<List<CategorySuggestion>> = categorySuggestions
+    override fun categorySuggestions(): LiveData<List<String>> = categorySuggestions
 
     override fun searchTerms(): LiveData<List<String>> = searchTerms
 

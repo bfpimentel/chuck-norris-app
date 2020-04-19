@@ -3,7 +3,6 @@ package dev.pimentel.chucknorris.presentation.facts
 import dev.pimentel.chucknorris.presentation.search.SearchContract
 import dev.pimentel.chucknorris.presentation.search.SearchViewModel
 import dev.pimentel.chucknorris.testshared.ViewModelTest
-import dev.pimentel.domain.entities.CategorySuggestion
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified

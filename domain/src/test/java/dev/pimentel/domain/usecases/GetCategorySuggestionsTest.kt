@@ -1,7 +1,6 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.data.models.Category
-import dev.pimentel.domain.entities.CategorySuggestion
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every

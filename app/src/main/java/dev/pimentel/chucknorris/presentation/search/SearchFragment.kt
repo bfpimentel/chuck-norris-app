@@ -29,7 +29,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchFragmentLayo
         viewModel.categorySuggestions().observe { categorySuggestions ->
             categorySuggestions.forEach { suggestion ->
                 val chipBinding = SearchFragmentCategoriesItemLayoutBinding.inflate(layoutInflater)
-                chipBinding.searchCategoriesItemChip.text = suggestion.name
+                chipBinding.searchCategoriesItemChip.text = suggestion
                 searchCgSuggestions.addView(chipBinding.root)
             }
         }
