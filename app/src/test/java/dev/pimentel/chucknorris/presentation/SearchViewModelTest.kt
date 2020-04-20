@@ -14,6 +14,7 @@ import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
@@ -34,7 +35,37 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
     }
 
     @Test
-    fun `should get category suggestions and get last search terms when initializing`() {
+    fun `should get category suggestions, get last search terms and set selected suggestion index when setting up search`() {
+        val categorySuggestions = listOf(
+            "nameThatIsTheSameAsOneCategory",
+            "name1",
+            "name2"
+        )
+        val lastSearchTerms = listOf(
+            "nameThatIsTheSameAsOneCategory",
+            "term1",
+            "term2"
+        )
+
+        every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
+        every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
+
+        viewModel.setupSearch()
+        testScheduler.triggerActions()
+
+        assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
+        assertEquals(viewModel.searchTerms().value, lastSearchTerms)
+        assertEquals(viewModel.selectedSuggestionIndex().value, 0)
+
+        verify(exactly = 1) {
+            getCategorySuggestions(NoParams)
+            getLastSearchTerms(NoParams)
+        }
+        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+    }
+
+    @Test
+    fun `should just get category suggestion and last search terms when setting up search`() {
         val categorySuggestions = listOf(
             "name1",
             "name2"
@@ -52,6 +83,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
         assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
         assertEquals(viewModel.searchTerms().value, lastSearchTerms)
+        assertNull(viewModel.selectedSuggestionIndex().value)
 
         verify(exactly = 1) {
             getCategorySuggestions(NoParams)
