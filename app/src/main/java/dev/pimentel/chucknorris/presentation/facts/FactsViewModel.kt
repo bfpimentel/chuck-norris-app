@@ -52,15 +52,15 @@ class FactsViewModel(
             .doOnSubscribe { isLoading.postValue(true) }
             .doFinally { isLoading.postValue(false) }
             .handle(
-                { facts ->
-                    facts.map { fact ->
+                {
+                    it.map { fact ->
                         FactDisplay(
                             fact.category.capitalize(),
                             fact.value,
                             if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
                             else R.dimen.text_large
                         )
-                    }.also(this.facts::postValue)
+                    }.also(facts::postValue)
                 }, ::postErrorMessage
             )
     }

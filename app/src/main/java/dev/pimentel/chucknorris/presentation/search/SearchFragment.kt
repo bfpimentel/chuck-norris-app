@@ -1,5 +1,8 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import android.app.Activity
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
@@ -31,11 +34,10 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
         }
 
         viewModel.categorySuggestions().observe { categorySuggestions ->
-            categorySuggestions.forEachIndexed { index, suggestion ->
+            categorySuggestions.forEach { suggestion ->
                 val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
                 chipBinding.searchCategoriesItemChip.apply {
                     text = suggestion
-                    id = index
                     setOnClickListener { viewModel.saveSearchTerm(suggestion) }
                 }
                 searchCgSuggestions.addView(chipBinding.root)
@@ -48,10 +50,27 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             searchCgSuggestions[index].isSelected = true
         }
 
-        searchBtSend.setOnClickListener {
+        searchIlSearchTerm.setEndIconOnClickListener {
             viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
+            hideKeyboard()
+        }
+
+        searchEtSearchTerm.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
+                hideKeyboard()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
 
         viewModel.setupSearch()
+    }
+
+    private fun hideKeyboard() {
+        (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .also { inputMethodManager ->
+                inputMethodManager.hideSoftInputFromWindow(view!!.rootView.windowToken, 0)
+            }
     }
 }

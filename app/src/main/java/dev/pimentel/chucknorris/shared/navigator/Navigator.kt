@@ -13,8 +13,7 @@ interface NavigatorRouter {
     fun pop()
 }
 
-interface Navigator : NavigatorBinder,
-    NavigatorRouter
+interface Navigator : NavigatorBinder, NavigatorRouter
 
 class NavigatorImpl : Navigator {
 
