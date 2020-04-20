@@ -3,6 +3,7 @@ package dev.pimentel.chucknorris.presentation.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
+import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
@@ -13,6 +14,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
 class SearchViewModel(
+    private val navigator: NavigatorRouter,
     private val getCategorySuggestions: GetCategorySuggestions,
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
@@ -61,7 +63,7 @@ class SearchViewModel(
     override fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
             .compose(observeOnUIAfterCompletableResult())
-            .handle({ }, ::postErrorMessage)
+            .handle(navigator::pop, ::postErrorMessage)
     }
 
     private data class InitializeData(

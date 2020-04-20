@@ -39,6 +39,19 @@ class NavigatorTest {
     }
 
     @Test
+    fun `should bind navigator and pop`() {
+        val navController = mockk<NavController>(relaxed = true)
+
+        every { navController.popBackStack() } returns true
+
+        navigator.bind(navController)
+        navigator.pop()
+
+        verify { navController.popBackStack() }
+        confirmVerified(navController)
+    }
+
+    @Test
     fun `should unbind navigator and doi nothing when trying to navigate to facts`() {
         val navController = mockk<NavController>(relaxed = true)
         val destinationId = R.id.facts_fragment

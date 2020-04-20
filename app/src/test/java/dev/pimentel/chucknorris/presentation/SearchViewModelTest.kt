@@ -2,6 +2,7 @@ package dev.pimentel.chucknorris.presentation
 
 import dev.pimentel.chucknorris.presentation.search.SearchContract
 import dev.pimentel.chucknorris.presentation.search.SearchViewModel
+import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetLastSearchTerms
@@ -9,7 +10,9 @@ import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -19,6 +22,7 @@ import org.junit.jupiter.api.Test
 
 class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
+    private val navigator = mockk<NavigatorRouter>()
     private val getCategorySuggestions = mockk<GetCategorySuggestions>()
     private val handleSearchTermSaving = mockk<HandleSearchTermSaving>()
     private val getLastSearchTerms = mockk<GetLastSearchTerms>()
@@ -26,6 +30,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
     override fun `setup subject`() {
         viewModel = SearchViewModel(
+            navigator,
             getCategorySuggestions,
             handleSearchTermSaving,
             getLastSearchTerms,
@@ -61,7 +66,12 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             getCategorySuggestions(NoParams)
             getLastSearchTerms(NoParams)
         }
-        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+        confirmVerified(
+            navigator,
+            getCategorySuggestions,
+            handleSearchTermSaving,
+            getLastSearchTerms
+        )
     }
 
     @Test
@@ -89,7 +99,12 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             getCategorySuggestions(NoParams)
             getLastSearchTerms(NoParams)
         }
-        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+        confirmVerified(
+            navigator,
+            getCategorySuggestions,
+            handleSearchTermSaving,
+            getLastSearchTerms
+        )
     }
 
     @Test
@@ -114,7 +129,12 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             getCategorySuggestions(NoParams)
             getLastSearchTerms(NoParams)
         }
-        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+        confirmVerified(
+            navigator,
+            getCategorySuggestions,
+            handleSearchTermSaving,
+            getLastSearchTerms
+        )
     }
 
     @Test
@@ -123,11 +143,20 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         val handleSearchTermSavingParams = HandleSearchTermSaving.Params(term)
 
         every { handleSearchTermSaving(handleSearchTermSavingParams) } returns Completable.complete()
+        every { navigator.pop() } just runs
 
         viewModel.saveSearchTerm(term)
         testScheduler.triggerActions()
 
-        verify(exactly = 1) { handleSearchTermSaving(handleSearchTermSavingParams) }
-        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+        verify(exactly = 1) {
+            handleSearchTermSaving(handleSearchTermSavingParams)
+            navigator.pop()
+        }
+        confirmVerified(
+            navigator,
+            getCategorySuggestions,
+            handleSearchTermSaving,
+            getLastSearchTerms
+        )
     }
 }

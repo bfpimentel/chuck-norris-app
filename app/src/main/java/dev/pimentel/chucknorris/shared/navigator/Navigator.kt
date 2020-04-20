@@ -9,9 +9,8 @@ interface NavigatorBinder {
 }
 
 interface NavigatorRouter {
-    fun navigate(
-        @IdRes destinationId: Int
-    )
+    fun navigate(@IdRes destinationId: Int)
+    fun pop()
 }
 
 interface Navigator : NavigatorBinder,
@@ -31,5 +30,9 @@ class NavigatorImpl : Navigator {
 
     override fun navigate(@IdRes destinationId: Int) {
         navController?.navigate(destinationId)
+    }
+
+    override fun pop() {
+        navController?.popBackStack()
     }
 }
