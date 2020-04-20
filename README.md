@@ -20,7 +20,9 @@ Just clone the project wherever you want, no further setup needed :)
 ## Architecture Explanation
 I choose to modularize the project layers focusing on Clean Architecture principles and ease to scale and to maintain.
 
-![architecture](./resources/architecture.png)
+<p align="middle">
+    <img src="./resources/architecture.png">
+</p>
 
 ### :app
 This is the presentation layer, it is responsible for what the user sees.
@@ -75,4 +77,6 @@ As said above, the project uses Github Action to run the [CI script](./.github/w
 - **Static code analysis**: The script uses the *detekt* gradle plugin to check if all the code is formatted consistently.
 - **Code coverage**: *JUnit5* is responsible for running the unit tests, *Jacoco* is responsible for generating the test report and then Codecov.io checks if the coverage is the expected.
 
-![code-coverage](https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg)
+<p align="middle">
+    <img src="https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg" href="https://codecov.io/gh/bfpimentel/chuck-norris-app">
+</p>
