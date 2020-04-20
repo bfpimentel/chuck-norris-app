@@ -1,6 +1,7 @@
 # Chuck Norris App
 
 ![Android Pull Request CI](https://github.com/bfpimentel/chuck-norris-app/workflows/Android%20Pull%20Request%20CI/badge.svg)
+[![Codecov](https://codecov.io/github/bfpimentel/chuck-norris-app/coverage.svg?branch=develop)](https://codecov.io/gh/bfpimentel/chuck-norris-app)
 
 ## Disclaimer
 There is a lot of dependencies on this projects (at least that's what I think).  Although, it's also a showcase project, I tried to show what are my skills using these APIs. Maybe the complexity inside this project was overkill to its size, but I think it was the best decision.
@@ -44,10 +45,10 @@ This is the data layer, it does not contain any business rules, it is responsibl
 ---
 ## Features
 ### Facts
-<center>
+<p align="middle">
     <img src="./resources/facts-first-access.png" width="360">
     <img src="./resources/facts.png" width="360">
-</center>
+</p>
 
 These are the Facts screen.
 
@@ -55,9 +56,9 @@ The first screen is when the user is first accessing it (or at least when there 
 
 ---
 ### Search
-<center>
+<p align="middle">
     <img src="./resources/search.png" width="360">
-</center>
+</p>
 
 This is the Search screen.
 
@@ -72,8 +73,6 @@ It contains a search field for manual searching, a suggestions list and the last
 As said above, the project uses Github Action to run the [CI script](./.github/workflows/android-pr.yml) when a Pull Request is opened.
 
 - **Static code analysis**: The script uses the *detekt* gradle plugin to check if all the code is formatted consistently.
-- **Code coverage**: JUnit5 is responsible for running the unit tests, Jacoco is responsible to generate the test report and then Codecov.io checks if the coverage is the expected.
+- **Code coverage**: *JUnit5* is responsible for running the unit tests, *Jacoco* is responsible for generating the test report and then Codecov.io checks if the coverage is the expected.
 
-<center>
-    <img src="[./resources/search.png](https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg)">
-</center>
+![code-coverage](https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg)
