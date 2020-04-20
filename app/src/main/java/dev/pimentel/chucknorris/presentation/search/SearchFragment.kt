@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
@@ -22,27 +23,35 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
         this
     ) {
         searchRvLastSearchTerms.also {
-            it.adapter = adapter
+            it.adapter = adapter.apply {
+                onItemClick = viewModel::saveSearchTerm
+            }
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
         viewModel.categorySuggestions().observe { categorySuggestions ->
-            categorySuggestions.forEach { suggestion ->
+            categorySuggestions.forEachIndexed { index, suggestion ->
                 val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
-                chipBinding.searchCategoriesItemChip.text = suggestion
+                chipBinding.searchCategoriesItemChip.apply {
+                    text = suggestion
+                    id = index
+                    setOnClickListener { viewModel.saveSearchTerm(suggestion) }
+                }
                 searchCgSuggestions.addView(chipBinding.root)
             }
         }
 
-        viewModel.searchTerms().observe { searchTerms ->
-            adapter.submitList(searchTerms)
+        viewModel.searchTerms().observe(adapter::submitList)
+
+        viewModel.selectedSuggestionIndex().observe { index ->
+            searchCgSuggestions[index].isSelected = true
         }
 
         searchBtSend.setOnClickListener {
             viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
         }
 
-        viewModel.initialize()
+        viewModel.setupSearch()
     }
 }

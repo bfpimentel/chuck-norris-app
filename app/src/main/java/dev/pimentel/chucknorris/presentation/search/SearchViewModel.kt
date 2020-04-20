@@ -25,12 +25,15 @@ class SearchViewModel(
 
     private val categorySuggestions = MutableLiveData<List<String>>()
     private val searchTerms = MutableLiveData<List<String>>()
+    private val selectedSuggestionIndex = MutableLiveData<Int>()
 
     override fun categorySuggestions(): LiveData<List<String>> = categorySuggestions
 
     override fun searchTerms(): LiveData<List<String>> = searchTerms
 
-    override fun initialize() {
+    override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
+
+    override fun setupSearch() {
         Single.zip(
             getCategorySuggestions(NoParams),
             getLastSearchTerms(NoParams),
@@ -41,6 +44,17 @@ class SearchViewModel(
             .handle({ data ->
                 categorySuggestions.postValue(data.suggestions)
                 searchTerms.postValue(data.searchTerms)
+
+                data.searchTerms
+                    .firstOrNull()
+                    ?.let { lastSearchTerm ->
+                        data.suggestions
+                            .indexOfFirst { suggestion -> suggestion == lastSearchTerm }
+                    }.also { index ->
+                        if (index != NOT_FOUND_INDEX) {
+                            selectedSuggestionIndex.postValue(index)
+                        }
+                    }
             }, ::postErrorMessage)
     }
 
@@ -54,4 +68,8 @@ class SearchViewModel(
         val suggestions: List<String>,
         val searchTerms: List<String>
     )
+
+    private companion object {
+        const val NOT_FOUND_INDEX = -1
+    }
 }

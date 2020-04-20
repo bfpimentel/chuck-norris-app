@@ -7,7 +7,6 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
@@ -70,11 +69,6 @@ class FactsViewModel(
         val category: String,
         val value: String,
         @DimenRes val fontSize: Int
-    )
-
-    private data class InitializeData(
-        val searchTerm: String,
-        val facts: List<Fact>
     )
 
     private companion object {

@@ -47,7 +47,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
         every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
 
-        viewModel.initialize()
+        viewModel.setupSearch()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
