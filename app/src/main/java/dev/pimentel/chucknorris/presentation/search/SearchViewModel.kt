@@ -52,7 +52,7 @@ class SearchViewModel(
                     ?.let { lastSearchTerm ->
                         data.suggestions
                             .indexOfFirst { suggestion -> suggestion == lastSearchTerm }
-                    }.also { index ->
+                    }?.also { index ->
                         if (index != NOT_FOUND_INDEX) {
                             selectedSuggestionIndex.postValue(index)
                         }

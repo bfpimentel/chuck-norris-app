@@ -78,5 +78,7 @@ As said above, the project uses Github Action to run the [CI script](./.github/w
 - **Code coverage**: *JUnit5* is responsible for running the unit tests, *Jacoco* is responsible for generating the test report and then Codecov.io checks if the coverage is the expected.
 
 <p align="middle">
-    <img src="https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg" href="https://codecov.io/gh/bfpimentel/chuck-norris-app">
+    <a href="https://codecov.io/gh/bfpimentel/chuck-norris-app">
+        <img src="https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg">
+    </a>
 </p>
