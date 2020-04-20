@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Default -->
     <color name="colorPrimary">#F1F1F1</color>
     <color name="colorPrimaryDark">#616161</color>
     <color name="colorAccent">#DA9203</color>
+    <!-- Default -->
+
+    <!-- Search Categories -->
+    <color name="search_categories_non_selected_background">#2B2B2B</color>
+    <color name="search_categories_selected_background">@color/colorAccent</color>
+
+    <color name="search_categories_non_selected_text">@color/colorPrimary</color>
+    <color name="search_categories_selected_text">#2B2B2B</color>
+    <!-- Search Categories -->
 
 </resources>

@@ -41,11 +41,11 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
     @Test
     fun `should navigate to search`() {
-        every { navigator.navigate(R.id.search_fragment) } just runs
+        every { navigator.navigate(R.id.facts_fragment_to_search_fragment) } just runs
 
         viewModel.navigateToSearch()
 
-        verify(exactly = 1) { navigator.navigate(R.id.search_fragment) }
+        verify(exactly = 1) { navigator.navigate(R.id.facts_fragment_to_search_fragment) }
         confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
     }
 
@@ -57,16 +57,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         val facts = listOf(
             Fact("category1", "url1", "smallValue"),
             Fact(
-                "category1",
+                "category2",
                 "url2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue"
             )
         )
 
         val factsDisplays = listOf(
-            FactsViewModel.FactDisplay("category1", "smallValue", R.dimen.text_large),
+            FactsViewModel.FactDisplay("Category1", "smallValue", R.dimen.text_large),
             FactsViewModel.FactDisplay(
-                "category1",
+                "Category2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
                 R.dimen.text_normal
             )

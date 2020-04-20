@@ -15,7 +15,9 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             FactsItemLayoutBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
 
@@ -29,14 +31,17 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(factDisplay: FactsViewModel.FactDisplay) {
-            binding.factsItemTvValue.let {
-                it.text = factDisplay.value
-                it.setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    itemView.resources.getDimension(factDisplay.fontSize)
-                )
-                it.setOnClickListener {
+            binding.apply {
+                factsItemCard.setOnClickListener {
                 }
+                factsItemTvValue.let {
+                    it.text = factDisplay.value
+                    it.setTextSize(
+                        TypedValue.COMPLEX_UNIT_PX,
+                        itemView.resources.getDimension(factDisplay.fontSize)
+                    )
+                }
+                factsItemChipCategory.text = factDisplay.category
             }
         }
     }

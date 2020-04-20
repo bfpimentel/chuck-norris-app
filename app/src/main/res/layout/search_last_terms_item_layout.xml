@@ -2,5 +2,7 @@
 <com.google.android.material.textview.MaterialTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_last_terms_item_tv_term"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" />
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingVertical="@dimen/spacing_tiny"
+    android:textSize="@dimen/text_normal" />

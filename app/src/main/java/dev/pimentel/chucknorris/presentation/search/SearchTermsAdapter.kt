@@ -9,10 +9,14 @@ import dev.pimentel.chucknorris.databinding.SearchLastTermsItemLayoutBinding
 
 class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
+    lateinit var onItemClick: (String) -> Unit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             SearchLastTermsItemLayoutBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
 
@@ -25,7 +29,10 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(term: String) {
-            binding.searchLastTermsItemTvTerm.text = term
+            binding.searchLastTermsItemTvTerm.also {
+                it.text = term
+                it.setOnClickListener { onItemClick(term) }
+            }
         }
     }
 
