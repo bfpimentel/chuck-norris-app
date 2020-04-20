@@ -34,7 +34,7 @@ class FactsViewModel(
     override fun facts(): LiveData<List<FactDisplay>> = facts
 
     override fun navigateToSearch() {
-        navigator.navigate(R.id.search_fragment)
+        navigator.navigate(R.id.action_facts_fragment_to_search_fragment)
     }
 
     override fun setupFacts() {

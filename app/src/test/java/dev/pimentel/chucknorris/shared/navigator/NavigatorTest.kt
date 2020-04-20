@@ -2,9 +2,12 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.navigation.NavController
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.shared.navigator.Navigator
-import dev.pimentel.chucknorris.shared.navigator.NavigatorImpl
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,12 +29,12 @@ class NavigatorTest {
         val navController = mockk<NavController>(relaxed = true)
         val destinationId = R.id.facts_fragment
 
-        every { navController.navigate(destinationId, null, any()) } just runs
+        every { navController.navigate(destinationId) } just runs
 
         navigator.bind(navController)
         navigator.navigate(destinationId)
 
-        verify { navController.navigate(destinationId, null, any()) }
+        verify { navController.navigate(destinationId) }
         confirmVerified(navController)
     }
 

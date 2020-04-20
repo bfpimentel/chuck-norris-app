@@ -2,7 +2,6 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 
 interface NavigatorBinder {
     fun bind(navController: NavController)
@@ -31,15 +30,6 @@ class NavigatorImpl : Navigator {
     }
 
     override fun navigate(@IdRes destinationId: Int) {
-        val navOptions = navOptions {
-            anim {
-                enter = android.R.anim.fade_in
-                exit = android.R.anim.fade_out
-                popEnter = android.R.anim.fade_in
-                popExit = android.R.anim.fade_out
-            }
-        }
-
-        navController?.navigate(destinationId, null, navOptions)
+        navController?.navigate(destinationId)
     }
 }

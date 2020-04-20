@@ -93,6 +93,31 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
     }
 
     @Test
+    fun `should just get category suggestion and last search terms when setting up search with empty list of search terms`() {
+        val categorySuggestions = listOf(
+            "name1",
+            "name2"
+        )
+        val lastSearchTerms = listOf<String>()
+
+        every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
+        every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
+
+        viewModel.setupSearch()
+        testScheduler.triggerActions()
+
+        assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
+        assertEquals(viewModel.searchTerms().value, lastSearchTerms)
+        assertNull(viewModel.selectedSuggestionIndex().value)
+
+        verify(exactly = 1) {
+            getCategorySuggestions(NoParams)
+            getLastSearchTerms(NoParams)
+        }
+        confirmVerified(getCategorySuggestions, handleSearchTermSaving, getLastSearchTerms)
+    }
+
+    @Test
     fun `should save search term`() {
         val term = "term"
         val handleSearchTermSavingParams = HandleSearchTermSaving.Params(term)
