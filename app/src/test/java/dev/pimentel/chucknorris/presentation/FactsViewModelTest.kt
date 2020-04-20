@@ -41,11 +41,11 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
     @Test
     fun `should navigate to search`() {
-        every { navigator.navigate(R.id.search_fragment) } just runs
+        every { navigator.navigate(R.id.facts_fragment_to_search_fragment) } just runs
 
         viewModel.navigateToSearch()
 
-        verify(exactly = 1) { navigator.navigate(R.id.search_fragment) }
+        verify(exactly = 1) { navigator.navigate(R.id.facts_fragment_to_search_fragment) }
         confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
     }
 
