@@ -25,7 +25,7 @@ class NavigatorTest {
     }
 
     @Test
-    fun `should bind navigator and navigate to facts`() {
+    fun `should bind navigator and navigate`() {
         val navController = mockk<NavController>(relaxed = true)
         val destinationId = R.id.facts_fragment
 
@@ -35,6 +35,18 @@ class NavigatorTest {
         navigator.navigate(destinationId)
 
         verify { navController.navigate(destinationId) }
+        confirmVerified(navController)
+    }
+
+    @Test
+    fun `should unbind navigator and do nothing when trying to navigate`() {
+        val navController = mockk<NavController>(relaxed = true)
+        val destinationId = R.id.facts_fragment
+
+        navigator.bind(navController)
+        navigator.unbind()
+        navigator.navigate(destinationId)
+
         confirmVerified(navController)
     }
 
@@ -52,13 +64,12 @@ class NavigatorTest {
     }
 
     @Test
-    fun `should unbind navigator and doi nothing when trying to navigate to facts`() {
+    fun `should unbind navigator and do nothing when trying to pop`() {
         val navController = mockk<NavController>(relaxed = true)
-        val destinationId = R.id.facts_fragment
 
         navigator.bind(navController)
         navigator.unbind()
-        navigator.navigate(destinationId)
+        navigator.pop()
 
         confirmVerified(navController)
     }
