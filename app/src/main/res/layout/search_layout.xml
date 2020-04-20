@@ -25,14 +25,35 @@
         android:text="Send"
         android:textColor="@color/colorAccent" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="Suggestions"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold" />
+
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/search_cg_suggestions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_tiny" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="Last searches"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_rv_last_search_terms"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:overScrollMode="never" />
 
 </LinearLayout>

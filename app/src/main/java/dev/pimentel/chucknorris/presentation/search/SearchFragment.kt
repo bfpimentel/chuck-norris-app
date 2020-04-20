@@ -23,6 +23,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
     ) {
         searchRvLastSearchTerms.also {
             it.adapter = adapter
+            it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 

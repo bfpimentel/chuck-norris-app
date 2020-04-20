@@ -30,7 +30,11 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/facts_tv_search_term"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_medium"
+                android:textStyle="bold"
+                tools:text="Food" />
 
         </LinearLayout>
 
@@ -41,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:overScrollMode="never"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:itemCount="10"
         tools:listitem="@layout/facts_item_layout" />
@@ -75,6 +80,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_medium"
         android:layout_marginStart="@dimen/spacing_medium"
+        app:backgroundTint="@color/colorAccent"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@android:drawable/ic_menu_search" />
 

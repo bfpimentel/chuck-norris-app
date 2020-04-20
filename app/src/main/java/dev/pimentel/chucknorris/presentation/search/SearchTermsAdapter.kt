@@ -12,7 +12,9 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             SearchLastTermsItemLayoutBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
 
@@ -25,7 +27,10 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(term: String) {
-            binding.searchLastTermsItemTvTerm.text = term
+            binding.searchLastTermsItemTvTerm.also {
+                it.text = term
+                it.setOnClickListener { }
+            }
         }
     }
 

@@ -34,39 +34,36 @@ class FactsViewModel(
 
     override fun facts(): LiveData<List<FactDisplay>> = facts
 
-    override fun setupFacts() {
-        getSearchTerm(NoParams).flatMap { searchTerm ->
-            getFacts(GetFacts.Params(searchTerm)).map { facts ->
-                InitializeData(
-                    searchTerm,
-                    facts
-                )
-            }
-        }.compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(true) }
-            .doFinally { isLoading.postValue(false) }
-            .handle({ data ->
-                searchTerm.postValue(data.searchTerm)
-
-                data.facts.map { fact ->
-                    FactDisplay(
-                        fact.category.capitalize(),
-                        fact.value,
-                        if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
-                        else R.dimen.text_large
-                    )
-                }.also(facts::postValue)
-            }, { error ->
-                if (error is GetSearchTerm.SearchTermNotFoundException) {
-                    firstAccess.postValue(Unit)
-                } else {
-                    postErrorMessage(error)
-                }
-            })
-    }
-
     override fun navigateToSearch() {
         navigator.navigate(R.id.search_fragment)
+    }
+
+    override fun setupFacts() {
+        getSearchTerm(NoParams)
+            .compose(observeOnUIAfterSingleResult())
+            .handle({ term ->
+                searchTerm.postValue(term)
+                getFacts(term)
+            }, { firstAccess.postValue(Unit) })
+    }
+
+    private fun getFacts(searchTerm: String) {
+        getFacts(GetFacts.Params(searchTerm))
+            .compose(observeOnUIAfterSingleResult())
+            .doOnSubscribe { isLoading.postValue(true) }
+            .doFinally { isLoading.postValue(false) }
+            .handle(
+                { facts ->
+                    facts.map { fact ->
+                        FactDisplay(
+                            fact.category.capitalize(),
+                            fact.value,
+                            if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
+                            else R.dimen.text_large
+                        )
+                    }.also(this.facts::postValue)
+                }, ::postErrorMessage
+            )
     }
 
     data class FactDisplay(
