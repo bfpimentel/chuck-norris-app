@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts
 
+import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
@@ -21,7 +22,9 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
         this
     ) {
         factsRvFacts.also {
-            it.adapter = adapter
+            it.adapter = adapter.apply {
+                onItemClick = viewModel::getShareableFact
+            }
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
@@ -51,6 +54,8 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
         }
 
+        viewModel.shareableFact().observe(::shareFact)
+
         factsMbGoToSearch.setOnClickListener {
             viewModel.navigateToSearch()
         }
@@ -60,5 +65,23 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
         }
 
         viewModel.setupFacts()
+    }
+
+    private fun shareFact(shareableFact: FactsViewModel.ShareableFact) {
+        ShareCompat.IntentBuilder
+            .from(requireActivity())
+            .setType(SHARE_TYPE)
+            .setText(
+                getString(
+                    R.string.facts_shareable_message,
+                    shareableFact.value,
+                    shareableFact.url
+                )
+            )
+            .startChooser()
+    }
+
+    private companion object {
+        const val SHARE_TYPE = "text/plain"
     }
 }

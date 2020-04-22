@@ -16,8 +16,6 @@ class ViewBindingHolderImpl<T : ViewBinding> : ViewBindingHolder<T>, LifecycleOb
     private var binding: T? = null
     private var lifecycle: Lifecycle? = null
 
-    private lateinit var fragmentName: String
-
     override fun initBinding(
         binding: T,
         fragment: BaseFragment<*, T>,
@@ -26,7 +24,6 @@ class ViewBindingHolderImpl<T : ViewBinding> : ViewBindingHolder<T>, LifecycleOb
         this.binding = binding
         lifecycle = fragment.viewLifecycleOwner.lifecycle
         lifecycle?.addObserver(this)
-        fragmentName = fragment::class.simpleName ?: "N/A"
         binding.apply(onBind)
         return binding.root
     }
