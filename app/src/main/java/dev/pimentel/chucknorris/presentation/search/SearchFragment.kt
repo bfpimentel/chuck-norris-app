@@ -56,9 +56,12 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
                 }
                 searchCgSuggestions.addView(chipBinding.root)
             }
+            searchCgSuggestions.isVisible = true
         }
 
-        viewModel.searchTerms().observe(adapter::submitList)
+        viewModel.searchTerms().observe { searchTerms ->
+            adapter.submitList(searchTerms)
+        }
 
         viewModel.selectedSuggestionIndex().observe { index ->
             searchCgSuggestions[index].isSelected = true
@@ -67,6 +70,11 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
         viewModel.isLoading().observe { searchLoading.root.isVisible = true }
 
         viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
+
+        viewModel.error().observe { errorMessage ->
+            searchCgSuggestions.isVisible = false
+            searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+        }
 
         viewModel.getCategorySuggestionsAndSearchTerms()
     }

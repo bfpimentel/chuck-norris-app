@@ -47,6 +47,18 @@
             android:layout_marginTop="@dimen/spacing_tiny" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/search_tv_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_medium"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:text="An error occurred.\nYou can tap here to try again."
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"

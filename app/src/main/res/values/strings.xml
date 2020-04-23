@@ -20,6 +20,7 @@
     <string name="search_il_search_hint">Search</string>
     <string name="search_tv_suggestions">Suggestions</string>
     <string name="search_tv_last_searches">Last searches</string>
+    <string name="search_tv_error_message">%s\nYou can tap here to try again.</string>
     <!-- Search Fragment -->
 
 </resources>
