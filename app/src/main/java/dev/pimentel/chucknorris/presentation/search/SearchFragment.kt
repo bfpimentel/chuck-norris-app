@@ -74,8 +74,9 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
         viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
 
         viewModel.error().observe { errorMessage ->
-            searchCgSuggestions.isVisible = false
             searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+            searchTvError.isVisible = true
+            searchCgSuggestions.isVisible = false
         }
 
         viewModel.getCategorySuggestionsAndSearchTerms()

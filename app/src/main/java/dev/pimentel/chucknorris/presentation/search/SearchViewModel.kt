@@ -15,6 +15,7 @@ import dev.pimentel.domain.usecases.shared.NoParams
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
+@Suppress("LongParameterList")
 class SearchViewModel(
     private val navigator: NavigatorRouter,
     private val areCategoriesStored: AreCategoriesStored,
