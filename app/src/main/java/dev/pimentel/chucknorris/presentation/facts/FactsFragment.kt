@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts
 
+import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
@@ -17,18 +18,27 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
     private val adapter: FactsAdapter by inject()
 
     override fun bindView() = initBinding(
-        FactsLayoutBinding.inflate(layoutInflater),
-        this
+        FactsLayoutBinding.inflate(layoutInflater)
     ) {
         factsRvFacts.also {
-            it.adapter = adapter
+            it.adapter = adapter.apply {
+                onItemClick = viewModel::getShareableFact
+            }
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        factsMbGoToSearch.setOnClickListener {
+            viewModel.navigateToSearch()
+        }
+
+        factsTvError.setOnClickListener {
+            viewModel.getSearchTermAndFacts()
+        }
+
         viewModel.firstAccess().observe {
+            factsTvFirstAccess.isVisible = true
             factsAblSearchTerm.isVisible = false
             factsRvFacts.isVisible = false
-            factsTvFirstAccess.isVisible = true
             factsTvError.isVisible = false
         }
 
@@ -42,23 +52,46 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             factsRvFacts.isVisible = true
             factsTvFirstAccess.isVisible = false
             factsTvError.isVisible = false
+            factsTvListIsEmpty.isVisible = false
         }
 
         viewModel.error().observe { errorMessage ->
+            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
             factsTvError.isVisible = true
             factsAblSearchTerm.isVisible = false
             factsRvFacts.isVisible = false
-            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+            factsTvListIsEmpty.isVisible = false
         }
 
-        factsMbGoToSearch.setOnClickListener {
-            viewModel.navigateToSearch()
+        viewModel.listIsEmpty().observe {
+            factsTvListIsEmpty.isVisible = true
+            factsRvFacts.isVisible = false
         }
 
-        factsTvError.setOnClickListener {
-            viewModel.setupFacts()
-        }
+        viewModel.isLoading().observe { factsLoading.root.isVisible = true }
 
-        viewModel.setupFacts()
+        viewModel.isNotLoading().observe { factsLoading.root.isVisible = false }
+
+        viewModel.shareableFact().observe(::shareFact)
+
+        viewModel.getSearchTermAndFacts()
+    }
+
+    private fun shareFact(shareableFact: FactsViewModel.ShareableFact) {
+        ShareCompat.IntentBuilder
+            .from(requireActivity())
+            .setType(SHARE_TYPE)
+            .setText(
+                getString(
+                    R.string.facts_shareable_message,
+                    shareableFact.value,
+                    shareableFact.url
+                )
+            )
+            .startChooser()
+    }
+
+    private companion object {
+        const val SHARE_TYPE = "text/plain"
     }
 }

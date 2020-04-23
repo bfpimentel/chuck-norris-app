@@ -16,6 +16,7 @@ class GetFacts(
         factsRepository.getFacts(params.term).map { response ->
             response.result.map { responseItem ->
                 Fact(
+                    responseItem.id,
                     responseItem.categories
                         .firstOrNull()
                         ?: context.getString(R.string.get_facts_no_category),

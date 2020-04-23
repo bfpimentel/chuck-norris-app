@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 val searchModule = module {
     factory { SearchTermsAdapter() }
-    viewModel { SearchViewModel(get<Navigator>(), get(), get(), get(), get(), get()) }
+    viewModel { SearchViewModel(get<Navigator>(), get(), get(), get(), get(), get(), get(), get()) }
 }

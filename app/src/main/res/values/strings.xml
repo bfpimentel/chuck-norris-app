@@ -7,13 +7,20 @@
         This is where your facts are going to be listed.\n
         But first, you need to tap the search icon below to configure the search criteria.
     </string>
+    <string name="facts_tv_list_is_empty">
+        No facts were found for that search term.\n
+        Please try again with another one.
+    </string>
+    <string name="facts_tv_searching_for">Searching for:</string>
     <string name="facts_tv_error_message">%s\nYou can tap here to try again.</string>
+    <string name="facts_shareable_message">Hey, I have an interesting Chuck Norris Fact for you!\n\n%s\n\n%s</string>
     <!-- Facts Fragment -->
 
     <!-- Search Fragment -->
     <string name="search_il_search_hint">Search</string>
     <string name="search_tv_suggestions">Suggestions</string>
     <string name="search_tv_last_searches">Last searches</string>
+    <string name="search_tv_error_message">%s\nYou can tap here to try again.</string>
     <!-- Search Fragment -->
 
 </resources>

@@ -19,11 +19,12 @@ abstract class BaseViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     private val error = MutableLiveData<String>()
-    protected val isLoading = MutableLiveData<Boolean>()
+    protected val isLoading = MutableLiveData<Unit>()
+    protected val isNotLoading = MutableLiveData<Unit>()
 
-    override fun error(): LiveData<String> = error
-
-    override fun isLoading(): LiveData<Boolean> = isLoading
+    final override fun error(): LiveData<String> = error
+    final override fun isLoading(): LiveData<Unit> = isLoading
+    final override fun isNotLoading(): LiveData<Unit> = isNotLoading
 
     override fun onCleared() {
         super.onCleared()

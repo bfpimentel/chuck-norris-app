@@ -17,4 +17,9 @@
     <dimen name="text_huge">32sp</dimen>
     <!-- Text Defaults -->
 
+    <!-- Share -->
+    <dimen name="share_photo_size">240dp</dimen>
+    <dimen name="share_text_width">240dp</dimen>
+    <!-- Share -->
+
 </resources>

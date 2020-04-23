@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
@@ -22,8 +23,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
     private val adapter: SearchTermsAdapter by inject()
 
     override fun bindView() = initBinding(
-        SearchLayoutBinding.inflate(layoutInflater),
-        this
+        SearchLayoutBinding.inflate(layoutInflater)
     ) {
         searchRvLastSearchTerms.also {
             it.adapter = adapter.apply {
@@ -31,23 +31,6 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             }
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(requireContext())
-        }
-
-        viewModel.categorySuggestions().observe { categorySuggestions ->
-            categorySuggestions.forEach { suggestion ->
-                val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
-                chipBinding.searchCategoriesItemChip.apply {
-                    text = suggestion
-                    setOnClickListener { viewModel.saveSearchTerm(suggestion) }
-                }
-                searchCgSuggestions.addView(chipBinding.root)
-            }
-        }
-
-        viewModel.searchTerms().observe(adapter::submitList)
-
-        viewModel.selectedSuggestionIndex().observe { index ->
-            searchCgSuggestions[index].isSelected = true
         }
 
         searchIlSearchTerm.setEndIconOnClickListener {
@@ -64,7 +47,39 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             return@setOnEditorActionListener false
         }
 
-        viewModel.setupSearch()
+        searchTvError.setOnClickListener {
+            viewModel.getCategorySuggestionsAndSearchTerms()
+        }
+
+        viewModel.categorySuggestions().observe { categorySuggestions ->
+            categorySuggestions.forEach { suggestion ->
+                val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
+                chipBinding.searchCategoriesItemChip.apply {
+                    text = suggestion
+                    setOnClickListener { viewModel.saveSearchTerm(suggestion) }
+                }
+                searchCgSuggestions.addView(chipBinding.root)
+            }
+            searchCgSuggestions.isVisible = true
+        }
+
+        viewModel.searchTerms().observe(adapter::submitList)
+
+        viewModel.selectedSuggestionIndex().observe { index ->
+            searchCgSuggestions[index].isSelected = true
+        }
+
+        viewModel.isLoading().observe { searchLoading.root.isVisible = true }
+
+        viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
+
+        viewModel.error().observe { errorMessage ->
+            searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+            searchTvError.isVisible = true
+            searchCgSuggestions.isVisible = false
+        }
+
+        viewModel.getCategorySuggestionsAndSearchTerms()
     }
 
     private fun hideKeyboard() {

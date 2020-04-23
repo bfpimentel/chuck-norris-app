@@ -12,6 +12,8 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
     DIFF_CALLBACK
 ) {
 
+    lateinit var onItemClick: (String) -> Unit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             FactsItemLayoutBinding.inflate(
@@ -30,18 +32,19 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
         private val binding: FactsItemLayoutBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(factDisplay: FactsViewModel.FactDisplay) {
+        fun bind(item: FactsViewModel.FactDisplay) {
             binding.apply {
                 factsItemCard.setOnClickListener {
+                    onItemClick(item.id)
                 }
                 factsItemTvValue.let {
-                    it.text = factDisplay.value
+                    it.text = item.value
                     it.setTextSize(
                         TypedValue.COMPLEX_UNIT_PX,
-                        itemView.resources.getDimension(factDisplay.fontSize)
+                        itemView.resources.getDimension(item.fontSize)
                     )
                 }
-                factsItemChipCategory.text = factDisplay.category
+                factsItemChipCategory.text = item.category
             }
         }
     }

@@ -5,6 +5,7 @@ data class FactsResponse(
 ) {
 
     data class Fact(
+        val id: String,
         val categories: List<String>,
         val url: String,
         val value: String

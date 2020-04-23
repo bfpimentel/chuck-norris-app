@@ -55,8 +55,9 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         val getFactsParams = GetFacts.Params(term)
 
         val facts = listOf(
-            Fact("category1", "url1", "smallValue"),
+            Fact("id1", "category1", "url1", "smallValue"),
             Fact(
+                "id2",
                 "category2",
                 "url2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue"
@@ -64,8 +65,9 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         )
 
         val factsDisplays = listOf(
-            FactsViewModel.FactDisplay("Category1", "smallValue", R.dimen.text_large),
+            FactsViewModel.FactDisplay("id1", "Category1", "smallValue", R.dimen.text_large),
             FactsViewModel.FactDisplay(
+                "id2",
                 "Category2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
                 R.dimen.text_normal
@@ -75,11 +77,46 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getSearchTerm(NoParams) } returns Single.just(term)
         every { getFacts(getFactsParams) } returns Single.just(facts)
 
-        viewModel.setupFacts()
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.searchTerm().value, term)
         assertEquals(viewModel.facts().value, factsDisplays)
+        assertNull(viewModel.listIsEmpty().value)
+        assertNotNull(viewModel.isLoading().value)
+        assertNotNull(viewModel.isNotLoading().value)
+
+        verify(exactly = 1) {
+            getSearchTerm(NoParams)
+            getFacts(getFactsParams)
+        }
+        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+    }
+
+    @Test
+    fun `should get search term and an empty list of facts`() {
+        val term = "term"
+        val getFactsParams = GetFacts.Params(term)
+
+        val facts = listOf<Fact>()
+
+        every { getSearchTerm(NoParams) } returns Single.just(term)
+        every { getFacts(getFactsParams) } returns Single.just(facts)
+
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
+        viewModel.getSearchTermAndFacts()
+        testScheduler.triggerActions()
+
+        assertEquals(viewModel.searchTerm().value, term)
+        assertNull(viewModel.facts().value)
+        assertNotNull(viewModel.listIsEmpty().value)
+        assertNotNull(viewModel.isLoading().value)
+        assertNotNull(viewModel.isNotLoading().value)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -101,11 +138,15 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getErrorMessage(getErrorMessageParams) } returns errorMessage
 
         assertNull(viewModel.error().value)
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.error().value, errorMessage)
+        assertNotNull(viewModel.isLoading().value)
+        assertNotNull(viewModel.isNotLoading().value)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -121,10 +162,12 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         assertNull(viewModel.firstAccess().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertNotNull(viewModel.firstAccess().value)
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -132,9 +175,56 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
     }
 
+
+    @Test
+    fun `should get shareable fact`() {
+        val term = "term"
+        val getFactsParams = GetFacts.Params(term)
+
+        val facts = listOf(
+            Fact("id1", "category1", "url1", "value1"),
+            Fact("id2", "category2", "url2", "value2")
+        )
+
+        val factsDisplays = listOf(
+            FactsViewModel.FactDisplay("id1", "Category1", "value1", R.dimen.text_large),
+            FactsViewModel.FactDisplay("id2", "Category2", "value2", R.dimen.text_large)
+        )
+
+        every { getSearchTerm(NoParams) } returns Single.just(term)
+        every { getFacts(getFactsParams) } returns Single.just(facts)
+
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
+        viewModel.getSearchTermAndFacts()
+        testScheduler.triggerActions()
+
+        assertEquals(viewModel.facts().value, factsDisplays)
+        assertNotNull(viewModel.isLoading().value)
+        assertNotNull(viewModel.isNotLoading().value)
+
+        viewModel.getShareableFact(factsDisplays.first().id)
+
+        assertEquals(
+            viewModel.shareableFact().value,
+            FactsViewModel.ShareableFact(
+                "url1",
+                "value1"
+            )
+        )
+
+        verify(exactly = 1) {
+            getSearchTerm(NoParams)
+            getFacts(getFactsParams)
+        }
+        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+    }
+
     @Test
     fun `FactDisplay must not contain any null properties`() {
         val factDisplay = FactsViewModel.FactDisplay(
+            "id1",
             "category",
             "value",
             R.dimen.text_normal
@@ -143,5 +233,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         assertNotNull(factDisplay.category)
         assertNotNull(factDisplay.value)
         assertNotNull(factDisplay.fontSize)
+    }
+
+    @Test
+    fun `ShareableFact must not contain any null properties`() {
+        val shareableFact = FactsViewModel.ShareableFact(
+            "url",
+            "value"
+        )
+
+        assertNotNull(shareableFact.url)
+        assertNotNull(shareableFact.value)
     }
 }
