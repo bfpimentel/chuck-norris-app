@@ -10,6 +10,8 @@ There is a lot of dependencies inside this project (at least that's what I think
 
 Each of the features has its on [branch](https://github.com/bfpimentel/chuck-norris-app/branches) and all of them are mapped inside the issue [Feature Roadmap](https://github.com/bfpimentel/chuck-norris-app/issues/1). I followed the [**conventional**](https://www.conventionalcommits.org/en/v1.0.0/) [commits messages](https://github.com/bfpimentel/chuck-norris-app/commits/develop).
 
+There are no instrumentation tests since I don't know much about it and I couldn't manage to do them to be useful to the project. Also, I didn't want to take more than one week to do this project.
+
 Also, my UI/UX skills are bad.
 
 ## Setup Instructions

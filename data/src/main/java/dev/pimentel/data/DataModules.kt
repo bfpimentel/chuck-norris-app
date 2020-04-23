@@ -22,7 +22,7 @@ private const val REQUEST_TIMEOUT = 60L
 
 private val networkModule = module {
     single {
-        val apiUrl = androidContext().getString(R.string.news_api_url)
+        val apiUrl = androidContext().getString(R.string.api_url)
 
         OkHttpClient.Builder()
             .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
