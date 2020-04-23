@@ -27,6 +27,5 @@ dependencies {
 
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI
-    testImplementation testDependencies.junitParams
     testRuntimeOnly testDependencies.junitEngine
 }

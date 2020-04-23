@@ -27,7 +27,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        factsMbGoToSearch.setOnClickListener {
+        factsFabGoToSearch.setOnClickListener {
             viewModel.navigateToSearch()
         }
 
