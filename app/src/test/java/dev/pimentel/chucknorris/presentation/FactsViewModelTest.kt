@@ -85,6 +85,36 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         assertEquals(viewModel.searchTerm().value, term)
         assertEquals(viewModel.facts().value, factsDisplays)
+        assertNull(viewModel.listIsEmpty().value)
+        assertNotNull(viewModel.isLoading().value)
+        assertNotNull(viewModel.isNotLoading().value)
+
+        verify(exactly = 1) {
+            getSearchTerm(NoParams)
+            getFacts(getFactsParams)
+        }
+        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+    }
+
+    @Test
+    fun `should get search term and an empty list of facts`() {
+        val term = "term"
+        val getFactsParams = GetFacts.Params(term)
+
+        val facts = listOf<Fact>()
+
+        every { getSearchTerm(NoParams) } returns Single.just(term)
+        every { getFacts(getFactsParams) } returns Single.just(facts)
+
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
+        viewModel.getSearchTermAndFacts()
+        testScheduler.triggerActions()
+
+        assertEquals(viewModel.searchTerm().value, term)
+        assertNull(viewModel.facts().value)
+        assertNotNull(viewModel.listIsEmpty().value)
         assertNotNull(viewModel.isLoading().value)
         assertNotNull(viewModel.isNotLoading().value)
 
@@ -203,5 +233,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         assertNotNull(factDisplay.category)
         assertNotNull(factDisplay.value)
         assertNotNull(factDisplay.fontSize)
+    }
+
+    @Test
+    fun `ShareableFact must not contain any null properties`() {
+        val shareableFact = FactsViewModel.ShareableFact(
+            "url",
+            "value"
+        )
+
+        assertNotNull(shareableFact.url)
+        assertNotNull(shareableFact.value)
     }
 }
