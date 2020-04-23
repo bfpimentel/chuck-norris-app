@@ -14,9 +14,8 @@ import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class TestCompletable : UseCase<NoParams, Completable> {
@@ -54,16 +53,16 @@ class TestViewModel(
     override fun testInputForCompletable(input: String) {
         testCompletable(NoParams)
             .compose(observeOnUIAfterCompletableResult())
-            .doOnSubscribe { isLoading.postValue(true) }
-            .doFinally { isLoading.postValue(false) }
+            .doOnSubscribe { isLoading.postValue(Unit) }
+            .doFinally { isNotLoading.postValue(Unit) }
             .handle({ testOutput.postValue(input) }, ::postErrorMessage)
     }
 
     override fun testInputForSingle() {
         testSingle(NoParams)
             .compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(true) }
-            .doFinally { isLoading.postValue(false) }
+            .doOnSubscribe { isLoading.postValue(Unit) }
+            .doFinally { isNotLoading.postValue(Unit) }
             .handle(testOutput::postValue, ::postErrorMessage)
     }
 
@@ -95,18 +94,21 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         every { testCompletable(NoParams) } returns Completable.error(error)
         every { getErrorMessage(params) } returns message
 
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
         viewModel.testInputForCompletable("")
 
-        assertTrue(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
         assertEquals(viewModel.error().value, message)
 
-        assertFalse(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
-        verify {
+        verify(exactly = 1) {
             testCompletable(NoParams)
             getErrorMessage(params)
         }
@@ -119,18 +121,21 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
 
         every { testCompletable(NoParams) } returns Completable.complete()
 
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
         viewModel.testInputForCompletable(message)
 
-        assertTrue(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
         testScheduler.triggerActions()
 
         assertNull(viewModel.error().value)
         assertEquals(viewModel.testOutput().value, message)
 
-        assertFalse(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isNotLoading().value!!)
 
-        verify {
+        verify(exactly = 1) {
             testCompletable(NoParams)
         }
         confirmVerified(testCompletable, testSingle, getErrorMessage)
@@ -145,18 +150,21 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         every { testSingle(NoParams) } returns Single.error(error)
         every { getErrorMessage(params) } returns message
 
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
         viewModel.testInputForSingle()
 
-        assertTrue(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
         assertEquals(viewModel.error().value, message)
 
-        assertFalse(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isNotLoading().value!!)
 
-        verify {
+        verify(exactly = 1) {
             testSingle(NoParams)
             getErrorMessage(params)
         }
@@ -172,18 +180,21 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
         every { testSingle(NoParams) } returns Single.error(error)
         every { getErrorMessage(params) } returns message
 
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
         viewModel.testInputForSingle()
 
-        assertTrue(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
         testScheduler.triggerActions()
 
         assertNull(viewModel.testOutput().value)
         assertEquals(viewModel.error().value, message)
 
-        assertFalse(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isNotLoading().value!!)
 
-        verify {
+        verify(exactly = 1) {
             testSingle(NoParams)
             getErrorMessage(params)
         }
@@ -196,18 +207,21 @@ class BaseViewModelTest : ViewModelTest<TestContract.ViewModel>() {
 
         every { testSingle(NoParams) } returns Single.just(message)
 
+        assertNull(viewModel.isLoading().value)
+        assertNull(viewModel.isNotLoading().value)
+
         viewModel.testInputForSingle()
 
-        assertTrue(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isLoading().value!!)
 
         testScheduler.triggerActions()
 
         assertNull(viewModel.error().value)
         assertEquals(viewModel.testOutput().value, message)
 
-        assertFalse(viewModel.isLoading().value!!)
+        assertNotNull(viewModel.isNotLoading().value!!)
 
-        verify {
+        verify(exactly = 1) {
             testSingle(NoParams)
         }
         confirmVerified(testCompletable, testSingle, getErrorMessage)

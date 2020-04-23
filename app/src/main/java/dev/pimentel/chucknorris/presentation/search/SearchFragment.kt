@@ -68,7 +68,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
 
         viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
 
-        viewModel.setupSearch()
+        viewModel.getCategorySuggestionsAndSearchTerms()
     }
 
     private fun hideKeyboard() {

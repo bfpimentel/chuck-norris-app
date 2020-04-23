@@ -37,7 +37,7 @@ class SearchViewModel(
     override fun searchTerms(): LiveData<List<String>> = searchTerms
     override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
 
-    override fun setupSearch() {
+    override fun getCategorySuggestionsAndSearchTerms() {
         Single.zip(
             areCategoriesStored(NoParams)
                 .flatMap { areStored ->
