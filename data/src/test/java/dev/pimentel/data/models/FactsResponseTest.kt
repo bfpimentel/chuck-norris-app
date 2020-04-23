@@ -7,7 +7,16 @@ class FactsResponseTest {
 
     @Test
     fun `FactsResponse must not contain any null properties`() {
-        val response = FactsResponse(listOf(FactsResponse.Fact(listOf("category"), "url", "value")))
+        val response = FactsResponse(
+            listOf(
+                FactsResponse.Fact(
+                    "id1",
+                    listOf("category"),
+                    "url",
+                    "value"
+                )
+            )
+        )
 
         assertNotNull(response.result)
 

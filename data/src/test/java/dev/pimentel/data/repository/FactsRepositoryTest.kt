@@ -28,8 +28,8 @@ class FactsRepositoryTest {
         val term = "term"
         val factResponse = FactsResponse(
             listOf(
-                FactsResponse.Fact(listOf("category1"), "url1", "value1"),
-                FactsResponse.Fact(listOf("category2"), "url2", "value2")
+                FactsResponse.Fact("id1", listOf("category1"), "url1", "value1"),
+                FactsResponse.Fact("id2", listOf("category2"), "url2", "value2")
             )
         )
 
