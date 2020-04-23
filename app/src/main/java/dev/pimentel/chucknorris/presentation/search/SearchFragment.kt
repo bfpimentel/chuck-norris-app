@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
@@ -22,8 +23,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
     private val adapter: SearchTermsAdapter by inject()
 
     override fun bindView() = initBinding(
-        SearchLayoutBinding.inflate(layoutInflater),
-        this
+        SearchLayoutBinding.inflate(layoutInflater)
     ) {
         searchRvLastSearchTerms.also {
             it.adapter = adapter.apply {
@@ -31,6 +31,20 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             }
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        searchIlSearchTerm.setEndIconOnClickListener {
+            viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
+            hideKeyboard()
+        }
+
+        searchEtSearchTerm.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
+                hideKeyboard()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
 
         viewModel.categorySuggestions().observe { categorySuggestions ->
@@ -50,19 +64,9 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             searchCgSuggestions[index].isSelected = true
         }
 
-        searchIlSearchTerm.setEndIconOnClickListener {
-            viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
-            hideKeyboard()
-        }
+        viewModel.isLoading().observe { searchLoading.root.isVisible = true }
 
-        searchEtSearchTerm.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.saveSearchTerm(searchEtSearchTerm.text.toString())
-                hideKeyboard()
-                return@setOnEditorActionListener true
-            }
-            return@setOnEditorActionListener false
-        }
+        viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
 
         viewModel.setupSearch()
     }

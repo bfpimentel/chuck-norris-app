@@ -15,12 +15,15 @@ import org.koin.core.module.Module
 
 abstract class BaseFragment<ViewModelType, BindingType>(
     @LayoutRes layoutResId: Int
-) : Fragment(layoutResId), ViewBindingHolder<BindingType> by ViewBindingHolderImpl()
-        where ViewModelType : BaseContract.ViewModel,
-              BindingType : ViewBinding {
+) : Fragment(layoutResId) where ViewModelType : BaseContract.ViewModel,
+                                BindingType : ViewBinding {
+
+    private var binding: BindingType? = null
 
     abstract val module: Module
     abstract val viewModel: ViewModelType
+
+    abstract fun bindView(): View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,12 +37,19 @@ abstract class BaseFragment<ViewModelType, BindingType>(
     override fun onDestroy() {
         super.onDestroy()
         unloadKoinModules(module)
-        unbindView()
+        binding = null
     }
 
-    abstract fun bindView(): View
+    protected fun initBinding(
+        binding: BindingType,
+        onBind: BindingType.() -> Unit
+    ): View {
+        this.binding = binding
+        binding.apply(onBind)
+        return binding.root
+    }
 
     protected inline fun <ObserverType> LiveData<ObserverType>.observe(
-        crossinline observer: (ObserverType) -> Unit
-    ) = observe(viewLifecycleOwner, Observer { observer(it) })
+        crossinline onChanged: (ObserverType) -> Unit
+    ) = observe(viewLifecycleOwner, Observer { onChanged(it) })
 }

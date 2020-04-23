@@ -12,6 +12,7 @@ import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
+import java.util.concurrent.TimeUnit
 
 class FactsViewModel(
     private val navigator: NavigatorRouter,
@@ -30,14 +31,13 @@ class FactsViewModel(
     private val searchTerm = MutableLiveData<String>()
     private val factsDisplays = MutableLiveData<List<FactDisplay>>()
     private val shareableFact = MutableLiveData<ShareableFact>()
+    private val listIsEmpty = MutableLiveData<Unit>()
 
     override fun firstAccess(): LiveData<Unit> = firstAccess
-
     override fun searchTerm(): LiveData<String> = searchTerm
-
     override fun facts(): LiveData<List<FactDisplay>> = factsDisplays
-
     override fun shareableFact(): LiveData<ShareableFact> = shareableFact
+    override fun listIsEmpty(): LiveData<Unit> = listIsEmpty
 
     override fun navigateToSearch() {
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
@@ -65,13 +65,18 @@ class FactsViewModel(
     private fun getFacts(searchTerm: String) {
         getFacts(GetFacts.Params(searchTerm))
             .compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(true) }
-            .doFinally { isLoading.postValue(false) }
+            .doOnSubscribe { isLoading.postValue(Unit) }
+            .doAfterTerminate { isNotLoading.postValue(Unit) }
             .handle(
-                {
-                    facts = it
+                { facts ->
+                    this.facts = facts
 
-                    it.map { fact ->
+                    if (facts.isEmpty()) {
+                        listIsEmpty.postValue(Unit)
+                        return@handle
+                    }
+
+                    facts.map { fact ->
                         FactDisplay(
                             fact.id,
                             fact.category.capitalize(),

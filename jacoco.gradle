@@ -23,8 +23,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*Activity*.*',
             '**/*Fragment*.*',
             '**/*Application*.*',
-            '**/SchedulerProvider**.*',
-            '**/ViewBindingHolder**.*'
+            '**/SchedulerProvider**.*'
     ]
 
     final dataFileExclusions = [

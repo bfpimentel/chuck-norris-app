@@ -18,8 +18,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
     private val adapter: FactsAdapter by inject()
 
     override fun bindView() = initBinding(
-        FactsLayoutBinding.inflate(layoutInflater),
-        this
+        FactsLayoutBinding.inflate(layoutInflater)
     ) {
         factsRvFacts.also {
             it.adapter = adapter.apply {
@@ -28,10 +27,18 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        factsMbGoToSearch.setOnClickListener {
+            viewModel.navigateToSearch()
+        }
+
+        factsTvError.setOnClickListener {
+            viewModel.setupFacts()
+        }
+
         viewModel.firstAccess().observe {
+            factsTvFirstAccess.isVisible = true
             factsAblSearchTerm.isVisible = false
             factsRvFacts.isVisible = false
-            factsTvFirstAccess.isVisible = true
             factsTvError.isVisible = false
         }
 
@@ -45,24 +52,27 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             factsRvFacts.isVisible = true
             factsTvFirstAccess.isVisible = false
             factsTvError.isVisible = false
+            factsTvListIsEmpty.isVisible = false
         }
 
         viewModel.error().observe { errorMessage ->
+            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
             factsTvError.isVisible = true
             factsAblSearchTerm.isVisible = false
             factsRvFacts.isVisible = false
-            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+            factsTvListIsEmpty.isVisible = false
         }
+
+        viewModel.listIsEmpty().observe {
+            factsTvListIsEmpty.isVisible = true
+            factsRvFacts.isVisible = false
+        }
+
+        viewModel.isLoading().observe { factsLoading.root.isVisible = true }
+
+        viewModel.isNotLoading().observe { factsLoading.root.isVisible = false }
 
         viewModel.shareableFact().observe(::shareFact)
-
-        factsMbGoToSearch.setOnClickListener {
-            viewModel.navigateToSearch()
-        }
-
-        factsTvError.setOnClickListener {
-            viewModel.setupFacts()
-        }
 
         viewModel.setupFacts()
     }

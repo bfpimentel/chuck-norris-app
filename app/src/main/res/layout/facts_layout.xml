@@ -25,7 +25,7 @@
                 android:id="@+id/facts_tv_searching_for"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Searching for:" />
+                android:text="@string/facts_tv_searching_for" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/facts_tv_search_term"
@@ -58,8 +58,7 @@
         android:layout_margin="@dimen/spacing_medium"
         android:gravity="center"
         android:text="@string/facts_tv_first_access"
-        android:visibility="gone"
-        tools:visibility="gone" />
+        android:visibility="gone" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/facts_tv_error"
@@ -70,8 +69,18 @@
         android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:visibility="gone"
-        tools:text="An error ocurred.\nYou can tap here to try again."
+        tools:text="An error occurred.\nYou can tap here to try again."
         tools:visibility="gone" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/facts_tv_list_is_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/spacing_medium"
+        android:gravity="center"
+        android:text="@string/facts_tv_list_is_empty"
+        android:visibility="gone" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/facts_mb_go_to_search"
@@ -83,5 +92,10 @@
         app:backgroundTint="@color/colorAccent"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@android:drawable/ic_menu_search" />
+
+    <include
+        android:id="@+id/facts_loading"
+        layout="@layout/loading_layout"
+        tools:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

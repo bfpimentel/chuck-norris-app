@@ -14,5 +14,6 @@ interface FactsContract {
         fun searchTerm(): LiveData<String>
         fun facts(): LiveData<List<FactsViewModel.FactDisplay>>
         fun shareableFact(): LiveData<FactsViewModel.ShareableFact>
+        fun listIsEmpty(): LiveData<Unit>
     }
 }

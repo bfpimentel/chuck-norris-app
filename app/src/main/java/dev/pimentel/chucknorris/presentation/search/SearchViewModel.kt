@@ -12,6 +12,7 @@ import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import java.util.concurrent.TimeUnit
 
 class SearchViewModel(
     private val navigator: NavigatorRouter,
@@ -30,9 +31,7 @@ class SearchViewModel(
     private val selectedSuggestionIndex = MutableLiveData<Int>()
 
     override fun categorySuggestions(): LiveData<List<String>> = categorySuggestions
-
     override fun searchTerms(): LiveData<List<String>> = searchTerms
-
     override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
 
     override fun setupSearch() {
@@ -40,9 +39,10 @@ class SearchViewModel(
             getCategorySuggestions(NoParams),
             getLastSearchTerms(NoParams),
             BiFunction(::InitializeData)
-        ).compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(true) }
-            .doFinally { isLoading.postValue(false) }
+        ).delay(1000, TimeUnit.MILLISECONDS)
+            .compose(observeOnUIAfterSingleResult())
+            .doOnSubscribe { isLoading.postValue(Unit) }
+            .doAfterTerminate { isNotLoading.postValue(Unit) }
             .handle({ data ->
                 categorySuggestions.postValue(data.suggestions)
                 searchTerms.postValue(data.searchTerms)
