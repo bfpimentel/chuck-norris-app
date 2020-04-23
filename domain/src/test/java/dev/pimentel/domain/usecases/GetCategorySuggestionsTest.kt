@@ -21,8 +21,6 @@ class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
     override fun `setup subject`() {
         useCase = GetCategorySuggestions(
             fetchAllCategories,
-            fetchAllCategoriesNames,
-            saveAllCategories,
             shuffleList
         )
     }
@@ -41,44 +39,6 @@ class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
 
         verify(exactly = 1) {
             fetchAllCategories(NoParams)
-            shuffleList(shuffleListParams)
-        }
-        confirmVerified(fetchAllCategories, fetchAllCategoriesNames, saveAllCategories, shuffleList)
-    }
-
-    @Test
-    fun `should return a categories list with 8 random items after fetching its names and saving them as categories when there are not saved items`() {
-        val categoriesNames = listOf(
-            "name0",
-            "name1",
-            "name2",
-            "name3",
-            "name4",
-            "name5",
-            "name6",
-            "name7",
-            "name8",
-            "name9"
-        )
-        val saveAllCategoriesParams = SaveAllCategories.Params(categoriesNames)
-        val shuffleListParams = ShuffleList.Params(allCategories)
-
-        every { fetchAllCategories(NoParams) } returns
-                Single.just(listOf()) andThen
-                Single.just(allCategories)
-        every { fetchAllCategoriesNames(NoParams) } returns Single.just(categoriesNames)
-        every { saveAllCategories(saveAllCategoriesParams) } returns Completable.complete()
-        every { shuffleList(shuffleListParams) } returns allCategories
-
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(categorySuggestions)
-
-        verify(exactly = 2) { fetchAllCategories(NoParams) }
-        verify(exactly = 1) {
-            fetchAllCategoriesNames(NoParams)
-            saveAllCategories(saveAllCategoriesParams)
             shuffleList(shuffleListParams)
         }
         confirmVerified(fetchAllCategories, fetchAllCategoriesNames, saveAllCategories, shuffleList)

@@ -31,14 +31,14 @@ class GetFactsTest : UseCaseTest<GetFacts>() {
         val term = "term"
         val factsResponse = FactsResponse(
             listOf(
-                FactModel(listOf("category1"), "url1", "value1"),
-                FactModel(listOf(), "url2", "value2")
+                FactModel("id1", listOf("category1"), "url1", "value1"),
+                FactModel("id2", listOf(), "url2", "value2")
             )
         )
         val uncategorized = "uncategorized"
         val facts = listOf(
-            FactEntity("category1", "url1", "value1"),
-            FactEntity(uncategorized, "url2", "value2")
+            FactEntity("id1", "category1", "url1", "value1"),
+            FactEntity("id2", uncategorized, "url2", "value2")
         )
 
         every { factsRepository.getFacts(term) } returns Single.just(factsResponse)
