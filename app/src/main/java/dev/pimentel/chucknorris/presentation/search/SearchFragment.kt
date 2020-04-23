@@ -47,6 +47,10 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             return@setOnEditorActionListener false
         }
 
+        searchTvError.setOnClickListener {
+            viewModel.getCategorySuggestionsAndSearchTerms()
+        }
+
         viewModel.categorySuggestions().observe { categorySuggestions ->
             categorySuggestions.forEach { suggestion ->
                 val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
@@ -59,9 +63,7 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             searchCgSuggestions.isVisible = true
         }
 
-        viewModel.searchTerms().observe { searchTerms ->
-            adapter.submitList(searchTerms)
-        }
+        viewModel.searchTerms().observe(adapter::submitList)
 
         viewModel.selectedSuggestionIndex().observe { index ->
             searchCgSuggestions[index].isSelected = true

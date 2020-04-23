@@ -6,7 +6,7 @@ import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 interface FactsContract {
 
     interface ViewModel : BaseContract.ViewModel {
-        fun setupFacts()
+        fun getSearchTermAndFacts()
         fun navigateToSearch()
         fun getShareableFact(id: String)
 

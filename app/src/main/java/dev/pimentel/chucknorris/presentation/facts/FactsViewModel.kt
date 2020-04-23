@@ -42,7 +42,7 @@ class FactsViewModel(
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }
 
-    override fun setupFacts() {
+    override fun getSearchTermAndFacts() {
         getSearchTerm(NoParams).flatMap { searchTerm ->
             getFacts(GetFacts.Params(searchTerm))
                 .doOnSubscribe { isLoading.postValue(Unit) }

@@ -32,7 +32,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
         }
 
         factsTvError.setOnClickListener {
-            viewModel.setupFacts()
+            viewModel.getSearchTermAndFacts()
         }
 
         viewModel.firstAccess().observe {
@@ -74,7 +74,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
 
         viewModel.shareableFact().observe(::shareFact)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
     }
 
     private fun shareFact(shareableFact: FactsViewModel.ShareableFact) {

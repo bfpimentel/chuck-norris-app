@@ -80,7 +80,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         assertNull(viewModel.isLoading().value)
         assertNull(viewModel.isNotLoading().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.searchTerm().value, term)
@@ -111,7 +111,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         assertNull(viewModel.isLoading().value)
         assertNull(viewModel.isNotLoading().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.error().value, errorMessage)
@@ -132,7 +132,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         assertNull(viewModel.firstAccess().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertNotNull(viewModel.firstAccess().value)
@@ -167,7 +167,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         assertNull(viewModel.isLoading().value)
         assertNull(viewModel.isNotLoading().value)
 
-        viewModel.setupFacts()
+        viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
         assertEquals(viewModel.facts().value, factsDisplays)
