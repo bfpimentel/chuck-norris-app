@@ -1,66 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_medium">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_il_search_term"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_il_search_hint"
-        app:endIconDrawable="@android:drawable/ic_menu_search"
-        app:endIconMode="custom"
-        app:endIconTint="@color/colorPrimary">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_medium">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_et_search_term"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_il_search_term"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:lines="1" />
+            android:hint="@string/search_il_search_hint"
+            app:endIconDrawable="@android:drawable/ic_menu_search"
+            app:endIconMode="custom"
+            app:endIconTint="@color/colorPrimary">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_et_search_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:lines="1" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:text="@string/search_tv_suggestions"
-        android:textColor="@color/colorAccent"
-        android:textSize="@dimen/text_medium"
-        android:textStyle="bold" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/search_cg_suggestions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_tiny" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="@string/search_tv_suggestions"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:text="@string/search_tv_last_searches"
-        android:textColor="@color/colorAccent"
-        android:textSize="@dimen/text_medium"
-        android:textStyle="bold" />
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/search_cg_suggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_rv_last_search_terms"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_tiny"
-        android:overScrollMode="never" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="@string/search_tv_last_searches"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_rv_last_search_terms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:overScrollMode="never" />
+
+    </LinearLayout>
 
     <include
         android:id="@+id/search_loading"
         layout="@layout/loading_layout"
         tools:visibility="gone" />
 
-</LinearLayout>
+</RelativeLayout>

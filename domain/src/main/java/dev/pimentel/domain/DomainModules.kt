@@ -1,6 +1,7 @@
 package dev.pimentel.domain
 
 import dev.pimentel.data.dataModules
+import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.AreSearchTermsOnLimit
 import dev.pimentel.domain.usecases.DeleteLastSearchTerm
 import dev.pimentel.domain.usecases.DeleteSearchTerm
@@ -14,6 +15,7 @@ import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAllCategories
+import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.SaveExistingSearchTerm
 import dev.pimentel.domain.usecases.SaveNonExistingSearchTerm
 import dev.pimentel.domain.usecases.SaveSearchTerm
@@ -27,7 +29,9 @@ private val useCasesModule = module {
     single { GetAllCategories(get()) }
     single { GetAllCategoriesNames(get()) }
     single { SaveAllCategories(get()) }
-    single { GetCategorySuggestions(get(), get(), get(), get()) }
+    single { AreCategoriesStored(get()) }
+    single { SaveAndGetCategoriesSuggestions(get(), get(), get()) }
+    single { GetCategorySuggestions(get(), get()) }
     single { SaveSearchTerm(get()) }
     single { DeleteSearchTerm(get()) }
     single { DeleteLastSearchTerm(get()) }

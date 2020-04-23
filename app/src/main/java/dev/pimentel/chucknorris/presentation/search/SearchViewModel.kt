@@ -5,17 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
+import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import java.util.concurrent.TimeUnit
 
 class SearchViewModel(
     private val navigator: NavigatorRouter,
+    private val areCategoriesStored: AreCategoriesStored,
+    private val saveAndGetCategoriesSuggestions: SaveAndGetCategoriesSuggestions,
     private val getCategorySuggestions: GetCategorySuggestions,
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
@@ -36,13 +39,19 @@ class SearchViewModel(
 
     override fun setupSearch() {
         Single.zip(
-            getCategorySuggestions(NoParams),
+            areCategoriesStored(NoParams)
+                .flatMap { areStored ->
+                    if (areStored) {
+                        getCategorySuggestions(NoParams)
+                    } else {
+                        saveAndGetCategoriesSuggestions(NoParams)
+                            .doOnSubscribe { isLoading.postValue(Unit) }
+                            .doFinally { isNotLoading.postValue(Unit) }
+                    }
+                },
             getLastSearchTerms(NoParams),
             BiFunction(::InitializeData)
-        ).delay(1000, TimeUnit.MILLISECONDS)
-            .compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(Unit) }
-            .doAfterTerminate { isNotLoading.postValue(Unit) }
+        ).compose(observeOnUIAfterSingleResult())
             .handle({ data ->
                 categorySuggestions.postValue(data.suggestions)
                 searchTerms.postValue(data.searchTerms)

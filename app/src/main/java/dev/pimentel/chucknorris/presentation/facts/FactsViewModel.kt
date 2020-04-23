@@ -12,7 +12,6 @@ import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
-import java.util.concurrent.TimeUnit
 
 class FactsViewModel(
     private val navigator: NavigatorRouter,
@@ -43,6 +42,46 @@ class FactsViewModel(
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }
 
+    override fun setupFacts() {
+        getSearchTerm(NoParams).flatMap { searchTerm ->
+            getFacts(GetFacts.Params(searchTerm))
+                .doOnSubscribe { isLoading.postValue(Unit) }
+                .doAfterTerminate { isNotLoading.postValue(Unit) }
+                .map { facts ->
+                    InitializeData(
+                        searchTerm,
+                        facts
+                    )
+                }
+        }.compose(observeOnUIAfterSingleResult())
+            .handle({ data ->
+                searchTerm.postValue(data.searchTerm)
+
+                this.facts = data.facts
+
+                if (facts.isEmpty()) {
+                    listIsEmpty.postValue(Unit)
+                    return@handle
+                }
+
+                facts.map { fact ->
+                    FactDisplay(
+                        fact.id,
+                        fact.category.capitalize(),
+                        fact.value,
+                        if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
+                        else R.dimen.text_large
+                    )
+                }.also(factsDisplays::postValue)
+            }, { error ->
+                if (error is GetSearchTerm.SearchTermNotFoundException) {
+                    firstAccess.postValue(Unit)
+                } else {
+                    postErrorMessage(error)
+                }
+            })
+    }
+
     override fun getShareableFact(id: String) {
         facts.first { it.id == id }
             .let {
@@ -51,42 +90,6 @@ class FactsViewModel(
                     it.value
                 )
             }.also(shareableFact::postValue)
-    }
-
-    override fun setupFacts() {
-        getSearchTerm(NoParams)
-            .compose(observeOnUIAfterSingleResult())
-            .handle({ term ->
-                searchTerm.postValue(term)
-                getFacts(term)
-            }, { firstAccess.postValue(Unit) })
-    }
-
-    private fun getFacts(searchTerm: String) {
-        getFacts(GetFacts.Params(searchTerm))
-            .compose(observeOnUIAfterSingleResult())
-            .doOnSubscribe { isLoading.postValue(Unit) }
-            .doAfterTerminate { isNotLoading.postValue(Unit) }
-            .handle(
-                { facts ->
-                    this.facts = facts
-
-                    if (facts.isEmpty()) {
-                        listIsEmpty.postValue(Unit)
-                        return@handle
-                    }
-
-                    facts.map { fact ->
-                        FactDisplay(
-                            fact.id,
-                            fact.category.capitalize(),
-                            fact.value,
-                            if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
-                            else R.dimen.text_large
-                        )
-                    }.also(factsDisplays::postValue)
-                }, ::postErrorMessage
-            )
     }
 
     data class FactDisplay(
@@ -99,6 +102,11 @@ class FactsViewModel(
     data class ShareableFact(
         val url: String,
         val value: String
+    )
+
+    private data class InitializeData(
+        val searchTerm: String,
+        val facts: List<Fact>
     )
 
     private companion object {
