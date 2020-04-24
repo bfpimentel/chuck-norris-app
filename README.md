@@ -15,10 +15,12 @@ There are no instrumentation tests since I don't know much about it and I couldn
 Also, my UI/UX skills are bad.
 
 ## Setup Instructions
-Just clone the project wherever you want, no further setup needed :)
+Just clone the project wherever you want and open it with Android Studio, no further setup needed :)
+
+The sync can take a little long because of the number of dependencies inside the project.
 
 ## Architecture Explanation
-I choose to modularize the project layers focusing on ease to scale and to maintain, following Clean Architecture principles.
+I choose to modularize just the project layers instead of the features because there were just two screens and there are no plans to add more. I focused on ease to scale and to maintain, following Clean Architecture principles.
 
 <p align="middle">
     <img src="./resources/architecture.png">
@@ -69,8 +71,10 @@ This is the Search screen. It contains a search field for manual searching, a su
 
 ---
 ## Continuous Integration
-The project uses Github Action to run the [CI script](./.github/workflows/android-pr.yml) when a Pull Request is opened.
+The project uses Github Action to run the [CI script](./.github/workflows/android-pr.yml) when a Pull Request is opened or a Tag is created.
 
+
+### Pull Request
 - **Static code analysis**: The script uses the *detekt* gradle plugin to check if all the code is formatted consistently and there is not **any** issues with complexity.
 - **Code coverage**: *JUnit5* is responsible for running the unit tests, *Jacoco* is responsible for generating the test report and then Codecov.io checks if the coverage is the expected.
 
@@ -79,6 +83,11 @@ The project uses Github Action to run the [CI script](./.github/workflows/androi
         <img src="https://codecov.io/gh/bfpimentel/chuck-norris-app/branch/develop/graphs/tree.svg">
     </a>
 </p> 
+
+---
+### Tag
+- **APK build and upload**: The script generates a debug apk and uploads it as an Github Action artifact.
+
 
 ## Drafts
 <p align="middle">
