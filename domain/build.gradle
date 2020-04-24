@@ -1,0 +1,31 @@
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+    id("kotlin-android-extensions")
+    id("de.mannodermaus.android-junit5")
+}
+
+apply(from: "../dependencies.gradle")
+apply(from: "../project.gradle")
+
+android {
+    compileSdkVersion projectConfig.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion projectConfig.minSdkVersion
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(":data")
+
+    implementation projectDependencies.kotlinStdlib
+    implementation projectDependencies.koin
+    implementation projectDependencies.rxJava
+
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.junitAPI
+    testRuntimeOnly testDependencies.junitEngine
+}
