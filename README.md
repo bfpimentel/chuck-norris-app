@@ -38,14 +38,14 @@ This is the presentation layer, it is responsible for what the user sees.
 ### :domain
 This is the domain layer, it holds the entities and it is responsible to talk to *data* module.
 
-- **UseCase**: It is responsbile for the business rules on the application, it talks directly to the repositories inside data module or another use cases.
+- **UseCase**: It is responsible for the business rules on the application, it talks directly to the repositories inside data module or another use cases.
 
 ---
 ### :data
 This is the data layer, it does not contain any business rules, it is responsible to get data from local or remote data sources.
 
 - **Repository**: It is just a composition of local or remote data sources.
-- **DataSource**: It is responsbile to talk with the remote server or local database.
+- **DataSource**: It is responsible to talk with the remote server or local database.
 
 ---
 ## Features

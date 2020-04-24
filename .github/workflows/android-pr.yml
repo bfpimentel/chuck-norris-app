@@ -2,7 +2,9 @@ name: Android Pull Request CI
 
 on:
   pull_request:
-    branches: 'develop'
+    branches:
+      - 'develop'
+      - 'master'
 
 jobs:
   code-analysis:
