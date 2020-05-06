@@ -16,6 +16,7 @@ import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
 
+@Suppress("LongParameterList")
 class FactsViewModel(
     private val navigator: NavigatorRouter,
     private val factDisplayMapper: FactDisplayMapper,
