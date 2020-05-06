@@ -3,7 +3,7 @@ package dev.pimentel.data.repository
 import dev.pimentel.data.models.SearchTerm
 import dev.pimentel.data.repositories.SearchTermsRepository
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
-import dev.pimentel.data.sources.SearchTermsLocalDataSource
+import dev.pimentel.data.sources.local.SearchTermsLocalDataSource
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -51,14 +51,14 @@ class SearchTermsRepositoryTest {
             SearchTerm(2, "term2")
         )
 
-        every { localDataSource.getSearchTermsByTerm(term) } returns Single.just(searchTerms)
+        every { localDataSource.getSearchTermByTerm(term) } returns Single.just(searchTerms)
 
         searchTermsRepository.getSearchTermByTerm(term)
             .test()
             .assertNoErrors()
             .assertResult(searchTerms)
 
-        verify(exactly = 1) { localDataSource.getSearchTermsByTerm(term) }
+        verify(exactly = 1) { localDataSource.getSearchTermByTerm(term) }
         confirmVerified(localDataSource)
     }
 

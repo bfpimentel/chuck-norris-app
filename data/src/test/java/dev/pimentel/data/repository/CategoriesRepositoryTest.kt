@@ -3,8 +3,8 @@ package dev.pimentel.data.repository
 import dev.pimentel.data.models.Category
 import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
-import dev.pimentel.data.sources.CategoriesLocalDataSource
-import dev.pimentel.data.sources.CategoriesRemoteDataSource
+import dev.pimentel.data.sources.local.CategoriesLocalDataSource
+import dev.pimentel.data.sources.remote.CategoriesRemoteDataSource
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just

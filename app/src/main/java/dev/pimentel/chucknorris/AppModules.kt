@@ -4,6 +4,7 @@ import dev.pimentel.chucknorris.shared.navigator.Navigator
 import dev.pimentel.chucknorris.shared.navigator.NavigatorImpl
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProviderImpl
+import dev.pimentel.data.dataModules
 import dev.pimentel.domain.domainModules
 import org.koin.dsl.module
 
@@ -18,4 +19,4 @@ private val navigatorModule = module {
 val appModules = listOf(
     schedulerProviderModule,
     navigatorModule
-) + domainModules
+) + domainModules + dataModules

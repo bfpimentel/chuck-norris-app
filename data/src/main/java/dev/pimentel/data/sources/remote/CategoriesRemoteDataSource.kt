@@ -1,4 +1,4 @@
-package dev.pimentel.data.sources
+package dev.pimentel.data.sources.remote
 
 import io.reactivex.Single
 import retrofit2.http.GET

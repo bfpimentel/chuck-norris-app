@@ -3,7 +3,7 @@ package dev.pimentel.data.repository
 import dev.pimentel.data.models.FactsResponse
 import dev.pimentel.data.repositories.FactsRepository
 import dev.pimentel.data.repositories.FactsRepositoryImpl
-import dev.pimentel.data.sources.FactsRemoteDataSource
+import dev.pimentel.data.sources.remote.FactsRemoteDataSource
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk

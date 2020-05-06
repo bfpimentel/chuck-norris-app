@@ -1,9 +1,9 @@
 package dev.pimentel.domain.usecases
 
 import android.content.Context
-import dev.pimentel.data.repositories.FactsRepository
 import dev.pimentel.domain.R
 import dev.pimentel.domain.entities.Fact
+import dev.pimentel.domain.repositories.FactsRepository
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Single
 

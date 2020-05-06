@@ -1,4 +1,4 @@
-package dev.pimentel.data.sources
+package dev.pimentel.data.sources.local
 
 import androidx.room.Dao
 import androidx.room.Insert
