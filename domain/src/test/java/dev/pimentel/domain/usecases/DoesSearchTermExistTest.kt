@@ -1,7 +1,7 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.SearchTerm
-import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.domain.models.SearchTerm
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +37,7 @@ class DoesSearchTermExistTest : UseCaseTest<DoesSearchTermExist>() {
     @Test
     fun `should return true when search term exists`() {
         val term = "term"
-        val searchTerms = listOf(SearchTerm(0, term))
+        val searchTerms = listOf(SearchTerm(term))
 
         every { searchTermsRepository.getSearchTermByTerm(term) } returns Single.just(searchTerms)
 

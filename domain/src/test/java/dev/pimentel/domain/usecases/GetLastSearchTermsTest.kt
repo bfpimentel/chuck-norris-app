@@ -1,7 +1,7 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.SearchTerm
-import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.domain.models.SearchTerm
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -22,8 +22,8 @@ class GetLastSearchTermsTest : UseCaseTest<GetLastSearchTerms>() {
     @Test
     fun `should fetch last search terms and map them to string`() {
         val searchTerms = listOf(
-            SearchTerm(0, "term1"),
-            SearchTerm(1, "term2")
+            SearchTerm("term1"),
+            SearchTerm("term2")
         )
         val terms = listOf(
             "term1",

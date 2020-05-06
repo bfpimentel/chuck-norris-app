@@ -1,7 +1,7 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.SearchTerm
-import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.domain.models.SearchTerm
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -23,7 +23,7 @@ class SaveSearchTermTest : UseCaseTest<SaveSearchTerm>() {
     @Test
     fun `should call searchTermsRepository and just complete`() {
         val term = "term"
-        val searchTerm = SearchTerm(0, term)
+        val searchTerm = SearchTerm(term)
 
         every { searchTermsRepository.saveSearchTerm(searchTerm) } just runs
 
@@ -38,9 +38,8 @@ class SaveSearchTermTest : UseCaseTest<SaveSearchTerm>() {
 
     @Test
     fun `Params must not contain any null properties`() {
-        val searchTerm = SearchTerm(0, "term")
+        val searchTerm = SearchTerm("term")
 
-        assertNotNull(searchTerm.id)
         assertNotNull(searchTerm.term)
     }
 }

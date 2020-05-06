@@ -1,6 +1,6 @@
 package dev.pimentel.domain.usecases.shared
 
-internal interface UseCase<Params, Result> {
+interface UseCase<Params, Result> {
     operator fun invoke(params: Params): Result
 }
 

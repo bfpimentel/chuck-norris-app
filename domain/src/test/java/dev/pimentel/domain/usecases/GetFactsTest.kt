@@ -1,17 +1,17 @@
 package dev.pimentel.domain.usecases
 
 import android.content.Context
-import dev.pimentel.data.models.FactsResponse
-import dev.pimentel.data.repositories.FactsRepository
 import dev.pimentel.domain.R
+import dev.pimentel.domain.models.FactsResponse
+import dev.pimentel.domain.repositories.FactsRepository
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
-import dev.pimentel.data.models.FactsResponse.Fact as FactModel
 import dev.pimentel.domain.entities.Fact as FactEntity
+import dev.pimentel.domain.models.FactsResponse.Fact as FactModel
 
 class GetFactsTest : UseCaseTest<GetFacts>() {
 
