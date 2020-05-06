@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.presentation
+package dev.pimentel.chucknorris.presentation.search
 
 import dev.pimentel.chucknorris.presentation.search.SearchContract
 import dev.pimentel.chucknorris.presentation.search.SearchViewModel

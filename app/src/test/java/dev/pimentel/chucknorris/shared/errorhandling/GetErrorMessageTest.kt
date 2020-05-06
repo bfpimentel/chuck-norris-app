@@ -1,23 +1,27 @@
-package dev.pimentel.domain.usecases
+package dev.pimentel.chucknorris.shared.errorhandling
 
 import android.content.Context
-import dev.pimentel.domain.R
+import dev.pimentel.chucknorris.R
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
-class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
+class GetErrorMessageTest {
 
     private val context = mockk<Context>(relaxed = true)
-    override lateinit var useCase: GetErrorMessage
+    private lateinit var useCase: GetErrorMessage
 
-    override fun `setup subject`() {
+    @BeforeEach
+    @Test
+    fun `should setup subject and it must not be null`() {
         useCase = GetErrorMessage(context)
+        assertNotNull(useCase)
     }
 
     @Test

@@ -1,19 +1,16 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-android-extensions")
-    id("de.mannodermaus.android-junit5")
+    id("java-library")
+    id("kotlin")
 }
 
 apply(from: "../dependencies.gradle")
 apply(from: "../project.gradle")
 
-android {
-    compileSdkVersion projectConfig.compileSdkVersion
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-    defaultConfig {
-        minSdkVersion projectConfig.minSdkVersion
-    }
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -25,5 +22,5 @@ dependencies {
 
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI
-    testRuntimeOnly testDependencies.junitEngine
+    testRuntime testDependencies.junitEngine
 }

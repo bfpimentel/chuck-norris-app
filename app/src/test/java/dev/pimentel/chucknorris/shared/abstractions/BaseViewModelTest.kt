@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.chucknorris.testshared.ViewModelTest
-import dev.pimentel.domain.usecases.GetErrorMessage
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.mockk.confirmVerified
