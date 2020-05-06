@@ -39,12 +39,12 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
         viewModel.state().observe { state ->
             adapter.submitList(state.facts)
             factsTvFirstAccess.isVisible = state.isFirstAccess
-            factsAblSearchTerm.isVisible = state.isVisible
+            factsAblSearchTerm.isVisible = state.hasFacts
             factsTvSearchTerm.text = state.searchTerm
-            factsRvFacts.isVisible = state.isVisible
+            factsRvFacts.isVisible = state.hasFacts
             factsTvError.isVisible = state.hasError
             factsTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
-            factsRvFacts.isVisible = !state.isEmpty
+            factsRvFacts.isVisible = state.hasFacts
             factsTvListIsEmpty.isVisible = state.isEmpty
             factsLoading.root.isVisible = state.isLoading
         }
