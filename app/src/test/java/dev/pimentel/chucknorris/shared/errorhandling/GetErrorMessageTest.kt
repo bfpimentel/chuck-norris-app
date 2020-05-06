@@ -1,25 +1,27 @@
 package dev.pimentel.chucknorris.shared.errorhandling
 
 import android.content.Context
-import dev.pimentel.domain.R
-import dev.pimentel.domain.usecases.UseCaseTest
+import dev.pimentel.chucknorris.R
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
-class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
+class GetErrorMessageTest {
 
     private val context = mockk<Context>(relaxed = true)
-    override lateinit var useCase: dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
+    private lateinit var useCase: GetErrorMessage
 
-    override fun `setup subject`() {
-        useCase =
-            dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage(context)
+    @BeforeEach
+    @Test
+    fun `should setup subject and it must not be null`() {
+        useCase = GetErrorMessage(context)
+        assertNotNull(useCase)
     }
 
     @Test
@@ -30,7 +32,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
         assertEquals(
             message,
-            useCase(dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(IOException()))
+            useCase(GetErrorMessage.Params(IOException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_no_connection) }
@@ -45,7 +47,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
         assertEquals(
             message,
-            useCase(dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(IllegalArgumentException()))
+            useCase(GetErrorMessage.Params(IllegalArgumentException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_default) }
@@ -56,7 +58,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
     fun `GetErrorTypeParams must contain a non null throwable`() {
         val throwable = IllegalArgumentException()
 
-        val params = dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(throwable)
+        val params = GetErrorMessage.Params(throwable)
 
         assertNotNull(params.throwable)
         assertEquals(params.throwable, throwable)

@@ -1,12 +1,14 @@
-package dev.pimentel.chucknorris.presentation
+package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.presentation.facts.FactsContract
-import dev.pimentel.chucknorris.presentation.facts.FactsViewModel
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.Navigator
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.entities.Fact
-import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
@@ -25,6 +27,8 @@ import org.junit.jupiter.api.Test
 class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
     private val navigator = mockk<Navigator>()
+    private val factDisplayMapper = mockk<FactDisplayMapper>()
+    private val shareableFactMapper = mockk<ShareableFactMapper>()
     private val getFacts = mockk<GetFacts>()
     private val getSearchTerm = mockk<GetSearchTerm>()
     override lateinit var viewModel: FactsContract.ViewModel
@@ -32,6 +36,8 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
     override fun `setup subject`() {
         viewModel = FactsViewModel(
             navigator,
+            factDisplayMapper,
+            shareableFactMapper,
             getSearchTerm,
             getFacts,
             getErrorMessage,
@@ -46,7 +52,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         viewModel.navigateToSearch()
 
         verify(exactly = 1) { navigator.navigate(R.id.facts_fragment_to_search_fragment) }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
     }
 
     @Test
@@ -65,8 +78,8 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         )
 
         val factsDisplays = listOf(
-            FactsViewModel.FactDisplay("id1", "Category1", "smallValue", R.dimen.text_large),
-            FactsViewModel.FactDisplay(
+            FactDisplay("id1", "Category1", "smallValue", R.dimen.text_large),
+            FactDisplay(
                 "id2",
                 "Category2",
                 "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
@@ -76,6 +89,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         every { getSearchTerm(NoParams) } returns Single.just(term)
         every { getFacts(getFactsParams) } returns Single.just(facts)
+        every { factDisplayMapper.map(facts) } returns factsDisplays
 
         assertNull(viewModel.isLoading().value)
         assertNull(viewModel.isNotLoading().value)
@@ -92,8 +106,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         verify(exactly = 1) {
             getSearchTerm(NoParams)
             getFacts(getFactsParams)
+            factDisplayMapper.map(facts)
         }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
     }
 
     @Test
@@ -122,7 +144,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             getSearchTerm(NoParams)
             getFacts(getFactsParams)
         }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
     }
 
     @Test
@@ -153,7 +182,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             getFacts(getFactsParams)
             getErrorMessage(getErrorMessageParams)
         }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
     }
 
     @Test
@@ -172,7 +208,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         verify(exactly = 1) {
             getSearchTerm(NoParams)
         }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
     }
 
 
@@ -187,12 +230,19 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         )
 
         val factsDisplays = listOf(
-            FactsViewModel.FactDisplay("id1", "Category1", "value1", R.dimen.text_large),
-            FactsViewModel.FactDisplay("id2", "Category2", "value2", R.dimen.text_large)
+            FactDisplay("id1", "Category1", "value1", R.dimen.text_large),
+            FactDisplay("id2", "Category2", "value2", R.dimen.text_large)
+        )
+
+        val shareableFact = ShareableFact(
+            "url1",
+            "value1"
         )
 
         every { getSearchTerm(NoParams) } returns Single.just(term)
         every { getFacts(getFactsParams) } returns Single.just(facts)
+        every { factDisplayMapper.map(facts) } returns factsDisplays
+        every { shareableFactMapper.map(facts.first()) } returns shareableFact
 
         assertNull(viewModel.isLoading().value)
         assertNull(viewModel.isNotLoading().value)
@@ -206,43 +256,21 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         viewModel.getShareableFact(factsDisplays.first().id)
 
-        assertEquals(
-            viewModel.shareableFact().value,
-            FactsViewModel.ShareableFact(
-                "url1",
-                "value1"
-            )
-        )
+        assertEquals(viewModel.shareableFact().value, shareableFact)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
             getFacts(getFactsParams)
+            factDisplayMapper.map(facts)
+            shareableFactMapper.map(facts.first())
         }
-        confirmVerified(navigator, getSearchTerm, getFacts, getErrorMessage)
-    }
-
-    @Test
-    fun `FactDisplay must not contain any null properties`() {
-        val factDisplay = FactsViewModel.FactDisplay(
-            "id1",
-            "category",
-            "value",
-            R.dimen.text_normal
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
         )
-
-        assertNotNull(factDisplay.category)
-        assertNotNull(factDisplay.value)
-        assertNotNull(factDisplay.fontSize)
-    }
-
-    @Test
-    fun `ShareableFact must not contain any null properties`() {
-        val shareableFact = FactsViewModel.ShareableFact(
-            "url",
-            "value"
-        )
-
-        assertNotNull(shareableFact.url)
-        assertNotNull(shareableFact.value)
     }
 }

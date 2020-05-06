@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.pimentel.chucknorris.databinding.FactsItemLayoutBinding
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 
-class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHolder>(
+class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -32,7 +33,7 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
         private val binding: FactsItemLayoutBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: FactsViewModel.FactDisplay) {
+        fun bind(item: FactDisplay) {
             binding.apply {
                 factsItemCard.setOnClickListener {
                     onItemClick(item.id)
@@ -50,15 +51,15 @@ class FactsAdapter : ListAdapter<FactsViewModel.FactDisplay, FactsAdapter.ViewHo
     }
 
     private companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactsViewModel.FactDisplay>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactDisplay>() {
             override fun areItemsTheSame(
-                oldItem: FactsViewModel.FactDisplay,
-                newItem: FactsViewModel.FactDisplay
+                oldItem: FactDisplay,
+                newItem: FactDisplay
             ) = oldItem == newItem
 
             override fun areContentsTheSame(
-                oldItem: FactsViewModel.FactDisplay,
-                newItem: FactsViewModel.FactDisplay
+                oldItem: FactDisplay,
+                newItem: FactDisplay
             ) = oldItem == newItem
         }
     }

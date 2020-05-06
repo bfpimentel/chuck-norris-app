@@ -1,9 +1,12 @@
 package dev.pimentel.chucknorris.presentation.facts
 
-import androidx.annotation.DimenRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
@@ -16,6 +19,7 @@ import dev.pimentel.domain.usecases.shared.NoParams
 class FactsViewModel(
     private val navigator: NavigatorRouter,
     private val factDisplayMapper: FactDisplayMapper,
+    private val shareableFactMapper: ShareableFactMapper,
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
     getErrorMessage: GetErrorMessage,
@@ -65,37 +69,19 @@ class FactsViewModel(
                     return@handle
                 }
 
-                factDisplayMapper.map(facts).also(factsDisplays::postValue)
+                factDisplayMapper.map(facts)
+                    .also(factsDisplays::postValue)
             }, { error ->
-                if (error is GetSearchTerm.SearchTermNotFoundException) {
-                    firstAccess.postValue(Unit)
-                } else {
-                    postErrorMessage(error)
-                }
+                if (error is GetSearchTerm.SearchTermNotFoundException) firstAccess.postValue(Unit)
+                else postErrorMessage(error)
             })
     }
 
     override fun getShareableFact(id: String) {
         facts.first { it.id == id }
-            .let {
-                ShareableFact(
-                    it.url,
-                    it.value
-                )
-            }.also(shareableFact::postValue)
+            .let(shareableFactMapper::map)
+            .also(shareableFact::postValue)
     }
-
-    data class FactDisplay(
-        val id: String,
-        val category: String,
-        val value: String,
-        @DimenRes val fontSize: Int
-    )
-
-    data class ShareableFact(
-        val url: String,
-        val value: String
-    )
 
     private data class InitializeData(
         val searchTerm: String,

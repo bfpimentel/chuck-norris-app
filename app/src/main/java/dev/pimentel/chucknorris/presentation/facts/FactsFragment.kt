@@ -5,6 +5,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsLayoutBinding
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.shared.abstractions.BaseFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -77,7 +78,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
         viewModel.getSearchTermAndFacts()
     }
 
-    private fun shareFact(shareableFact: FactsViewModel.ShareableFact) {
+    private fun shareFact(shareableFact: ShareableFact) {
         ShareCompat.IntentBuilder
             .from(requireActivity())
             .setType(SHARE_TYPE)
