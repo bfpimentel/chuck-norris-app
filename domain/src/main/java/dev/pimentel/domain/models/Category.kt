@@ -1,5 +1,5 @@
 package dev.pimentel.domain.models
 
-open class Category(
-    open val name: String
+data class Category(
+    val name: String
 )

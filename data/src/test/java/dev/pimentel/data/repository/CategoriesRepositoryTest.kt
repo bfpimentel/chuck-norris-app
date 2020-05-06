@@ -1,10 +1,10 @@
 package dev.pimentel.data.repository
 
 import dev.pimentel.data.models.Category
-import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.sources.local.CategoriesLocalDataSource
 import dev.pimentel.data.sources.remote.CategoriesRemoteDataSource
+import dev.pimentel.domain.repositories.CategoriesRepository
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -15,6 +15,7 @@ import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import dev.pimentel.domain.models.Category as DomainCategory
 
 class CategoriesRepositoryTest {
 
@@ -40,12 +41,17 @@ class CategoriesRepositoryTest {
             Category("name2")
         )
 
+        val domainCategories = listOf(
+            DomainCategory("name1"),
+            DomainCategory("name2")
+        )
+
         every { localDataSource.getAllCategories() } returns Single.just(categories)
 
         categoriesRepository.getAllCategories()
             .test()
             .assertNoErrors()
-            .assertResult(categories)
+            .assertResult(domainCategories)
 
         verify(exactly = 1) { localDataSource.getAllCategories() }
         confirmVerified(localDataSource, remoteDataSource)
@@ -76,9 +82,14 @@ class CategoriesRepositoryTest {
             Category("name2")
         )
 
+        val domainCategories = listOf(
+            DomainCategory("name1"),
+            DomainCategory("name2")
+        )
+
         every { localDataSource.saveAllCategories(categories) } just runs
 
-        categoriesRepository.saveAllCategories(categories)
+        categoriesRepository.saveAllCategories(domainCategories)
 
         verify(exactly = 1) { localDataSource.saveAllCategories(categories) }
         confirmVerified(localDataSource, remoteDataSource)
