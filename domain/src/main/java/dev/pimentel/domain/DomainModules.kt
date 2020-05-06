@@ -1,6 +1,5 @@
 package dev.pimentel.domain
 
-import dev.pimentel.data.dataModules
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.AreSearchTermsOnLimit
 import dev.pimentel.domain.usecases.DeleteLastSearchTerm
@@ -47,4 +46,4 @@ private val useCasesModule = module {
 
 val domainModules = listOf(
     useCasesModule
-) + dataModules
+)

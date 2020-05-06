@@ -1,4 +1,4 @@
-package dev.pimentel.data.sources
+package dev.pimentel.data.sources.remote
 
 import dev.pimentel.data.models.FactsResponse
 import io.reactivex.Single

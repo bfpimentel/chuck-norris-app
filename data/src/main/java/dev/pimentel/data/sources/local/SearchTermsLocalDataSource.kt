@@ -1,4 +1,4 @@
-package dev.pimentel.data.sources
+package dev.pimentel.data.sources.local
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -13,7 +13,7 @@ interface SearchTermsLocalDataSource {
     fun getSearchTerm(): Single<SearchTerm>
 
     @Query("SELECT id, term FROM SearchTerm where term = :term")
-    fun getSearchTermsByTerm(term: String): Single<List<SearchTerm>>
+    fun getSearchTermByTerm(term: String): Single<List<SearchTerm>>
 
     @Insert
     fun insertSearchTerm(searchTerm: SearchTerm)
