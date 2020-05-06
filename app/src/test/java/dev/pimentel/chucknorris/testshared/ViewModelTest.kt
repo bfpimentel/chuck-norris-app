@@ -4,7 +4,7 @@ import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
-import dev.pimentel.domain.usecases.GetErrorMessage
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import io.mockk.mockk
 import io.reactivex.schedulers.TestScheduler
 import org.junit.jupiter.api.Assertions.assertNotNull

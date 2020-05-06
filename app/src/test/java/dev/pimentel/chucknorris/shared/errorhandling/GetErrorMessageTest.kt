@@ -1,7 +1,8 @@
-package dev.pimentel.domain.usecases
+package dev.pimentel.chucknorris.shared.errorhandling
 
 import android.content.Context
 import dev.pimentel.domain.R
+import dev.pimentel.domain.usecases.UseCaseTest
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -14,10 +15,11 @@ import java.io.IOException
 class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
     private val context = mockk<Context>(relaxed = true)
-    override lateinit var useCase: GetErrorMessage
+    override lateinit var useCase: dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 
     override fun `setup subject`() {
-        useCase = GetErrorMessage(context)
+        useCase =
+            dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage(context)
     }
 
     @Test
@@ -28,7 +30,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
         assertEquals(
             message,
-            useCase(GetErrorMessage.Params(IOException()))
+            useCase(dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(IOException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_no_connection) }
@@ -43,7 +45,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
 
         assertEquals(
             message,
-            useCase(GetErrorMessage.Params(IllegalArgumentException()))
+            useCase(dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(IllegalArgumentException()))
         )
 
         verify(exactly = 1) { context.getString(R.string.error_message_default) }
@@ -54,7 +56,7 @@ class GetErrorMessageTest : UseCaseTest<GetErrorMessage>() {
     fun `GetErrorTypeParams must contain a non null throwable`() {
         val throwable = IllegalArgumentException()
 
-        val params = GetErrorMessage.Params(throwable)
+        val params = dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage.Params(throwable)
 
         assertNotNull(params.throwable)
         assertEquals(params.throwable, throwable)

@@ -5,16 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.entities.Fact
-import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
 
 class FactsViewModel(
     private val navigator: NavigatorRouter,
+    private val factDisplayMapper: FactDisplayMapper,
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
     getErrorMessage: GetErrorMessage,
@@ -64,15 +65,7 @@ class FactsViewModel(
                     return@handle
                 }
 
-                facts.map { fact ->
-                    FactDisplay(
-                        fact.id,
-                        fact.category.capitalize(),
-                        fact.value,
-                        if (fact.value.length > SMALL_FONT_LENGTH_LIMIT) R.dimen.text_normal
-                        else R.dimen.text_large
-                    )
-                }.also(factsDisplays::postValue)
+                factDisplayMapper.map(facts).also(factsDisplays::postValue)
             }, { error ->
                 if (error is GetSearchTerm.SearchTermNotFoundException) {
                     firstAccess.postValue(Unit)
@@ -108,8 +101,4 @@ class FactsViewModel(
         val searchTerm: String,
         val facts: List<Fact>
     )
-
-    private companion object {
-        const val SMALL_FONT_LENGTH_LIMIT = 80
-    }
 }

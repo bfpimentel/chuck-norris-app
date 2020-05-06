@@ -1,7 +1,7 @@
-package dev.pimentel.domain.usecases
+package dev.pimentel.chucknorris.shared.errorhandling
 
 import android.content.Context
-import dev.pimentel.domain.R
+import dev.pimentel.chucknorris.R
 import dev.pimentel.domain.usecases.shared.UseCase
 import java.io.IOException
 

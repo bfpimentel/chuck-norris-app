@@ -7,7 +7,7 @@ import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
-import dev.pimentel.domain.usecases.GetErrorMessage
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions

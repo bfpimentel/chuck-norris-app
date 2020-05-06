@@ -1,20 +1,10 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-android-extensions")
-    id("de.mannodermaus.android-junit5")
+    id("java-library")
+    id("kotlin")
 }
 
 apply(from: "../dependencies.gradle")
 apply(from: "../project.gradle")
-
-android {
-    compileSdkVersion projectConfig.compileSdkVersion
-
-    defaultConfig {
-        minSdkVersion projectConfig.minSdkVersion
-    }
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
