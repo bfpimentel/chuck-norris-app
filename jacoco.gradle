@@ -10,7 +10,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
         "data:testDebugUnitTest"
 ]) {
     final commonFileExclusions = [
-            '**/*Module*.*'
+            '**/*Module*.*',
+            '**/models',
+            '**/entities'
     ]
 
     final appFileExclusions = [
@@ -23,9 +25,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*Activity*.*',
             '**/*Fragment*.*',
             '**/*Application*.*',
-            '**/SchedulerProvider**.*',
-            '**/models',
-            '**/entities',
+            '**/SchedulerProvider**.*'
     ]
 
     final dataFileExclusions = [
