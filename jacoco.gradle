@@ -6,7 +6,7 @@ subprojects {
 
 task jacocoTestReport(type: JacocoReport, dependsOn: [
         "app:testDebugUnitTest",
-        "domain:testDebugUnitTest",
+        "domain:test",
         "data:testDebugUnitTest"
 ]) {
     final commonFileExclusions = [
@@ -34,7 +34,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
 
     final classDirectoriesTrees = [
             fileTree(dir: "${project.rootDir}/app/build/tmp/kotlin-classes/debug", excludes: appFileExclusions + commonFileExclusions),
-            fileTree(dir: "${project.rootDir}/domain/build/tmp/kotlin-classes/debug", excludes: commonFileExclusions),
+            fileTree(dir: "${project.rootDir}/domain/build/classes/kotlin/main", excludes: commonFileExclusions),
             fileTree(dir: "${project.rootDir}/data/build/tmp/kotlin-classes/debug", excludes: dataFileExclusions + commonFileExclusions)
     ]
 
@@ -46,7 +46,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
 
     final executionDataDirs = [
             "${project.rootDir}/app/build/jacoco/testDebugUnitTest.exec",
-            "${project.rootDir}/domain/build/jacoco/testDebugUnitTest.exec",
+            "${project.rootDir}/domain/build/jacoco/test.exec",
             "${project.rootDir}/data/build/jacoco/testDebugUnitTest.exec"
     ]
 
