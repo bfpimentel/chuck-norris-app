@@ -23,7 +23,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*Activity*.*',
             '**/*Fragment*.*',
             '**/*Application*.*',
-            '**/SchedulerProvider**.*'
+            '**/SchedulerProvider**.*',
+            '**/models',
+            '**/entities',
     ]
 
     final dataFileExclusions = [
