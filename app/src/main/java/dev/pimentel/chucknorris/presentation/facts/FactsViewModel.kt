@@ -3,7 +3,6 @@ package dev.pimentel.chucknorris.presentation.facts
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
@@ -23,7 +22,7 @@ class FactsViewModel(
     private val shareableFactMapper: ShareableFactMapper,
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
-    getErrorMessage: GetErrorMessage,
+    private val getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
 ) : BaseViewModel(
     schedulerProvider,
@@ -32,17 +31,11 @@ class FactsViewModel(
 
     private lateinit var facts: List<Fact>
 
-    private val firstAccess = MutableLiveData<Unit>()
-    private val searchTerm = MutableLiveData<String>()
-    private val factsDisplays = MutableLiveData<List<FactDisplay>>()
+    private val state = MutableLiveData<FactsState>()
     private val shareableFact = MutableLiveData<ShareableFact>()
-    private val listIsEmpty = MutableLiveData<Unit>()
 
-    override fun firstAccess(): LiveData<Unit> = firstAccess
-    override fun searchTerm(): LiveData<String> = searchTerm
-    override fun facts(): LiveData<List<FactDisplay>> = factsDisplays
+    override fun state(): LiveData<FactsState> = state
     override fun shareableFact(): LiveData<ShareableFact> = shareableFact
-    override fun listIsEmpty(): LiveData<Unit> = listIsEmpty
 
     override fun navigateToSearch() {
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
@@ -51,8 +44,8 @@ class FactsViewModel(
     override fun getSearchTermAndFacts() {
         getSearchTerm(NoParams).flatMap { searchTerm ->
             getFacts(GetFacts.Params(searchTerm))
-                .doOnSubscribe { isLoading.postValue(Unit) }
-                .doAfterTerminate { isNotLoading.postValue(Unit) }
+                .doOnSubscribe { state.postValue(FactsState.Loading(true)) }
+                .doAfterTerminate { state.postValue(FactsState.Loading(false)) }
                 .map { facts ->
                     InitializeData(
                         searchTerm,
@@ -61,20 +54,29 @@ class FactsViewModel(
                 }
         }.compose(observeOnUIAfterSingleResult())
             .handle({ data ->
-                searchTerm.postValue(data.searchTerm)
-
                 this.facts = data.facts
 
                 if (facts.isEmpty()) {
-                    listIsEmpty.postValue(Unit)
+                    state.postValue(FactsState.Empty(data.searchTerm))
                     return@handle
                 }
 
-                factDisplayMapper.map(facts)
-                    .also(factsDisplays::postValue)
+                state.postValue(
+                    FactsState.Success(
+                        factDisplayMapper.map(facts),
+                        data.searchTerm
+                    )
+                )
             }, { error ->
-                if (error is GetSearchTerm.SearchTermNotFoundException) firstAccess.postValue(Unit)
-                else postErrorMessage(error)
+                if (error is GetSearchTerm.SearchTermNotFoundException) {
+                    state.postValue(FactsState.FirstAccess())
+                } else {
+                    state.postValue(
+                        FactsState.Error(
+                            getErrorMessage(GetErrorMessage.Params(error))
+                        )
+                    )
+                }
             })
     }
 

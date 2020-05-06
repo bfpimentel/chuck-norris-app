@@ -36,42 +36,18 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             viewModel.getSearchTermAndFacts()
         }
 
-        viewModel.firstAccess().observe {
-            factsTvFirstAccess.isVisible = true
-            factsAblSearchTerm.isVisible = false
-            factsRvFacts.isVisible = false
-            factsTvError.isVisible = false
+        viewModel.state().observe { state ->
+            adapter.submitList(state.facts)
+            factsTvFirstAccess.isVisible = state.isFirstAccess
+            factsAblSearchTerm.isVisible = state.isVisible
+            factsTvSearchTerm.text = state.searchTerm
+            factsRvFacts.isVisible = state.isVisible
+            factsTvError.isVisible = state.hasError
+            factsTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
+            factsRvFacts.isVisible = !state.isEmpty
+            factsTvListIsEmpty.isVisible = state.isEmpty
+            factsLoading.root.isVisible = state.isLoading
         }
-
-        viewModel.searchTerm().observe { searchTerm ->
-            factsTvSearchTerm.text = searchTerm
-            factsAblSearchTerm.isVisible = true
-        }
-
-        viewModel.facts().observe { facts ->
-            adapter.submitList(facts)
-            factsRvFacts.isVisible = true
-            factsTvFirstAccess.isVisible = false
-            factsTvError.isVisible = false
-            factsTvListIsEmpty.isVisible = false
-        }
-
-        viewModel.error().observe { errorMessage ->
-            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
-            factsTvError.isVisible = true
-            factsAblSearchTerm.isVisible = false
-            factsRvFacts.isVisible = false
-            factsTvListIsEmpty.isVisible = false
-        }
-
-        viewModel.listIsEmpty().observe {
-            factsTvListIsEmpty.isVisible = true
-            factsRvFacts.isVisible = false
-        }
-
-        viewModel.isLoading().observe { factsLoading.root.isVisible = true }
-
-        viewModel.isNotLoading().observe { factsLoading.root.isVisible = false }
 
         viewModel.shareableFact().observe(::shareFact)
 
