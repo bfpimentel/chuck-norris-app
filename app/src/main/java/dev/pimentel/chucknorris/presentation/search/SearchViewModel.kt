@@ -2,7 +2,9 @@ package dev.pimentel.chucknorris.presentation.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import dev.pimentel.chucknorris.shared.abstractions.RxViewModel
+import androidx.lifecycle.ViewModel
+import dev.pimentel.chucknorris.shared.helpers.DisposablesHolder
+import dev.pimentel.chucknorris.shared.helpers.DisposablesHolderImpl
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
@@ -23,9 +25,9 @@ class SearchViewModel(
     private val getLastSearchTerms: GetLastSearchTerms,
     private val getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
-) : RxViewModel(
-    schedulerProvider
-), SearchContract.ViewModel {
+) : ViewModel(),
+    DisposablesHolder by DisposablesHolderImpl(schedulerProvider),
+    SearchContract.ViewModel {
 
     private val searchState = MutableLiveData<SearchState>()
     private val selectedSuggestionIndex = MutableLiveData<Int>()

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsLayoutBinding
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
-import dev.pimentel.chucknorris.shared.abstractions.lifecycleBinding
+import dev.pimentel.chucknorris.shared.helpers.lifecycleBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
