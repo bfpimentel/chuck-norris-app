@@ -2,6 +2,7 @@ package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 
+@Suppress("LongParameterList")
 sealed class FactsState(
     val facts: List<FactDisplay> = emptyList(),
     val hasFacts: Boolean = false,
