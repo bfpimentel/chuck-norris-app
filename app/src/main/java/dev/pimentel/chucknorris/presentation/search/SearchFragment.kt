@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.ChipGroup
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
 import dev.pimentel.chucknorris.databinding.SearchLayoutBinding
@@ -57,35 +58,34 @@ class SearchFragment : BaseFragment<SearchContract.ViewModel, SearchLayoutBindin
             viewModel.getCategorySuggestionsAndSearchTerms()
         }
 
-        viewModel.categorySuggestions().observe { categorySuggestions ->
-            categorySuggestions.forEach { suggestion ->
-                val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
-                chipBinding.searchCategoriesItemChip.apply {
-                    text = suggestion
-                    setOnClickListener { viewModel.saveSearchTerm(suggestion) }
-                }
-                searchCgSuggestions.addView(chipBinding.root)
-            }
-            searchCgSuggestions.isVisible = true
+        viewModel.searchState().observe { state ->
+            fillCategorySuggestions(searchCgSuggestions, state.categorySuggestions)
+            adapter.submitList(state.searchTerms)
+            searchLoading.root.isVisible = state.isLoading
+            searchTvError.isVisible = state.hasError
+            searchTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
+            searchCgSuggestions.isVisible = state.hasSuggestions
         }
-
-        viewModel.searchTerms().observe(adapter::submitList)
 
         viewModel.selectedSuggestionIndex().observe { index ->
             searchCgSuggestions[index].isSelected = true
         }
 
-        viewModel.isLoading().observe { searchLoading.root.isVisible = true }
-
-        viewModel.isNotLoading().observe { searchLoading.root.isVisible = false }
-
-        viewModel.error().observe { errorMessage ->
-            searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
-            searchTvError.isVisible = true
-            searchCgSuggestions.isVisible = false
-        }
-
         viewModel.getCategorySuggestionsAndSearchTerms()
+    }
+
+    private fun fillCategorySuggestions(
+        chipGroup: ChipGroup,
+        categorySuggestions: List<String>
+    ) {
+        categorySuggestions.forEach { suggestion ->
+            val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
+            chipBinding.searchCategoriesItemChip.apply {
+                text = suggestion
+                setOnClickListener { viewModel.saveSearchTerm(suggestion) }
+            }
+            chipGroup.addView(chipBinding.root)
+        }
     }
 
     private fun hideKeyboard() {

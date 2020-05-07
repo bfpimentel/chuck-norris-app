@@ -1,7 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts
 
 import androidx.lifecycle.LiveData
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 
@@ -12,10 +11,7 @@ interface FactsContract {
         fun navigateToSearch()
         fun getShareableFact(id: String)
 
-        fun firstAccess(): LiveData<Unit>
-        fun searchTerm(): LiveData<String>
-        fun facts(): LiveData<List<FactDisplay>>
+        fun factsState(): LiveData<FactsState>
         fun shareableFact(): LiveData<ShareableFact>
-        fun listIsEmpty(): LiveData<Unit>
     }
 }

@@ -9,8 +9,7 @@ interface SearchContract {
         fun getCategorySuggestionsAndSearchTerms()
         fun saveSearchTerm(term: String)
 
+        fun searchState(): LiveData<SearchState>
         fun selectedSuggestionIndex(): LiveData<Int>
-        fun categorySuggestions(): LiveData<List<String>>
-        fun searchTerms(): LiveData<List<String>>
     }
 }

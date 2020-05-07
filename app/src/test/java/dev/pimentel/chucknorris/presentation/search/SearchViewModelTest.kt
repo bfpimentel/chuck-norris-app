@@ -1,7 +1,5 @@
 package dev.pimentel.chucknorris.presentation.search
 
-import dev.pimentel.chucknorris.presentation.search.SearchContract
-import dev.pimentel.chucknorris.presentation.search.SearchViewModel
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.usecases.AreCategoriesStored
@@ -19,8 +17,8 @@ import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -68,17 +66,15 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         every { saveAndGetCategoriesSuggestions(NoParams) } returns Single.just(categorySuggestions)
         every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
-
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        assertNotNull(viewModel.isLoading().value)
-        assertNotNull(viewModel.isNotLoading().value)
+        val expectedSearchState = viewModel.searchState().value!!
 
-        assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
-        assertEquals(viewModel.searchTerms().value, lastSearchTerms)
+        assertTrue(expectedSearchState is SearchState.Success)
+        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+
         assertEquals(viewModel.selectedSuggestionIndex().value, 0)
 
         verify(exactly = 1) {
@@ -114,12 +110,13 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
-        assertEquals(viewModel.searchTerms().value, lastSearchTerms)
-        assertNull(viewModel.selectedSuggestionIndex().value)
+        val expectedSearchState = viewModel.searchState().value!!
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
+        assertTrue(expectedSearchState is SearchState.Success)
+        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+
+        assertNull(viewModel.selectedSuggestionIndex().value)
 
         verify(exactly = 1) {
             areCategoriesStored(NoParams)
@@ -151,12 +148,13 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.categorySuggestions().value, categorySuggestions)
-        assertEquals(viewModel.searchTerms().value, lastSearchTerms)
-        assertNull(viewModel.selectedSuggestionIndex().value)
+        val expectedSearchState = viewModel.searchState().value!!
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
+        assertTrue(expectedSearchState is SearchState.Success)
+        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+
+        assertNull(viewModel.selectedSuggestionIndex().value)
 
         verify(exactly = 1) {
             areCategoriesStored(NoParams)
