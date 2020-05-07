@@ -2,7 +2,6 @@ package dev.pimentel.chucknorris.testshared
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
-import dev.pimentel.chucknorris.shared.abstractions.BaseContract
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import io.mockk.mockk

@@ -43,7 +43,7 @@ class TestViewModel(
     private val testSingle: TestSingle,
     getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
-) : BaseViewModel(
+) : RxViewModel(
     schedulerProvider,
     getErrorMessage
 ), TestContract.ViewModel {

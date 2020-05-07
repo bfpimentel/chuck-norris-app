@@ -8,7 +8,7 @@ interface NullableFieldsContract {
     interface ViewModel : BaseContract.ViewModel
 }
 
-class NullableFieldsViewModel : BaseViewModel(), NullableFieldsContract.ViewModel
+class NullableFieldsViewModel : RxViewModel(), NullableFieldsContract.ViewModel
 
 class NullableFieldsViewModelTest : ViewModelTest<NullableFieldsContract.ViewModel>() {
 
