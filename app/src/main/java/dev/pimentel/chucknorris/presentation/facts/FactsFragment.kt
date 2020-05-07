@@ -36,7 +36,7 @@ class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
             viewModel.getSearchTermAndFacts()
         }
 
-        viewModel.state().observe { state ->
+        viewModel.factsState().observe { state ->
             adapter.submitList(state.facts)
             factsTvFirstAccess.isVisible = state.isFirstAccess
             factsAblSearchTerm.isVisible = state.hasFacts

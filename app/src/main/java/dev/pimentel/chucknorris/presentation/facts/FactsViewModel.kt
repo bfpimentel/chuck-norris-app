@@ -34,7 +34,7 @@ class FactsViewModel(
     private val state = MutableLiveData<FactsState>()
     private val shareableFact = MutableLiveData<ShareableFact>()
 
-    override fun state(): LiveData<FactsState> = state
+    override fun factsState(): LiveData<FactsState> = state
     override fun shareableFact(): LiveData<ShareableFact> = shareableFact
 
     override fun navigateToSearch() {

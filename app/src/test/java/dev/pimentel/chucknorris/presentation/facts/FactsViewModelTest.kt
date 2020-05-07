@@ -20,8 +20,7 @@ import io.mockk.runs
 import io.mockk.verify
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
@@ -91,17 +90,15 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getFacts(getFactsParams) } returns Single.just(facts)
         every { factDisplayMapper.map(facts) } returns factsDisplays
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
-
         viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.searchTerm().value, term)
-        assertEquals(viewModel.facts().value, factsDisplays)
-        assertNull(viewModel.listIsEmpty().value)
-        assertNotNull(viewModel.isLoading().value)
-        assertNotNull(viewModel.isNotLoading().value)
+        val expected = viewModel.factsState().value!!
+
+        assertTrue(expected is FactsState.Success)
+        assertEquals(expected.facts, factsDisplays)
+        assertTrue(expected.hasFacts)
+        assertEquals(expected.searchTerm, term)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -128,17 +125,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getSearchTerm(NoParams) } returns Single.just(term)
         every { getFacts(getFactsParams) } returns Single.just(facts)
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
-
         viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.searchTerm().value, term)
-        assertNull(viewModel.facts().value)
-        assertNotNull(viewModel.listIsEmpty().value)
-        assertNotNull(viewModel.isLoading().value)
-        assertNotNull(viewModel.isNotLoading().value)
+        val expected = viewModel.factsState().value!!
+
+        assertTrue(expected is FactsState.Empty)
+        assertTrue(expected.isEmpty)
+        assertEquals(expected.searchTerm, term)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -166,16 +160,14 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { getFacts(getFactsParams) } returns Single.error(error)
         every { getErrorMessage(getErrorMessageParams) } returns errorMessage
 
-        assertNull(viewModel.error().value)
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
-
         viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.error().value, errorMessage)
-        assertNotNull(viewModel.isLoading().value)
-        assertNotNull(viewModel.isNotLoading().value)
+        val expected = viewModel.factsState().value!!
+
+        assertTrue(expected is FactsState.Error)
+        assertEquals(expected.errorMessage, errorMessage)
+        assertTrue(expected.hasError)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -193,17 +185,16 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
     }
 
     @Test
-    fun `should post value on first access after failing to get search term`() {
+    fun `should post first access search term could not be found`() {
         every { getSearchTerm(NoParams) } returns Single.error(GetSearchTerm.SearchTermNotFoundException())
-
-        assertNull(viewModel.firstAccess().value)
 
         viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
-        assertNotNull(viewModel.firstAccess().value)
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
+        val expected = viewModel.factsState().value!!
+
+        assertTrue(expected is FactsState.FirstAccess)
+        assertTrue(expected.isFirstAccess)
 
         verify(exactly = 1) {
             getSearchTerm(NoParams)
@@ -244,15 +235,15 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
         every { factDisplayMapper.map(facts) } returns factsDisplays
         every { shareableFactMapper.map(facts.first()) } returns shareableFact
 
-        assertNull(viewModel.isLoading().value)
-        assertNull(viewModel.isNotLoading().value)
-
         viewModel.getSearchTermAndFacts()
         testScheduler.triggerActions()
 
-        assertEquals(viewModel.facts().value, factsDisplays)
-        assertNotNull(viewModel.isLoading().value)
-        assertNotNull(viewModel.isNotLoading().value)
+        val expectedFactsState = viewModel.factsState().value!!
+
+        assertTrue(expectedFactsState is FactsState.Success)
+        assertEquals(expectedFactsState.facts, factsDisplays)
+        assertTrue(expectedFactsState.hasFacts)
+        assertEquals(expectedFactsState.searchTerm, term)
 
         viewModel.getShareableFact(factsDisplays.first().id)
 

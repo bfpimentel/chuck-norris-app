@@ -11,12 +11,7 @@ interface FactsContract {
         fun navigateToSearch()
         fun getShareableFact(id: String)
 
-        fun state(): LiveData<FactsState>
+        fun factsState(): LiveData<FactsState>
         fun shareableFact(): LiveData<ShareableFact>
-
-//        fun firstAccess(): LiveData<Unit>
-//        fun searchTerm(): LiveData<String>
-//        fun facts(): LiveData<List<FactDisplay>>
-//        fun listIsEmpty(): LiveData<Unit>
     }
 }
