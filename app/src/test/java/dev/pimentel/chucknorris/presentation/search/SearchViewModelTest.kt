@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.usecases.AreCategoriesStored
@@ -160,6 +161,40 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             areCategoriesStored(NoParams)
             getCategorySuggestions(NoParams)
             getLastSearchTerms(NoParams)
+        }
+        confirmVerified(
+            navigator,
+            areCategoriesStored,
+            saveAndGetCategoriesSuggestions,
+            getCategorySuggestions,
+            handleSearchTermSaving,
+            getLastSearchTerms
+        )
+    }
+
+    @Test
+    fun `should post error message when failing to get category suggestions`() {
+        val error = IllegalArgumentException()
+        val errorMessage = "errorMessage"
+        val getErrorMessageParams = GetErrorMessage.Params(error)
+
+        every { areCategoriesStored(NoParams) } returns Single.just(false)
+        every { saveAndGetCategoriesSuggestions(NoParams) } returns Single.error(error)
+        every { getErrorMessage(getErrorMessageParams) } returns errorMessage
+
+        viewModel.getCategorySuggestionsAndSearchTerms()
+        testScheduler.triggerActions()
+
+        val expectedSearchState = viewModel.searchState().value!!
+
+        assertTrue(expectedSearchState is SearchState.Error)
+        assertEquals(expectedSearchState.errorMessage, errorMessage)
+        assertTrue(expectedSearchState.hasError)
+
+        verify(exactly = 1) {
+            areCategoriesStored(NoParams)
+            saveAndGetCategoriesSuggestions(NoParams)
+            getErrorMessage(getErrorMessageParams)
         }
         confirmVerified(
             navigator,
