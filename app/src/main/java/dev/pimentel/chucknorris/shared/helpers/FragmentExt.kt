@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared.abstractions
+package dev.pimentel.chucknorris.shared.helpers
 
 import android.view.View
 import androidx.fragment.app.Fragment

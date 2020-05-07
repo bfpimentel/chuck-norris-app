@@ -16,7 +16,7 @@ import com.google.android.material.chip.ChipGroup
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
 import dev.pimentel.chucknorris.databinding.SearchLayoutBinding
-import dev.pimentel.chucknorris.shared.abstractions.lifecycleBinding
+import dev.pimentel.chucknorris.shared.helpers.lifecycleBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
