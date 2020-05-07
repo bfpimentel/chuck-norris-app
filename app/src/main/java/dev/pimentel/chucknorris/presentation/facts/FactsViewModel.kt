@@ -38,6 +38,11 @@ class FactsViewModel(
     override fun factsState(): LiveData<FactsState> = factsState
     override fun shareableFact(): LiveData<ShareableFact> = shareableFact
 
+    override fun onCleared() {
+        super.onCleared()
+        dispose()
+    }
+
     override fun navigateToSearch() {
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }

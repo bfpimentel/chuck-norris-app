@@ -3,9 +3,9 @@ package dev.pimentel.chucknorris.presentation.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.helpers.DisposablesHolder
 import dev.pimentel.chucknorris.shared.helpers.DisposablesHolderImpl
-import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.usecases.AreCategoriesStored
@@ -34,6 +34,11 @@ class SearchViewModel(
 
     override fun searchState(): LiveData<SearchState> = searchState
     override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
+
+    override fun onCleared() {
+        super.onCleared()
+        dispose()
+    }
 
     override fun getCategorySuggestionsAndSearchTerms() {
         areCategoriesStored(NoParams)
