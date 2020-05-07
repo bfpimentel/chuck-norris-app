@@ -2,7 +2,7 @@ package dev.pimentel.chucknorris.presentation.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
+import dev.pimentel.chucknorris.shared.abstractions.RxViewModel
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
@@ -23,9 +23,8 @@ class SearchViewModel(
     private val getLastSearchTerms: GetLastSearchTerms,
     private val getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
-) : BaseViewModel(
-    schedulerProvider,
-    getErrorMessage
+) : RxViewModel(
+    schedulerProvider
 ), SearchContract.ViewModel {
 
     private val searchState = MutableLiveData<SearchState>()
@@ -74,7 +73,7 @@ class SearchViewModel(
     override fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
             .compose(observeOnUIAfterCompletableResult())
-            .handle(navigator::pop, ::postErrorMessage)
+            .handle(navigator::pop) {}
     }
 
     private data class InitializeData(

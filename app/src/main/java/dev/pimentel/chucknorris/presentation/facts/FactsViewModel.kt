@@ -6,7 +6,7 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
-import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
+import dev.pimentel.chucknorris.shared.abstractions.RxViewModel
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
@@ -24,9 +24,8 @@ class FactsViewModel(
     private val getFacts: GetFacts,
     private val getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
-) : BaseViewModel(
-    schedulerProvider,
-    getErrorMessage
+) : RxViewModel(
+    schedulerProvider
 ), FactsContract.ViewModel {
 
     private lateinit var facts: List<Fact>
