@@ -1,83 +1,72 @@
 package dev.pimentel.chucknorris.presentation.facts
 
+import android.os.Bundle
+import android.view.View
 import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsLayoutBinding
-import dev.pimentel.chucknorris.shared.abstractions.BaseFragment
+import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.shared.helpers.lifecycleBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 
-class FactsFragment : BaseFragment<FactsContract.ViewModel, FactsLayoutBinding>(
-    R.layout.facts_layout
-) {
+class FactsFragment : Fragment(R.layout.facts_layout) {
 
-    override val module = factsModule
-    override val viewModel: FactsContract.ViewModel by viewModel<FactsViewModel>()
+    private val binding by lifecycleBinding(FactsLayoutBinding::bind)
+    private val viewModel: FactsContract.ViewModel by viewModel<FactsViewModel>()
     private val adapter: FactsAdapter by inject()
 
-    override fun bindView() = initBinding(
-        FactsLayoutBinding.inflate(layoutInflater)
-    ) {
-        factsRvFacts.also {
-            it.adapter = adapter.apply {
-                onItemClick = viewModel::getShareableFact
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadKoinModules(factsModule)
+
+        binding.apply {
+            factsRvFacts.also {
+                it.adapter = adapter.apply {
+                    onItemClick = viewModel::getShareableFact
+                }
+                it.layoutManager = LinearLayoutManager(requireContext())
             }
-            it.layoutManager = LinearLayoutManager(requireContext())
-        }
 
-        factsFabGoToSearch.setOnClickListener {
-            viewModel.navigateToSearch()
-        }
+            factsFabGoToSearch.setOnClickListener {
+                viewModel.navigateToSearch()
+            }
 
-        factsTvError.setOnClickListener {
+            factsTvError.setOnClickListener {
+                viewModel.getSearchTermAndFacts()
+            }
+
+            viewModel.factsState().observe(viewLifecycleOwner, Observer { state ->
+                adapter.submitList(state.facts)
+                factsTvFirstAccess.isVisible = state.isFirstAccess
+                factsAblSearchTerm.isVisible = state.hasFacts
+                factsTvSearchTerm.text = state.searchTerm
+                factsRvFacts.isVisible = state.hasFacts
+                factsTvError.isVisible = state.hasError
+                factsTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
+                factsRvFacts.isVisible = state.hasFacts
+                factsTvListIsEmpty.isVisible = state.isEmpty
+                factsLoading.root.isVisible = state.isLoading
+            })
+
+            viewModel.shareableFact().observe(viewLifecycleOwner, Observer(::shareFact))
+
             viewModel.getSearchTermAndFacts()
         }
-
-        viewModel.firstAccess().observe {
-            factsTvFirstAccess.isVisible = true
-            factsAblSearchTerm.isVisible = false
-            factsRvFacts.isVisible = false
-            factsTvError.isVisible = false
-        }
-
-        viewModel.searchTerm().observe { searchTerm ->
-            factsTvSearchTerm.text = searchTerm
-            factsAblSearchTerm.isVisible = true
-        }
-
-        viewModel.facts().observe { facts ->
-            adapter.submitList(facts)
-            factsRvFacts.isVisible = true
-            factsTvFirstAccess.isVisible = false
-            factsTvError.isVisible = false
-            factsTvListIsEmpty.isVisible = false
-        }
-
-        viewModel.error().observe { errorMessage ->
-            factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
-            factsTvError.isVisible = true
-            factsAblSearchTerm.isVisible = false
-            factsRvFacts.isVisible = false
-            factsTvListIsEmpty.isVisible = false
-        }
-
-        viewModel.listIsEmpty().observe {
-            factsTvListIsEmpty.isVisible = true
-            factsRvFacts.isVisible = false
-        }
-
-        viewModel.isLoading().observe { factsLoading.root.isVisible = true }
-
-        viewModel.isNotLoading().observe { factsLoading.root.isVisible = false }
-
-        viewModel.shareableFact().observe(::shareFact)
-
-        viewModel.getSearchTermAndFacts()
     }
 
-    private fun shareFact(shareableFact: FactsViewModel.ShareableFact) {
+    override fun onDestroy() {
+        super.onDestroy()
+        unloadKoinModules(factsModule)
+    }
+
+    private fun shareFact(shareableFact: ShareableFact) {
         ShareCompat.IntentBuilder
             .from(requireActivity())
             .setType(SHARE_TYPE)

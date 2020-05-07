@@ -1,12 +1,11 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.Category
+import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
 

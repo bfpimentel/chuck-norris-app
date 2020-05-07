@@ -1,6 +1,6 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.Category
+import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Single

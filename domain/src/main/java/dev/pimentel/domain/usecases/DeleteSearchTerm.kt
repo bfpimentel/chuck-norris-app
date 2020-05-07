@@ -1,6 +1,6 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Completable
 

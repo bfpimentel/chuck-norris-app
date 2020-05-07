@@ -2,18 +2,18 @@ package dev.pimentel.chucknorris.presentation.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import dev.pimentel.chucknorris.shared.abstractions.BaseViewModel
+import androidx.lifecycle.ViewModel
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
+import dev.pimentel.chucknorris.shared.helpers.DisposablesHolder
+import dev.pimentel.chucknorris.shared.helpers.DisposablesHolderImpl
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
-import dev.pimentel.domain.usecases.GetErrorMessage
 import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 
 @Suppress("LongParameterList")
 class SearchViewModel(
@@ -23,39 +23,40 @@ class SearchViewModel(
     private val getCategorySuggestions: GetCategorySuggestions,
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
-    getErrorMessage: GetErrorMessage,
+    private val getErrorMessage: GetErrorMessage,
     schedulerProvider: SchedulerProvider
-) : BaseViewModel(
-    schedulerProvider,
-    getErrorMessage
-), SearchContract.ViewModel {
+) : ViewModel(),
+    DisposablesHolder by DisposablesHolderImpl(schedulerProvider),
+    SearchContract.ViewModel {
 
-    private val categorySuggestions = MutableLiveData<List<String>>()
-    private val searchTerms = MutableLiveData<List<String>>()
+    private val searchState = MutableLiveData<SearchState>()
     private val selectedSuggestionIndex = MutableLiveData<Int>()
 
-    override fun categorySuggestions(): LiveData<List<String>> = categorySuggestions
-    override fun searchTerms(): LiveData<List<String>> = searchTerms
+    override fun searchState(): LiveData<SearchState> = searchState
     override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
 
+    override fun onCleared() {
+        super.onCleared()
+        dispose()
+    }
+
     override fun getCategorySuggestionsAndSearchTerms() {
-        Single.zip(
-            areCategoriesStored(NoParams)
-                .flatMap { areStored ->
-                    if (areStored) {
-                        getCategorySuggestions(NoParams)
-                    } else {
-                        saveAndGetCategoriesSuggestions(NoParams)
-                            .doOnSubscribe { isLoading.postValue(Unit) }
-                            .doFinally { isNotLoading.postValue(Unit) }
-                    }
-                },
-            getLastSearchTerms(NoParams),
-            BiFunction(::InitializeData)
-        ).compose(observeOnUIAfterSingleResult())
+        areCategoriesStored(NoParams)
+            .flatMap { areStored ->
+                if (areStored) {
+                    getCategorySuggestions(NoParams)
+                } else {
+                    saveAndGetCategoriesSuggestions(NoParams)
+                        .doOnSubscribe { searchState.postValue(SearchState.Loading(true)) }
+                        .doFinally { searchState.postValue(SearchState.Loading(false)) }
+                }
+            }.flatMap { categorySuggestions ->
+                getLastSearchTerms(NoParams).map { searchTerms ->
+                    InitializeData(categorySuggestions, searchTerms)
+                }
+            }.compose(observeOnUIAfterSingleResult())
             .handle({ data ->
-                categorySuggestions.postValue(data.suggestions)
-                searchTerms.postValue(data.searchTerms)
+                searchState.postValue(SearchState.Success(data.suggestions, data.searchTerms))
 
                 data.searchTerms
                     .firstOrNull()
@@ -67,13 +68,19 @@ class SearchViewModel(
                             selectedSuggestionIndex.postValue(index)
                         }
                     }
-            }, ::postErrorMessage)
+            }, { error ->
+                searchState.postValue(
+                    SearchState.Error(
+                        getErrorMessage(GetErrorMessage.Params(error))
+                    )
+                )
+            })
     }
 
     override fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
             .compose(observeOnUIAfterCompletableResult())
-            .handle(navigator::pop, ::postErrorMessage)
+            .handle(navigator::pop) {}
     }
 
     private data class InitializeData(

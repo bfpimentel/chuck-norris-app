@@ -1,14 +1,14 @@
 package dev.pimentel.data
 
 import androidx.room.Room
-import dev.pimentel.data.repositories.CategoriesRepository
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
-import dev.pimentel.data.repositories.FactsRepository
 import dev.pimentel.data.repositories.FactsRepositoryImpl
-import dev.pimentel.data.repositories.SearchTermsRepository
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
-import dev.pimentel.data.sources.CategoriesRemoteDataSource
-import dev.pimentel.data.sources.FactsRemoteDataSource
+import dev.pimentel.data.sources.remote.CategoriesRemoteDataSource
+import dev.pimentel.data.sources.remote.FactsRemoteDataSource
+import dev.pimentel.domain.repositories.CategoriesRepository
+import dev.pimentel.domain.repositories.FactsRepository
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext

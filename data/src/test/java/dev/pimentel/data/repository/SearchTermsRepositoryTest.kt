@@ -1,9 +1,9 @@
 package dev.pimentel.data.repository
 
 import dev.pimentel.data.models.SearchTerm
-import dev.pimentel.data.repositories.SearchTermsRepository
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
-import dev.pimentel.data.sources.SearchTermsLocalDataSource
+import dev.pimentel.data.sources.local.SearchTermsLocalDataSource
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -14,6 +14,7 @@ import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import dev.pimentel.domain.models.SearchTerm as DomainSearchTerm
 
 class SearchTermsRepositoryTest {
 
@@ -31,13 +32,14 @@ class SearchTermsRepositoryTest {
     @Test
     fun `should route getSearchTerm call to localDataSource`() {
         val searchTerm = SearchTerm(0, "term")
+        val domainSearchTerm = DomainSearchTerm("term")
 
         every { localDataSource.getSearchTerm() } returns Single.just(searchTerm)
 
         searchTermsRepository.getSearchTerm()
             .test()
             .assertNoErrors()
-            .assertResult(searchTerm)
+            .assertResult(domainSearchTerm)
 
         verify(exactly = 1) { localDataSource.getSearchTerm() }
         confirmVerified(localDataSource)
@@ -50,15 +52,19 @@ class SearchTermsRepositoryTest {
             SearchTerm(1, "term1"),
             SearchTerm(2, "term2")
         )
+        val domainSearchTerms = listOf(
+            DomainSearchTerm("term1"),
+            DomainSearchTerm("term2")
+        )
 
-        every { localDataSource.getSearchTermsByTerm(term) } returns Single.just(searchTerms)
+        every { localDataSource.getSearchTermByTerm(term) } returns Single.just(searchTerms)
 
         searchTermsRepository.getSearchTermByTerm(term)
             .test()
             .assertNoErrors()
-            .assertResult(searchTerms)
+            .assertResult(domainSearchTerms)
 
-        verify(exactly = 1) { localDataSource.getSearchTermsByTerm(term) }
+        verify(exactly = 1) { localDataSource.getSearchTermByTerm(term) }
         confirmVerified(localDataSource)
     }
 
@@ -68,13 +74,17 @@ class SearchTermsRepositoryTest {
             SearchTerm(1, "term1"),
             SearchTerm(2, "term2")
         )
+        val domainSearchTerms = listOf(
+            DomainSearchTerm("term1"),
+            DomainSearchTerm("term2")
+        )
 
         every { localDataSource.getLastSearchTerms() } returns Single.just(searchTerms)
 
         searchTermsRepository.getLastSearchTerms()
             .test()
             .assertNoErrors()
-            .assertResult(searchTerms)
+            .assertResult(domainSearchTerms)
 
         verify(exactly = 1) { localDataSource.getLastSearchTerms() }
         confirmVerified(localDataSource)
@@ -82,11 +92,12 @@ class SearchTermsRepositoryTest {
 
     @Test
     fun `should route insertSearchTerm call to localDataSource`() {
-        val searchTerm = SearchTerm(1, "term")
+        val searchTerm = SearchTerm(0, "term")
+        val domainSearchTerm = DomainSearchTerm("term")
 
         every { localDataSource.insertSearchTerm(searchTerm) } just runs
 
-        searchTermsRepository.saveSearchTerm(searchTerm)
+        searchTermsRepository.saveSearchTerm(domainSearchTerm)
 
         verify(exactly = 1) { localDataSource.insertSearchTerm(searchTerm) }
         confirmVerified(localDataSource)

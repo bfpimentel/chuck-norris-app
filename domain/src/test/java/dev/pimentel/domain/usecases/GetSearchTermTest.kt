@@ -1,7 +1,7 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.data.models.SearchTerm
-import dev.pimentel.data.repositories.SearchTermsRepository
+import dev.pimentel.domain.models.SearchTerm
+import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -22,7 +22,7 @@ class GetSearchTermTest : UseCaseTest<GetSearchTerm>() {
     @Test
     fun `should get search term and map it to string after getting it successfully from repository`() {
         val term = "term"
-        val searchTerm = SearchTerm(0, term)
+        val searchTerm = SearchTerm(term)
 
         every { searchTermsRepository.getSearchTerm() } returns Single.just(searchTerm)
 
