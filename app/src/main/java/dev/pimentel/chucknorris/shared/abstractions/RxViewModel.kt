@@ -9,7 +9,7 @@ import io.reactivex.SingleTransformer
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class RxViewModel(
-    private val schedulerProvider: SchedulerProvider? = null
+    private val schedulerProvider: SchedulerProvider
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -30,20 +30,14 @@ abstract class RxViewModel(
     ) = compositeDisposable.add(this.subscribe(onSuccess, onError))
 
     protected fun <T> observeOnUIAfterSingleResult() =
-        if (schedulerProvider == null) error("schedulerProvider must not be null")
-        else {
-            SingleTransformer<T, T> {
-                it.subscribeOn(schedulerProvider.io)
-                    .observeOn(schedulerProvider.ui)
-            }
+        SingleTransformer<T, T> {
+            it.subscribeOn(schedulerProvider.io)
+                .observeOn(schedulerProvider.ui)
         }
 
     protected fun observeOnUIAfterCompletableResult() =
-        if (schedulerProvider == null) error("schedulerProvider must not be null")
-        else {
-            CompletableTransformer {
-                it.subscribeOn(schedulerProvider.io)
-                    .observeOn(schedulerProvider.ui)
-            }
+        CompletableTransformer {
+            it.subscribeOn(schedulerProvider.io)
+                .observeOn(schedulerProvider.ui)
         }
 }
