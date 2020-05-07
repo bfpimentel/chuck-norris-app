@@ -30,14 +30,20 @@ abstract class RxViewModel(
     ) = compositeDisposable.add(this.subscribe(onSuccess, onError))
 
     protected fun <T> observeOnUIAfterSingleResult() =
-        SingleTransformer<T, T> {
-            it.subscribeOn(schedulerProvider!!.io)
-                .observeOn(schedulerProvider.ui)
+        if (schedulerProvider == null) error("schedulerProvider must not be null")
+        else {
+            SingleTransformer<T, T> {
+                it.subscribeOn(schedulerProvider.io)
+                    .observeOn(schedulerProvider.ui)
+            }
         }
 
     protected fun observeOnUIAfterCompletableResult() =
-        CompletableTransformer {
-            it.subscribeOn(schedulerProvider!!.io)
-                .observeOn(schedulerProvider.ui)
+        if (schedulerProvider == null) error("schedulerProvider must not be null")
+        else {
+            CompletableTransformer {
+                it.subscribeOn(schedulerProvider.io)
+                    .observeOn(schedulerProvider.ui)
+            }
         }
 }

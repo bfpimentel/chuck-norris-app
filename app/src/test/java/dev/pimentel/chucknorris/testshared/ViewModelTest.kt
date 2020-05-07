@@ -34,7 +34,7 @@ class InstantExecutorExtension : BeforeEachCallback, AfterEachCallback {
 }
 
 @ExtendWith(InstantExecutorExtension::class)
-abstract class ViewModelTest<ViewModelType : BaseContract.ViewModel> {
+abstract class ViewModelTest<ViewModelType> {
 
     protected lateinit var testScheduler: TestScheduler
     protected lateinit var schedulerProvider: SchedulerProvider

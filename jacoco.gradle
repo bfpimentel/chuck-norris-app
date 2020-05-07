@@ -25,6 +25,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*Activity*.*',
             '**/*Fragment*.*',
             '**/*Application*.*',
+            '**/RxViewModel.*',
             '**/SchedulerProvider**.*'
     ]
 
