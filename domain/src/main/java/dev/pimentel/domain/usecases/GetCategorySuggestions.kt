@@ -6,14 +6,18 @@ import dev.pimentel.domain.usecases.shared.UseCase
 import io.reactivex.Single
 
 class GetCategorySuggestions(
-    private val getAllCategories: GetAllCategories,
-    private val shuffleList: ShuffleList
+    private val getAllCategories: GetAllCategories
 ) : UseCase<NoParams, Single<List<String>>> {
 
     override fun invoke(params: NoParams): Single<List<String>> =
         getAllCategories(NoParams).map { savedCategories ->
-            shuffleList(ShuffleList.Params(savedCategories))
-                .subList(fromIndex = 0, toIndex = 8)
+            savedCategories.shuffled()
+                .subList(fromIndex = FIRST_INDEX, toIndex = LAST_INDEX)
                 .map(Category::name)
         }
+
+    private companion object {
+        const val FIRST_INDEX = 0
+        const val LAST_INDEX = 8
+    }
 }

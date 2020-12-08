@@ -17,17 +17,15 @@ import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.SaveExistingSearchTerm
 import dev.pimentel.domain.usecases.SaveNonExistingSearchTerm
 import dev.pimentel.domain.usecases.SaveSearchTerm
-import dev.pimentel.domain.usecases.ShuffleList
 import org.koin.dsl.module
 
 private val useCasesModule = module {
-    single { ShuffleList() }
     single { GetAllCategories(get()) }
     single { GetAllCategoriesNames(get()) }
     single { SaveAllCategories(get()) }
     single { AreCategoriesStored(get()) }
     single { SaveAndGetCategoriesSuggestions(get(), get(), get()) }
-    single { GetCategorySuggestions(get(), get()) }
+    single { GetCategorySuggestions(get()) }
     single { SaveSearchTerm(get()) }
     single { DeleteSearchTerm(get()) }
     single { DeleteLastSearchTerm(get()) }
