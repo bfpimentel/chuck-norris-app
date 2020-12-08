@@ -1,12 +1,12 @@
 package dev.pimentel.chucknorris.testshared
 
-import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.TestScheduler
 
-internal class TestSchedulerProvider(
+internal class TestDispatchersProvider(
     testScheduler: TestScheduler
-) : SchedulerProvider {
+) : DispatchersProvider {
 
     override val ui: Scheduler = testScheduler
 

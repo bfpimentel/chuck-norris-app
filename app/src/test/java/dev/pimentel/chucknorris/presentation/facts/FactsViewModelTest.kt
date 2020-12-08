@@ -1,6 +1,7 @@
 package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
@@ -40,7 +41,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             getSearchTerm,
             getFacts,
             getErrorMessage,
-            schedulerProvider
+            dispatchersProvider
         )
     }
 

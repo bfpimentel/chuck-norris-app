@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.helpers.DisposablesHolder
-import dev.pimentel.chucknorris.shared.helpers.DisposablesHolderImpl
+import dev.pimentel.chucknorris.shared.extensions.DisposablesHolder
+import dev.pimentel.chucknorris.shared.extensions.DisposablesHolderImpl
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
-import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
 import dev.pimentel.domain.usecases.GetLastSearchTerms
@@ -24,9 +24,9 @@ class SearchViewModel(
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
     private val getErrorMessage: GetErrorMessage,
-    schedulerProvider: SchedulerProvider
+    dispatchersProvider: DispatchersProvider
 ) : ViewModel(),
-    DisposablesHolder by DisposablesHolderImpl(schedulerProvider),
+    DisposablesHolder by DisposablesHolderImpl(dispatchersProvider),
     SearchContract.ViewModel {
 
     private val searchState = MutableLiveData<SearchState>()

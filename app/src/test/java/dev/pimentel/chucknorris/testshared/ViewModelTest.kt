@@ -3,7 +3,7 @@ package dev.pimentel.chucknorris.testshared
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import io.mockk.mockk
 import io.reactivex.schedulers.TestScheduler
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -37,7 +37,7 @@ class InstantExecutorExtension : BeforeEachCallback, AfterEachCallback {
 abstract class ViewModelTest<ViewModelType> {
 
     protected lateinit var testScheduler: TestScheduler
-    protected lateinit var schedulerProvider: SchedulerProvider
+    protected lateinit var dispatchersProvider: DispatchersProvider
     protected lateinit var getErrorMessage: GetErrorMessage
 
     abstract val viewModel: ViewModelType
@@ -48,7 +48,7 @@ abstract class ViewModelTest<ViewModelType> {
     @BeforeEach
     fun `should setup subject and then the test dependencies must not be null`() {
         testScheduler = TestScheduler()
-        schedulerProvider = TestSchedulerProvider(testScheduler)
+        dispatchersProvider = TestDispatchersProvider(testScheduler)
         getErrorMessage = mockk()
 
         `setup subject`()

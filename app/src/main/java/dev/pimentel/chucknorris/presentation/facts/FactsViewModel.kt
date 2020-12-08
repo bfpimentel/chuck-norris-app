@@ -1,21 +1,27 @@
 package dev.pimentel.chucknorris.presentation.facts
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
+import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
-import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.helpers.DisposablesHolder
-import dev.pimentel.chucknorris.shared.helpers.DisposablesHolderImpl
+import dev.pimentel.chucknorris.shared.mvi.Reducer
+import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
-import dev.pimentel.chucknorris.shared.schedulerprovider.SchedulerProvider
+import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList")
 class FactsViewModel(
@@ -25,75 +31,86 @@ class FactsViewModel(
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
     private val getErrorMessage: GetErrorMessage,
-    schedulerProvider: SchedulerProvider
-) : ViewModel(),
-    DisposablesHolder by DisposablesHolderImpl(schedulerProvider),
-    FactsContract.ViewModel {
+    private val reducer: Reducer<FactsState>,
+    private val dispatchersProvider: DispatchersProvider
+) : ViewModel(), FactsContract.ViewModel,
+    Reducer<FactsState> by reducer {
 
     private lateinit var facts: List<Fact>
 
-    private val factsState = MutableLiveData<FactsState>()
-    private val shareableFact = MutableLiveData<ShareableFact>()
+    override fun state(): StateFlow<FactsState> = mutableState
 
-    override fun factsState(): LiveData<FactsState> = factsState
-    override fun shareableFact(): LiveData<ShareableFact> = shareableFact
+    private val publisher = MutableSharedFlow<FactsIntention>()
 
-    override fun onCleared() {
-        super.onCleared()
-        dispose()
+    init {
+        publisher.onEach { intention ->
+            viewModelScope.launch(dispatchersProvider.io) {
+                handleIntentions(intention)
+            }
+        }.shareIn(viewModelScope, SharingStarted.Eagerly)
     }
 
-    override fun navigateToSearch() {
+    override fun publish(intention: FactsIntention) {
+        viewModelScope.launch(dispatchersProvider.io) {
+            publisher.emit(intention)
+        }
+    }
+
+    private suspend fun handleIntentions(intention: FactsIntention) {
+        when (intention) {
+            is FactsIntention.GetSearchTermsAndFacts -> getSearchTermAndFacts()
+            is FactsIntention.NavigateToSearch -> navigateToSearch()
+            is FactsIntention.ShareFact -> getShareableFact(id = intention.id)
+        }
+    }
+
+    private suspend fun getSearchTermAndFacts() {
+        updateState { copy(isLoading = true) }
+
+        try {
+            val searchTerm = getSearchTerm(NoParams)
+            val facts = getFacts(GetFacts.Params(searchTerm))
+
+            this.facts = facts
+
+            if (facts.isEmpty()) {
+                updateState {
+                    copy(
+                        searchTerm = searchTerm,
+                        isEmpty = true,
+                        isLoading = false,
+                    )
+                }
+                return
+            }
+
+            updateState {
+                copy(
+                    facts = factDisplayMapper.map(facts),
+                    searchTerm = searchTerm,
+                )
+            }
+        } catch (error: Exception) {
+            if (error is GetSearchTerm.SearchTermNotFoundException) {
+                updateState { copy(isFirstAccess = true) }
+            } else {
+                val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
+                updateState { copy(errorEvent = errorMessage.toEvent()) }
+            }
+        } finally {
+            updateState { copy(isLoading = false) }
+        }
+    }
+
+    private fun navigateToSearch() {
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }
 
-    override fun getSearchTermAndFacts() {
-        getSearchTerm(NoParams).flatMap { searchTerm ->
-            getFacts(GetFacts.Params(searchTerm))
-                .doOnSubscribe { factsState.postValue(FactsState.Loading(true)) }
-                .doAfterTerminate { factsState.postValue(FactsState.Loading(false)) }
-                .map { facts ->
-                    InitializeData(
-                        searchTerm,
-                        facts
-                    )
-                }
-        }.compose(observeOnUIAfterSingleResult())
-            .handle({ data ->
-                this.facts = data.facts
-
-                if (facts.isEmpty()) {
-                    factsState.postValue(FactsState.Empty(data.searchTerm))
-                    return@handle
-                }
-
-                factsState.postValue(
-                    FactsState.Success(
-                        factDisplayMapper.map(facts),
-                        data.searchTerm
-                    )
-                )
-            }, { error ->
-                if (error is GetSearchTerm.SearchTermNotFoundException) {
-                    factsState.postValue(FactsState.FirstAccess())
-                } else {
-                    factsState.postValue(
-                        FactsState.Error(
-                            getErrorMessage(GetErrorMessage.Params(error))
-                        )
-                    )
-                }
-            })
-    }
-
-    override fun getShareableFact(id: String) {
+    private suspend fun getShareableFact(id: String) {
         facts.first { it.id == id }
             .let(shareableFactMapper::map)
-            .also(shareableFact::postValue)
+            .also { shareableFact ->
+                updateState { copy(shareFactEvent = shareableFact.toEvent()) }
+            }
     }
-
-    private data class InitializeData(
-        val searchTerm: String,
-        val facts: List<Fact>
-    )
 }

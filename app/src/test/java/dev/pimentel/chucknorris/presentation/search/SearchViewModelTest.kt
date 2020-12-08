@@ -42,7 +42,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             handleSearchTermSaving,
             getLastSearchTerms,
             getErrorMessage,
-            schedulerProvider
+            dispatchersProvider
         )
     }
 

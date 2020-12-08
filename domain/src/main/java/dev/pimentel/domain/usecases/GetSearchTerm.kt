@@ -12,8 +12,8 @@ class GetSearchTerm(
         try {
             searchTermsRepository.getSearchTerm().term
         } catch (exception: Exception) {
-            throw SearchTermNotFoundException()
+            throw SearchTermNotFoundException
         }
 
-    private class SearchTermNotFoundException : Exception()
+    object SearchTermNotFoundException : Exception()
 }

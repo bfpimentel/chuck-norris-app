@@ -58,14 +58,13 @@ dependencies {
     implementation project(":data")
 
     implementation projectDependencies.kotlinStdlib
+    implementation projectDependencies.coroutinesCore
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat
     implementation projectDependencies.koin
     implementation projectDependencies.navigationFragment
     implementation projectDependencies.navigationUI
-    implementation projectDependencies.lifecycleRuntime
     implementation projectDependencies.lifecycleCommon
-    implementation projectDependencies.lifecycleViewModel
     implementation projectDependencies.lifecycleLiveData
 
     testImplementation testDependencies.androidTestCore
