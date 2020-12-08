@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.pimentel.chucknorris.databinding.FactsItemLayoutBinding
+import dev.pimentel.chucknorris.databinding.FactsItemBinding
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
 
 class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
@@ -17,7 +17,7 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            FactsItemLayoutBinding.inflate(
+            FactsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -30,7 +30,7 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
 
 
     inner class ViewHolder(
-        private val binding: FactsItemLayoutBinding
+        private val binding: FactsItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: FactDisplay) {

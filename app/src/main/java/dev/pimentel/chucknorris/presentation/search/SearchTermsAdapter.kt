@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.pimentel.chucknorris.databinding.SearchLastTermsItemLayoutBinding
+import dev.pimentel.chucknorris.databinding.SearchLastTermsItemBinding
 
 class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -13,7 +13,7 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            SearchLastTermsItemLayoutBinding.inflate(
+            SearchLastTermsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -25,7 +25,7 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
     }
 
     inner class ViewHolder(
-        private val binding: SearchLastTermsItemLayoutBinding
+        private val binding: SearchLastTermsItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(term: String) {

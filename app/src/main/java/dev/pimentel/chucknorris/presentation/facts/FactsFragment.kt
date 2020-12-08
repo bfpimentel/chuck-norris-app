@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.databinding.FactsLayoutBinding
+import dev.pimentel.chucknorris.databinding.FactsFragmentBinding
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.shared.helpers.lifecycleBinding
 import org.koin.android.ext.android.inject
@@ -16,9 +16,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
-class FactsFragment : Fragment(R.layout.facts_layout) {
+class FactsFragment : Fragment(R.layout.facts_fragment) {
 
-    private val binding by lifecycleBinding(FactsLayoutBinding::bind)
+    private val binding by lifecycleBinding(FactsFragmentBinding::bind)
     private val viewModel: FactsContract.ViewModel by viewModel<FactsViewModel>()
     private val adapter: FactsAdapter by inject()
 

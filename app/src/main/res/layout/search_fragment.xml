@@ -78,7 +78,7 @@
 
     <include
         android:id="@+id/search_loading"
-        layout="@layout/loading_layout"
+        layout="@layout/loading_frame"
         tools:visibility="gone" />
 
 </RelativeLayout>

@@ -14,17 +14,17 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.ChipGroup
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.databinding.SearchCategoriesItemLayoutBinding
-import dev.pimentel.chucknorris.databinding.SearchLayoutBinding
+import dev.pimentel.chucknorris.databinding.SearchCategoriesItemBinding
+import dev.pimentel.chucknorris.databinding.SearchFragmentBinding
 import dev.pimentel.chucknorris.shared.helpers.lifecycleBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
-class SearchFragment : Fragment(R.layout.search_layout) {
+class SearchFragment : Fragment(R.layout.search_fragment) {
 
-    private val binding by lifecycleBinding(SearchLayoutBinding::bind)
+    private val binding by lifecycleBinding(SearchFragmentBinding::bind)
     private val viewModel: SearchContract.ViewModel by viewModel<SearchViewModel>()
     private val adapter: SearchTermsAdapter by inject()
 
@@ -89,7 +89,7 @@ class SearchFragment : Fragment(R.layout.search_layout) {
         categorySuggestions: List<String>
     ) {
         categorySuggestions.forEach { suggestion ->
-            val chipBinding = SearchCategoriesItemLayoutBinding.inflate(layoutInflater)
+            val chipBinding = SearchCategoriesItemBinding.inflate(layoutInflater)
             chipBinding.searchCategoriesItemChip.apply {
                 text = suggestion
                 setOnClickListener { viewModel.saveSearchTerm(suggestion) }

@@ -5,7 +5,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 
-@Suppress("Unused")
 class ChuckNorrisApplication : Application() {
 
     override fun onCreate() {

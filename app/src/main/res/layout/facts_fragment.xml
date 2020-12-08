@@ -48,7 +48,7 @@
         android:overScrollMode="never"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:itemCount="10"
-        tools:listitem="@layout/facts_item_layout" />
+        tools:listitem="@layout/facts_item" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/facts_tv_first_access"
@@ -95,7 +95,7 @@
 
     <include
         android:id="@+id/facts_loading"
-        layout="@layout/loading_layout"
+        layout="@layout/loading_frame"
         tools:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
