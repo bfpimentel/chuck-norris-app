@@ -3,16 +3,13 @@ package dev.pimentel.domain.usecases
 import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.repositories.CategoriesRepository
 import dev.pimentel.domain.usecases.shared.UseCase
-import io.reactivex.Completable
 
 class SaveAllCategories(
     private val categoriesRepository: CategoriesRepository
-) : UseCase<SaveAllCategories.Params, Completable> {
+) : UseCase<SaveAllCategories.Params, Unit> {
 
-    override fun invoke(params: Params): Completable = Completable.create { emitter ->
+    override suspend fun invoke(params: Params) =
         categoriesRepository.saveAllCategories(params.categoriesNames.map(::Category))
-        emitter.onComplete()
-    }
 
     data class Params(
         val categoriesNames: List<String>

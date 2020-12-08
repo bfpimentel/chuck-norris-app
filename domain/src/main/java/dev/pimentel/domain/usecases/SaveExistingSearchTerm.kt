@@ -1,16 +1,16 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.usecases.shared.UseCase
-import io.reactivex.Completable
 
 class SaveExistingSearchTerm(
     private val deleteSearchTerm: DeleteSearchTerm,
     private val saveSearchTerm: SaveSearchTerm
-) : UseCase<SaveExistingSearchTerm.Params, Completable> {
+) : UseCase<SaveExistingSearchTerm.Params, Unit> {
 
-    override fun invoke(params: Params): Completable =
+    override suspend fun invoke(params: Params) {
         deleteSearchTerm(DeleteSearchTerm.Params(params.term))
-            .andThen(saveSearchTerm(SaveSearchTerm.Params(params.term)))
+        saveSearchTerm(SaveSearchTerm.Params(params.term))
+    }
 
     data class Params(
         val term: String

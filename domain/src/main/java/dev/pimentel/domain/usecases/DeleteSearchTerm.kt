@@ -2,16 +2,13 @@ package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.UseCase
-import io.reactivex.Completable
 
 class DeleteSearchTerm(
     private val searchTermsRepository: SearchTermsRepository
-) : UseCase<DeleteSearchTerm.Params, Completable> {
+) : UseCase<DeleteSearchTerm.Params, Unit> {
 
-    override fun invoke(params: Params): Completable = Completable.create { emitter ->
+    override suspend fun invoke(params: Params) =
         searchTermsRepository.deleteSearchTermByTerm(params.term)
-        emitter.onComplete()
-    }
 
     data class Params(
         val term: String

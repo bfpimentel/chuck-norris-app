@@ -3,38 +3,37 @@ package dev.pimentel.data.repositories
 import dev.pimentel.data.models.SearchTerm
 import dev.pimentel.data.sources.local.SearchTermsLocalDataSource
 import dev.pimentel.domain.repositories.SearchTermsRepository
-import io.reactivex.Single
 import dev.pimentel.domain.models.SearchTerm as DomainSearchTerm
 
 internal class SearchTermsRepositoryImpl(
     private val localDataSource: SearchTermsLocalDataSource
 ) : SearchTermsRepository {
 
-    override fun getSearchTerm(): Single<DomainSearchTerm> =
+    override suspend fun getSearchTerm(): DomainSearchTerm =
         localDataSource.getSearchTerm()
-            .map { searchTerm -> DomainSearchTerm(searchTerm.term) }
+            .let { searchTerm -> DomainSearchTerm(searchTerm.term) }
 
-    override fun getSearchTermByTerm(term: String): Single<List<DomainSearchTerm>> =
-        localDataSource.getSearchTermByTerm(term).map { searchTerms ->
+    override suspend fun getSearchTermByTerm(term: String): List<DomainSearchTerm> =
+        localDataSource.getSearchTermByTerm(term).let { searchTerms ->
             searchTerms.map { searchTerm -> DomainSearchTerm(searchTerm.term) }
         }
 
-    override fun saveSearchTerm(searchTerm: DomainSearchTerm) =
+    override suspend fun saveSearchTerm(searchTerm: DomainSearchTerm) =
         localDataSource.insertSearchTerm(
             SearchTerm(term = searchTerm.term)
         )
 
-    override fun deleteSearchTermByTerm(term: String) =
+    override suspend fun deleteSearchTermByTerm(term: String) =
         localDataSource.deleteSearchTermByTerm(term)
 
-    override fun getLastSearchTerms(): Single<List<DomainSearchTerm>> =
-        localDataSource.getLastSearchTerms().map { searchTerms ->
+    override suspend fun getLastSearchTerms(): List<DomainSearchTerm> =
+        localDataSource.getLastSearchTerms().let { searchTerms ->
             searchTerms.map { searchTerm -> DomainSearchTerm(searchTerm.term) }
         }
 
-    override fun getNumberOfSearchTerms(): Single<Int> =
+    override suspend fun getNumberOfSearchTerms(): Int =
         localDataSource.getNumberOfSearchTerms()
 
-    override fun deleteLastSearchTerm() =
+    override suspend fun deleteLastSearchTerm() =
         localDataSource.deleteLastSearchTerm()
 }
