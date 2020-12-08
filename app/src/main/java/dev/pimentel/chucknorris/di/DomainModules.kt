@@ -1,4 +1,4 @@
-package dev.pimentel.domain
+package dev.pimentel.chucknorris.di
 
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.AreSearchTermsOnLimit

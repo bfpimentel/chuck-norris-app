@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-android-extensions")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -34,8 +33,8 @@ android {
         }
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {
@@ -59,14 +58,11 @@ dependencies {
     implementation project(":data")
 
     implementation projectDependencies.kotlinStdlib
-    implementation projectDependencies.kotlinReflect
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat
     implementation projectDependencies.koin
     implementation projectDependencies.navigationFragment
     implementation projectDependencies.navigationUI
-    implementation projectDependencies.rxJava
-    implementation projectDependencies.rxAndroid
     implementation projectDependencies.lifecycleRuntime
     implementation projectDependencies.lifecycleCommon
     implementation projectDependencies.lifecycleViewModel
@@ -76,6 +72,4 @@ dependencies {
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI
     testRuntimeOnly testDependencies.junitEngine
-
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }

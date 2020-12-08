@@ -1,6 +1,7 @@
 package dev.pimentel.chucknorris
 
 import android.app.Application
+import dev.pimentel.chucknorris.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
