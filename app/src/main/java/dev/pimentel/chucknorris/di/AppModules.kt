@@ -14,7 +14,7 @@ private val schedulerProviderModule = module {
 }
 
 private val navigatorModule = module {
-    single<Navigator> { NavigatorImpl() }
+    single<Navigator> { NavigatorImpl(get()) }
 }
 
 private val errorHandlingModule = module {

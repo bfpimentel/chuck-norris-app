@@ -12,6 +12,7 @@ import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
+import dev.pimentel.chucknorris.shared.mvi.handle
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
@@ -41,21 +42,27 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
 
             binding.apply {
                 factsTvFirstAccess.isVisible = state.isFirstAccess
-                factsAblSearchTerm.isVisible = state.hasFacts
                 factsTvSearchTerm.text = state.searchTerm
-                factsRvFacts.isVisible = state.hasFacts
-                factsTvError.isVisible = state.hasError
-                factsRvFacts.isVisible = state.hasFacts
-                factsTvListIsEmpty.isVisible = state.isEmpty
                 factsLoading.root.isVisible = state.isLoading
 
-                state.errorEvent?.value?.let { errorMessage ->
-                    factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+                state.emptyListEvent?.handle {
+                    factsAblSearchTerm.isVisible = false
+                    factsRvFacts.isVisible = false
+                    factsTvListIsEmpty.isVisible = true
                 } ?: run {
-
+                    factsAblSearchTerm.isVisible = true
+                    factsRvFacts.isVisible = true
+                    factsTvListIsEmpty.isVisible = false
                 }
 
-                state.shareFactEvent?.value?.let(::shareFact)
+                state.errorEvent?.handle { errorMessage ->
+                    factsTvError.isVisible = true
+                    factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+                } ?: run {
+                    factsTvError.isVisible = false
+                }
+
+                state.shareFactEvent.handle(::shareFact)
             }
         }
     }

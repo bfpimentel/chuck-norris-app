@@ -9,7 +9,7 @@ class GetFacts(
 ) : UseCase<GetFacts.Params, List<Fact>> {
 
     override suspend fun invoke(params: Params): List<Fact> =
-        factsRepository.getFacts(params.term).map { response ->
+        factsRepository.getFacts(params.term).let { response ->
             response.result.map { responseItem ->
                 Fact(
                     responseItem.id,

@@ -8,6 +8,7 @@ import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
+import dev.pimentel.chucknorris.shared.mvi.Event
 import dev.pimentel.chucknorris.shared.mvi.Reducer
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
@@ -77,7 +78,7 @@ class FactsViewModel(
                 updateState {
                     copy(
                         searchTerm = searchTerm,
-                        isEmpty = true,
+                        emptyListEvent = Event.NoContent,
                         isLoading = false,
                     )
                 }

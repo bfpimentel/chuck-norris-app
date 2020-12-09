@@ -1,11 +1,12 @@
 package dev.pimentel.chucknorris.presentation.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
+import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.extensions.DisposablesHolder
-import dev.pimentel.chucknorris.shared.extensions.DisposablesHolderImpl
+import dev.pimentel.chucknorris.shared.mvi.Reducer
+import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import dev.pimentel.domain.usecases.AreCategoriesStored
@@ -14,6 +15,12 @@ import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList")
 class SearchViewModel(
@@ -24,69 +31,74 @@ class SearchViewModel(
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
     private val getErrorMessage: GetErrorMessage,
-    dispatchersProvider: DispatchersProvider
-) : ViewModel(),
-    DisposablesHolder by DisposablesHolderImpl(dispatchersProvider),
-    SearchContract.ViewModel {
+    private val reducer: Reducer<SearchState>,
+    private val dispatchersProvider: DispatchersProvider
+) : ViewModel(), SearchContract.ViewModel,
+    Reducer<SearchState> by reducer {
 
-    private val searchState = MutableLiveData<SearchState>()
-    private val selectedSuggestionIndex = MutableLiveData<Int>()
+    override fun state(): StateFlow<SearchState> = mutableState
 
-    override fun searchState(): LiveData<SearchState> = searchState
-    override fun selectedSuggestionIndex(): LiveData<Int> = selectedSuggestionIndex
+    private val publisher = MutableSharedFlow<SearchIntention>()
 
-    override fun onCleared() {
-        super.onCleared()
-        dispose()
+    init {
+        publisher.onEach { intention ->
+            viewModelScope.launch(dispatchersProvider.io) {
+                handleIntentions(intention)
+            }
+        }.shareIn(viewModelScope, SharingStarted.Eagerly)
     }
 
-    override fun getCategorySuggestionsAndSearchTerms() {
-        areCategoriesStored(NoParams)
-            .flatMap { areStored ->
-                if (areStored) {
-                    getCategorySuggestions(NoParams)
-                } else {
-                    saveAndGetCategoriesSuggestions(NoParams)
-                        .doOnSubscribe { searchState.postValue(SearchState.Loading(true)) }
-                        .doFinally { searchState.postValue(SearchState.Loading(false)) }
-                }
-            }.flatMap { categorySuggestions ->
-                getLastSearchTerms(NoParams).map { searchTerms ->
-                    InitializeData(categorySuggestions, searchTerms)
-                }
-            }.compose(observeOnUIAfterSingleResult())
-            .handle({ data ->
-                searchState.postValue(SearchState.Success(data.suggestions, data.searchTerms))
+    override fun publish(intention: SearchIntention) {
+        viewModelScope.launch(dispatchersProvider.io) {
+            publisher.emit(intention)
+        }
+    }
 
-                data.searchTerms
-                    .firstOrNull()
-                    ?.let { lastSearchTerm ->
-                        data.suggestions
-                            .indexOfFirst { suggestion -> suggestion == lastSearchTerm }
-                    }?.also { index ->
-                        if (index != NOT_FOUND_INDEX) {
-                            selectedSuggestionIndex.postValue(index)
-                        }
-                    }
-            }, { error ->
-                searchState.postValue(
-                    SearchState.Error(
-                        getErrorMessage(GetErrorMessage.Params(error))
-                    )
+    private suspend fun handleIntentions(intention: SearchIntention) {
+        when (intention) {
+            is SearchIntention.GetCategorySuggestionsAndSearchTerms -> getCategorySuggestionsAndSearchTerms()
+            is SearchIntention.SaveSearchTerm -> saveSearchTerm(term = intention.term)
+        }
+    }
+
+    private suspend fun getCategorySuggestionsAndSearchTerms() {
+        try {
+            val areStored = areCategoriesStored(NoParams)
+
+            val suggestions = if (areStored) {
+                getCategorySuggestions(NoParams)
+            } else {
+                updateState { copy(isLoading = true) }
+                saveAndGetCategoriesSuggestions(NoParams).also {
+                    updateState { copy(isLoading = false) }
+                }
+            }
+
+            val searchTerms = getLastSearchTerms(NoParams)
+
+            val selectedSuggestionIndex = searchTerms
+                .firstOrNull()
+                ?.let { lastSearchTerm ->
+                    suggestions.indexOfFirst { suggestion -> suggestion == lastSearchTerm }
+                }?.takeIf { index -> index != NOT_FOUND_INDEX }
+
+            updateState {
+                copy(
+                    categorySuggestions = categorySuggestions,
+                    searchTerms = searchTerms,
+                    selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
                 )
-            })
+            }
+        } catch (error: Exception) {
+            val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
+            updateState { copy(errorEvent = errorMessage.toEvent()) }
+        }
     }
 
-    override fun saveSearchTerm(term: String) {
+    private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
-            .compose(observeOnUIAfterCompletableResult())
-            .handle(navigator::pop) {}
+        navigator.pop()
     }
-
-    private data class InitializeData(
-        val suggestions: List<String>,
-        val searchTerms: List<String>
-    )
 
     private companion object {
         const val NOT_FOUND_INDEX = -1

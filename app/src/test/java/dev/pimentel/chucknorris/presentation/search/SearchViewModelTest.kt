@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.testshared.ViewModelTest
@@ -70,7 +71,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        val expectedSearchState = viewModel.searchState().value!!
+        val expectedSearchState = viewModel.state().value!!
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
@@ -111,7 +112,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        val expectedSearchState = viewModel.searchState().value!!
+        val expectedSearchState = viewModel.state().value!!
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
@@ -149,7 +150,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        val expectedSearchState = viewModel.searchState().value!!
+        val expectedSearchState = viewModel.state().value!!
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
@@ -185,10 +186,10 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         viewModel.getCategorySuggestionsAndSearchTerms()
         testScheduler.triggerActions()
 
-        val expectedSearchState = viewModel.searchState().value!!
+        val expectedSearchState = viewModel.state().value!!
 
         assertTrue(expectedSearchState is SearchState.Error)
-        assertEquals(expectedSearchState.errorMessage, errorMessage)
+        assertEquals(expectedSearchState.errorEvent, errorMessage)
         assertTrue(expectedSearchState.hasError)
 
         verify(exactly = 1) {
