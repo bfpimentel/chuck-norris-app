@@ -58,6 +58,7 @@ dependencies {
     implementation project(":data")
 
     implementation projectDependencies.kotlinStdlib
+    implementation projectDependencies.kotlinReflect
     implementation projectDependencies.coroutinesCore
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat

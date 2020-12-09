@@ -69,8 +69,6 @@ class FactsViewModel(
     private suspend fun getFacts(newSearchTerm: String? = null) {
         updateState { copy(isLoading = true) }
 
-//        mutableState.value = FactsState.Loading(true)
-
         try {
             if (lastSearch != null && lastSearch == newSearchTerm) {
                 return
@@ -91,7 +89,6 @@ class FactsViewModel(
                         isLoading = false,
                     )
                 }
-//                mutableState.value = FactsState.Empty(searchTerm = searchTerm)
                 return
             }
 
@@ -101,18 +98,14 @@ class FactsViewModel(
                     searchTerm = searchTerm,
                 )
             }
-//            mutableState.value = FactsState.Success(
-//                facts = factDisplayMapper.map(facts),
-//                searchTerm = searchTerm,
-//            )
         } catch (error: Exception) {
+            error.printStackTrace()
+
             if (error is GetSearchTerm.SearchTermNotFoundException) {
                 updateState { copy(isFirstAccess = true) }
-//                mutableState.value = FactsState.FirstAccess
             } else {
                 val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
                 updateState { copy(errorEvent = errorMessage.toEvent()) }
-//                mutableState.value = FactsState.Error(errorMessage = errorMessage)
             }
         } finally {
             updateState { copy(isLoading = false) }
@@ -128,7 +121,6 @@ class FactsViewModel(
             .let(shareableFactMapper::map)
             .also { shareableFact ->
                 updateState { copy(shareFactEvent = shareableFact.toEvent()) }
-//                mutableState.value = FactsState.Share(shareableFact = shareableFact)
             }
     }
 }

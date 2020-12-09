@@ -42,19 +42,9 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
             adapter.submitList(state.facts)
 
             binding.apply {
-//                factsTvFirstAccess.isVisible = state.isFirstAccess
-//                factsAblSearchTerm.isVisible = state.hasFacts
-//                factsTvSearchTerm.text = state.searchTerm
-//                factsRvFacts.isVisible = state.hasFacts
-//                factsTvError.isVisible = state.hasError
-//                factsTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
-//                factsRvFacts.isVisible = state.hasFacts
-//                factsTvListIsEmpty.isVisible = state.isEmpty
-//                factsLoading.root.isVisible = state.isLoading
-
                 factsTvFirstAccess.isVisible = state.isFirstAccess
                 factsTvSearchTerm.text = state.searchTerm
-                factsLoading.root.isVisible = state.isLoading
+                loading.root.isVisible = state.isLoading
 
                 state.emptyListEvent?.value?.also {
                     factsAblSearchTerm.isVisible = false

@@ -136,7 +136,7 @@ class SearchFragment : BottomSheetDialogFragment() {
     private fun setNewSearchResult(term: String) {
         parentFragmentManager.setFragmentResult(
             FactsFragment.RESULT_LISTENER_KEY,
-            bundleOf(FactsFragment.RESULT_LISTENER_KEY to term)
+            bundleOf(NEW_SEARCH_KEY to term)
         )
     }
 

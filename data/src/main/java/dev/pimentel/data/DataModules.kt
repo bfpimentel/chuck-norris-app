@@ -2,6 +2,7 @@ package dev.pimentel.data
 
 import androidx.room.Room
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
@@ -20,7 +21,11 @@ import java.util.concurrent.TimeUnit
 private const val REQUEST_TIMEOUT = 60L
 
 private val moshiModule = module {
-    single { Moshi.Builder().build() }
+    single {
+        Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
 }
 
 private val networkModule = module {

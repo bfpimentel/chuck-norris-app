@@ -1,13 +1,15 @@
 package dev.pimentel.data.models
 
+import com.squareup.moshi.Json
+
 data class FactsResponse(
-    val result: List<Fact>
+    @Json(name = "result") val result: List<Fact>
 ) {
 
     data class Fact(
-        val id: String,
-        val categories: List<String>,
-        val url: String,
-        val value: String
+        @Json(name = "id") val id: String,
+        @Json(name = "categories") val categories: List<String>,
+        @Json(name = "url") val url: String,
+        @Json(name = "value") val value: String
     )
 }

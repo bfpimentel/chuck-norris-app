@@ -4,10 +4,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -19,9 +19,9 @@ fun <T> Fragment.lifecycleBinding(bindingFactory: (View) -> T): ReadOnlyProperty
         init {
             this@lifecycleBinding
                 .viewLifecycleOwnerLiveData
-                .observe(this@lifecycleBinding, Observer { owner ->
+                .observe(this@lifecycleBinding) { owner ->
                     owner?.lifecycle?.addObserver(this)
-                })
+                }
         }
 
         override fun onDestroy(owner: LifecycleOwner) {
@@ -36,5 +36,5 @@ fun <T> Fragment.lifecycleBinding(bindingFactory: (View) -> T): ReadOnlyProperty
     }
 
 inline fun <T> Fragment.watch(source: StateFlow<T>, crossinline block: (T) -> Unit) {
-    lifecycleScope.launchWhenStarted { source.collect { block(it) } }
+    lifecycleScope.launch { source.collect { block(it) } }
 }
