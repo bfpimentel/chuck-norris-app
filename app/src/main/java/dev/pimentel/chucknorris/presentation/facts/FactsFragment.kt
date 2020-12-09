@@ -10,6 +10,7 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsFragmentBinding
 import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.search.SearchFragment
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
 import dev.pimentel.chucknorris.shared.mvi.handle
@@ -41,11 +42,21 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
             adapter.submitList(state.facts)
 
             binding.apply {
+//                factsTvFirstAccess.isVisible = state.isFirstAccess
+//                factsAblSearchTerm.isVisible = state.hasFacts
+//                factsTvSearchTerm.text = state.searchTerm
+//                factsRvFacts.isVisible = state.hasFacts
+//                factsTvError.isVisible = state.hasError
+//                factsTvError.text = getString(R.string.facts_tv_error_message, state.errorMessage)
+//                factsRvFacts.isVisible = state.hasFacts
+//                factsTvListIsEmpty.isVisible = state.isEmpty
+//                factsLoading.root.isVisible = state.isLoading
+
                 factsTvFirstAccess.isVisible = state.isFirstAccess
                 factsTvSearchTerm.text = state.searchTerm
                 factsLoading.root.isVisible = state.isLoading
 
-                state.emptyListEvent?.handle {
+                state.emptyListEvent?.value?.also {
                     factsAblSearchTerm.isVisible = false
                     factsRvFacts.isVisible = false
                     factsTvListIsEmpty.isVisible = true
@@ -55,7 +66,7 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
                     factsTvListIsEmpty.isVisible = false
                 }
 
-                state.errorEvent?.handle { errorMessage ->
+                state.errorEvent?.value?.also { errorMessage ->
                     factsTvError.isVisible = true
                     factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
                 } ?: run {
@@ -68,6 +79,8 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
     }
 
     private fun bindInputs() {
+        bindResultListener()
+
         binding.apply {
             factsRvFacts.also {
                 it.adapter = adapter.apply {
@@ -81,11 +94,22 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
             }
 
             factsTvError.setOnClickListener {
-                viewModel.publish(FactsIntention.GetSearchTermsAndFacts)
+                viewModel.publish(FactsIntention.GetLastSearchAndFacts)
             }
         }
 
-        viewModel.publish(FactsIntention.GetSearchTermsAndFacts)
+        viewModel.publish(FactsIntention.GetLastSearchAndFacts)
+    }
+
+    private fun bindResultListener() {
+        parentFragmentManager.setFragmentResultListener(
+            RESULT_LISTENER_KEY,
+            viewLifecycleOwner
+        ) { _, bundle ->
+            viewModel.publish(
+                FactsIntention.NewSearch(bundle.get(SearchFragment.NEW_SEARCH_KEY) as String)
+            )
+        }
     }
 
     private fun shareFact(shareableFact: ShareableFact) {
@@ -102,7 +126,8 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
             .startChooser()
     }
 
-    private companion object {
-        const val SHARE_TYPE = "text/plain"
+    companion object {
+        const val RESULT_LISTENER_KEY = "FACTS_FRAGMENT_RESULT_LISTENER"
+        private const val SHARE_TYPE = "text/plain"
     }
 }

@@ -36,8 +36,6 @@ class SearchViewModel(
 ) : ViewModel(), SearchContract.ViewModel,
     Reducer<SearchState> by reducer {
 
-    override fun state(): StateFlow<SearchState> = mutableState
-
     private val publisher = MutableSharedFlow<SearchIntention>()
 
     init {
@@ -47,6 +45,8 @@ class SearchViewModel(
             }
         }.shareIn(viewModelScope, SharingStarted.Eagerly)
     }
+
+    override fun state(): StateFlow<SearchState> = mutableState
 
     override fun publish(intention: SearchIntention) {
         viewModelScope.launch(dispatchersProvider.io) {
@@ -63,9 +63,9 @@ class SearchViewModel(
 
     private suspend fun getCategorySuggestionsAndSearchTerms() {
         try {
-            val areStored = areCategoriesStored(NoParams)
+            val areCategoriesStored = areCategoriesStored(NoParams)
 
-            val suggestions = if (areStored) {
+            val suggestions = if (areCategoriesStored) {
                 getCategorySuggestions(NoParams)
             } else {
                 updateState { copy(isLoading = true) }
@@ -84,7 +84,7 @@ class SearchViewModel(
 
             updateState {
                 copy(
-                    categorySuggestions = categorySuggestions,
+                    categorySuggestions = suggestions,
                     searchTerms = searchTerms,
                     selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
                 )
@@ -97,6 +97,7 @@ class SearchViewModel(
 
     private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
+        updateState { copy(newSearch = term.toEvent()) }
         navigator.pop()
     }
 

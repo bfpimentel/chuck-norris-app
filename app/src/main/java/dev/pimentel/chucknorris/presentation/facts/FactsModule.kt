@@ -13,14 +13,14 @@ val factsModule = module {
     factory { FactsAdapter() }
     viewModel {
         FactsViewModel(
-            get<Navigator>(),
-            FactDisplayMapperImpl(androidContext()),
-            ShareableFactMapperImpl(),
-            get(),
-            get(),
-            get(),
-            ReducerImpl(FactsState.INITIAL),
-            get()
+            navigator = get<Navigator>(),
+            factDisplayMapper = FactDisplayMapperImpl(androidContext()),
+            shareableFactMapper = ShareableFactMapperImpl(),
+            getSearchTerm = get(),
+            getFacts = get(),
+            getErrorMessage = get(),
+            reducer = ReducerImpl(FactsState.INITIAL),
+            dispatchersProvider = get()
         )
     }
 }

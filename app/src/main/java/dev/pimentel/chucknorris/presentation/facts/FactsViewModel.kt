@@ -34,12 +34,10 @@ class FactsViewModel(
     private val getErrorMessage: GetErrorMessage,
     private val reducer: Reducer<FactsState>,
     private val dispatchersProvider: DispatchersProvider
-) : ViewModel(), FactsContract.ViewModel,
-    Reducer<FactsState> by reducer {
+) : ViewModel(), FactsContract.ViewModel, Reducer<FactsState> by reducer {
 
+    private var lastSearch: String? = null
     private lateinit var facts: List<Fact>
-
-    override fun state(): StateFlow<FactsState> = mutableState
 
     private val publisher = MutableSharedFlow<FactsIntention>()
 
@@ -51,6 +49,8 @@ class FactsViewModel(
         }.shareIn(viewModelScope, SharingStarted.Eagerly)
     }
 
+    override fun state(): StateFlow<FactsState> = mutableState
+
     override fun publish(intention: FactsIntention) {
         viewModelScope.launch(dispatchersProvider.io) {
             publisher.emit(intention)
@@ -59,17 +59,26 @@ class FactsViewModel(
 
     private suspend fun handleIntentions(intention: FactsIntention) {
         when (intention) {
-            is FactsIntention.GetSearchTermsAndFacts -> getSearchTermAndFacts()
+            is FactsIntention.GetLastSearchAndFacts -> getFacts()
+            is FactsIntention.NewSearch -> getFacts(newSearchTerm = intention.term)
             is FactsIntention.NavigateToSearch -> navigateToSearch()
             is FactsIntention.ShareFact -> getShareableFact(id = intention.id)
         }
     }
 
-    private suspend fun getSearchTermAndFacts() {
+    private suspend fun getFacts(newSearchTerm: String? = null) {
         updateState { copy(isLoading = true) }
 
+//        mutableState.value = FactsState.Loading(true)
+
         try {
-            val searchTerm = getSearchTerm(NoParams)
+            if (lastSearch != null && lastSearch == newSearchTerm) {
+                return
+            }
+
+            val searchTerm = newSearchTerm ?: getSearchTerm(NoParams)
+            this.lastSearch = searchTerm
+
             val facts = getFacts(GetFacts.Params(searchTerm))
 
             this.facts = facts
@@ -82,6 +91,7 @@ class FactsViewModel(
                         isLoading = false,
                     )
                 }
+//                mutableState.value = FactsState.Empty(searchTerm = searchTerm)
                 return
             }
 
@@ -91,12 +101,18 @@ class FactsViewModel(
                     searchTerm = searchTerm,
                 )
             }
+//            mutableState.value = FactsState.Success(
+//                facts = factDisplayMapper.map(facts),
+//                searchTerm = searchTerm,
+//            )
         } catch (error: Exception) {
             if (error is GetSearchTerm.SearchTermNotFoundException) {
                 updateState { copy(isFirstAccess = true) }
+//                mutableState.value = FactsState.FirstAccess
             } else {
                 val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
                 updateState { copy(errorEvent = errorMessage.toEvent()) }
+//                mutableState.value = FactsState.Error(errorMessage = errorMessage)
             }
         } finally {
             updateState { copy(isLoading = false) }
@@ -112,6 +128,7 @@ class FactsViewModel(
             .let(shareableFactMapper::map)
             .also { shareableFact ->
                 updateState { copy(shareFactEvent = shareableFact.toEvent()) }
+//                mutableState.value = FactsState.Share(shareableFact = shareableFact)
             }
     }
 }

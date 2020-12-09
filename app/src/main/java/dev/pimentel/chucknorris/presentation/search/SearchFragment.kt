@@ -2,32 +2,40 @@ package dev.pimentel.chucknorris.presentation.search
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.InputFilter
-import android.text.Spanned
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.SearchCategoriesItemBinding
 import dev.pimentel.chucknorris.databinding.SearchFragmentBinding
+import dev.pimentel.chucknorris.presentation.facts.FactsFragment
 import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
+import dev.pimentel.chucknorris.shared.emoji.EmojiFilter
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
-import dev.pimentel.chucknorris.shared.mvi.handle
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
-class SearchFragment : Fragment(R.layout.search_fragment) {
+class SearchFragment : BottomSheetDialogFragment() {
 
     private val binding by lifecycleBinding(SearchFragmentBinding::bind)
     private val viewModel: SearchContract.ViewModel by viewModel<SearchViewModel>()
     private val adapter: SearchTermsAdapter by inject()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.search_fragment, container)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,11 +58,13 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
                 searchLoading.root.isVisible = state.isLoading
                 searchCgSuggestions.isVisible = state.categorySuggestions.isNotEmpty()
 
-                state.selectSuggestionEvent?.handle { index ->
+                state.newSearch?.value?.also(::setNewSearchResult)
+
+                state.selectSuggestionEvent?.value?.also { index ->
                     searchCgSuggestions[index].isSelected = true
                 }
 
-                state.errorEvent?.handle { message ->
+                state.errorEvent?.value?.also { message ->
                     searchTvError.isVisible = true
                     searchTvError.text = getString(R.string.facts_tv_error_message, message)
                 } ?: run {
@@ -84,7 +94,7 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
             }
 
             searchEtSearchTerm.apply {
-                filters = arrayOf(EmojiFilter())
+                filters = arrayOf(EmojiFilter)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                         viewModel.publish(SearchIntention.SaveSearchTerm(term = text.toString()))
@@ -123,23 +133,14 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
             }
     }
 
-    private class EmojiFilter : InputFilter {
+    private fun setNewSearchResult(term: String) {
+        parentFragmentManager.setFragmentResult(
+            FactsFragment.RESULT_LISTENER_KEY,
+            bundleOf(FactsFragment.RESULT_LISTENER_KEY to term)
+        )
+    }
 
-        override fun filter(
-            source: CharSequence,
-            start: Int,
-            end: Int,
-            dest: Spanned,
-            dstart: Int,
-            dend: Int
-        ): CharSequence? {
-            for (index in start until end) {
-                val type = Character.getType(source[index])
-                if (type == Character.SURROGATE.toInt() || type == Character.OTHER_SYMBOL.toInt()) {
-                    return ""
-                }
-            }
-            return null
-        }
+    companion object {
+        const val NEW_SEARCH_KEY = "SEARCH_NEW_SEARCH"
     }
 }

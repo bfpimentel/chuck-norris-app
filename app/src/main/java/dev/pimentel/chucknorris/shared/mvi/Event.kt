@@ -22,7 +22,3 @@ fun <T> T.toEvent() = Event(this)
 fun <T> Event<T>?.handle(block: (T) -> Unit) {
     this?.value?.let(block)
 }
-
-fun <T> Event<T>?.toBoolean(): Boolean =
-    this?.value.takeIf { it != null }
-        ?.let { true } ?: false

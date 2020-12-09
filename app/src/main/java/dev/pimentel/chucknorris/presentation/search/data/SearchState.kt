@@ -6,8 +6,9 @@ data class SearchState(
     val categorySuggestions: List<String>,
     val searchTerms: List<String>,
     val isLoading: Boolean,
+    val selectSuggestionEvent: Event<Int>?,
+    val newSearch: Event<String>?,
     val errorEvent: Event<String>?,
-    val selectSuggestionEvent: Event<Int>?
 ) {
 
     companion object {
@@ -16,8 +17,9 @@ data class SearchState(
             categorySuggestions = emptyList(),
             searchTerms = emptyList(),
             isLoading = false,
-            errorEvent = null,
             selectSuggestionEvent = null,
+            newSearch = null,
+            errorEvent = null,
         )
     }
 }
