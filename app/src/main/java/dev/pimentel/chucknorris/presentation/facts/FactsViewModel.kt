@@ -8,8 +8,6 @@ import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.mvi.Event
-import dev.pimentel.chucknorris.shared.mvi.Reducer
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
@@ -18,6 +16,7 @@ import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
 import dev.pimentel.domain.usecases.shared.NoParams
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
@@ -32,13 +31,13 @@ class FactsViewModel(
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,
     private val getErrorMessage: GetErrorMessage,
-    private val reducer: Reducer<FactsState>,
     private val dispatchersProvider: DispatchersProvider
-) : ViewModel(), FactsContract.ViewModel, Reducer<FactsState> by reducer {
+) : ViewModel(), FactsContract.ViewModel {
 
     private var lastSearch: String? = null
     private lateinit var facts: List<Fact>
 
+    private val mutableState = MutableStateFlow<FactsState>(FactsState.Initial)
     private val publisher = MutableSharedFlow<FactsIntention>()
 
     init {
@@ -67,7 +66,7 @@ class FactsViewModel(
     }
 
     private suspend fun getFacts(newSearchTerm: String? = null) {
-        updateState { copy(isLoading = true) }
+        mutableState.value = FactsState.Loading(isLoading = true)
 
         try {
             if (lastSearch != null && lastSearch == newSearchTerm) {
@@ -82,33 +81,23 @@ class FactsViewModel(
             this.facts = facts
 
             if (facts.isEmpty()) {
-                updateState {
-                    copy(
-                        searchTerm = searchTerm,
-                        emptyListEvent = Event.NoContent,
-                        isLoading = false,
-                    )
-                }
+                mutableState.value = FactsState.Empty(searchTerm = searchTerm)
                 return
             }
 
-            updateState {
-                copy(
-                    facts = factDisplayMapper.map(facts),
-                    searchTerm = searchTerm,
-                )
-            }
+            mutableState.value = FactsState.WithFacts(
+                facts = factDisplayMapper.map(facts),
+                searchTerm = searchTerm,
+            )
         } catch (error: Exception) {
             error.printStackTrace()
 
             if (error is GetSearchTerm.SearchTermNotFoundException) {
-                updateState { copy(isFirstAccess = true) }
+                mutableState.value = FactsState.FirstAccess
             } else {
                 val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-                updateState { copy(errorEvent = errorMessage.toEvent()) }
+                mutableState.value = FactsState.Error(errorEvent = errorMessage.toEvent())
             }
-        } finally {
-            updateState { copy(isLoading = false) }
         }
     }
 
@@ -116,11 +105,11 @@ class FactsViewModel(
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }
 
-    private suspend fun getShareableFact(id: String) {
+    private fun getShareableFact(id: String) {
         facts.first { it.id == id }
             .let(shareableFactMapper::map)
             .also { shareableFact ->
-                updateState { copy(shareFactEvent = shareableFact.toEvent()) }
+                mutableState.value = FactsState.Share(shareableFact = shareableFact)
             }
     }
 }

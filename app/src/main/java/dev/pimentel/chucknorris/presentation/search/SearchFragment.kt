@@ -56,7 +56,8 @@ class SearchFragment : BottomSheetDialogFragment() {
 
             binding.apply {
                 searchLoading.root.isVisible = state.isLoading
-                searchCgSuggestions.isVisible = state.categorySuggestions.isNotEmpty()
+                searchCgSuggestions.isVisible = state.hasSuggestions
+                searchTvError.isVisible = state.hasError
 
                 state.newSearch?.value?.also(::setNewSearchResult)
 
@@ -64,11 +65,8 @@ class SearchFragment : BottomSheetDialogFragment() {
                     searchCgSuggestions[index].isSelected = true
                 }
 
-                state.errorEvent?.value?.also { message ->
-                    searchTvError.isVisible = true
-                    searchTvError.text = getString(R.string.facts_tv_error_message, message)
-                } ?: run {
-                    searchTvError.isVisible = false
+                state.errorEvent?.value?.also { errorMessage ->
+                    searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
                 }
             }
         }

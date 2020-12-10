@@ -45,22 +45,13 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
                 factsTvFirstAccess.isVisible = state.isFirstAccess
                 factsTvSearchTerm.text = state.searchTerm
                 loading.root.isVisible = state.isLoading
-
-                state.emptyListEvent?.value?.also {
-                    factsAblSearchTerm.isVisible = false
-                    factsRvFacts.isVisible = false
-                    factsTvListIsEmpty.isVisible = true
-                } ?: run {
-                    factsAblSearchTerm.isVisible = true
-                    factsRvFacts.isVisible = true
-                    factsTvListIsEmpty.isVisible = false
-                }
+                factsAblSearchTerm.isVisible = state.hasFacts
+                factsRvFacts.isVisible = state.hasFacts
+                factsTvListIsEmpty.isVisible = state.isEmpty
+                factsTvError.isVisible = state.hasError
 
                 state.errorEvent?.value?.also { errorMessage ->
-                    factsTvError.isVisible = true
                     factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
-                } ?: run {
-                    factsTvError.isVisible = false
                 }
 
                 state.shareFactEvent.handle(::shareFact)

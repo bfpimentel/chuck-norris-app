@@ -96,7 +96,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         val expected = viewModel.factsState().value!!
 
-        assertTrue(expected is FactsState.Success)
+        assertTrue(expected is FactsState.WithFacts)
         assertEquals(expected.facts, factsDisplays)
         assertTrue(expected.hasFacts)
         assertEquals(expected.searchTerm, term)
@@ -241,7 +241,7 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
         val expectedFactsState = viewModel.factsState().value!!
 
-        assertTrue(expectedFactsState is FactsState.Success)
+        assertTrue(expectedFactsState is FactsState.WithFacts)
         assertEquals(expectedFactsState.facts, factsDisplays)
         assertTrue(expectedFactsState.hasFacts)
         assertEquals(expectedFactsState.searchTerm, term)

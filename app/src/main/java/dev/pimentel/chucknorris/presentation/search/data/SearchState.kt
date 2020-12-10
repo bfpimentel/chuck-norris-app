@@ -2,24 +2,40 @@ package dev.pimentel.chucknorris.presentation.search.data
 
 import dev.pimentel.chucknorris.shared.mvi.Event
 
-data class SearchState(
-    val categorySuggestions: List<String>,
-    val searchTerms: List<String>,
-    val isLoading: Boolean,
-    val selectSuggestionEvent: Event<Int>?,
-    val newSearch: Event<String>?,
-    val errorEvent: Event<String>?,
+sealed class SearchState(
+    val categorySuggestions: List<String> = emptyList(),
+    val searchTerms: List<String> = emptyList(),
+    val isLoading: Boolean = false,
+    val hasSuggestions: Boolean = false,
+    val selectSuggestionEvent: Event<Int>? = null,
+    val newSearch: Event<String>? = null,
+    val hasError: Boolean = false,
+    val errorEvent: Event<String>? = null,
 ) {
 
-    companion object {
-        @JvmStatic
-        val INITIAL = SearchState(
-            categorySuggestions = emptyList(),
-            searchTerms = emptyList(),
-            isLoading = false,
-            selectSuggestionEvent = null,
-            newSearch = null,
-            errorEvent = null,
-        )
-    }
+    object Initial : SearchState()
+
+    class Loading(isLoading: Boolean) : SearchState(
+        isLoading = isLoading
+    )
+
+    class Success(
+        categorySuggestions: List<String>,
+        searchTerms: List<String>,
+        selectSuggestionEvent: Event<Int>?,
+    ) : SearchState(
+        hasSuggestions = true,
+        categorySuggestions = categorySuggestions,
+        searchTerms = searchTerms,
+        selectSuggestionEvent = selectSuggestionEvent
+    )
+
+    class NewSearch(newSearch: Event<String>) : SearchState(
+        newSearch = newSearch
+    )
+
+    class Error(errorMessage: Event<String>) : SearchState(
+        hasError = true,
+        errorEvent = errorMessage
+    )
 }

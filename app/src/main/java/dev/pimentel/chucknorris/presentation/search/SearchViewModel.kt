@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
 import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.mvi.Reducer
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
@@ -16,6 +15,7 @@ import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
@@ -31,11 +31,10 @@ class SearchViewModel(
     private val handleSearchTermSaving: HandleSearchTermSaving,
     private val getLastSearchTerms: GetLastSearchTerms,
     private val getErrorMessage: GetErrorMessage,
-    private val reducer: Reducer<SearchState>,
     private val dispatchersProvider: DispatchersProvider
-) : ViewModel(), SearchContract.ViewModel,
-    Reducer<SearchState> by reducer {
+) : ViewModel(), SearchContract.ViewModel {
 
+    private val mutableState = MutableStateFlow<SearchState>(SearchState.Initial)
     private val publisher = MutableSharedFlow<SearchIntention>()
 
     init {
@@ -68,9 +67,9 @@ class SearchViewModel(
             val suggestions = if (areCategoriesStored) {
                 getCategorySuggestions(NoParams)
             } else {
-                updateState { copy(isLoading = true) }
+                mutableState.value = SearchState.Loading(isLoading = true)
                 saveAndGetCategoriesSuggestions(NoParams).also {
-                    updateState { copy(isLoading = false) }
+                    mutableState.value = SearchState.Loading(isLoading = false)
                 }
             }
 
@@ -82,22 +81,20 @@ class SearchViewModel(
                     suggestions.indexOfFirst { suggestion -> suggestion == lastSearchTerm }
                 }?.takeIf { index -> index != NOT_FOUND_INDEX }
 
-            updateState {
-                copy(
-                    categorySuggestions = suggestions,
-                    searchTerms = searchTerms,
-                    selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
-                )
-            }
+            mutableState.value = SearchState.Success(
+                categorySuggestions = suggestions,
+                searchTerms = searchTerms,
+                selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
+            )
         } catch (error: Exception) {
             val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-            updateState { copy(errorEvent = errorMessage.toEvent()) }
+            mutableState.value = SearchState.Error(errorMessage = errorMessage.toEvent())
         }
     }
 
     private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
-        updateState { copy(newSearch = term.toEvent()) }
+        mutableState.value = SearchState.NewSearch(newSearch = term.toEvent())
         navigator.pop()
     }
 
