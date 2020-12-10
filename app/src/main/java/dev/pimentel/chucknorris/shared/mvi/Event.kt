@@ -19,6 +19,6 @@ open class Event<T>(private val content: T) {
 
 fun <T> T.toEvent() = Event(this)
 
-fun <T> Event<T>?.handle(block: (T) -> Unit) {
+fun <T> Event<T>?.handleEvent(block: (T) -> Unit) {
     this?.value?.let(block)
 }

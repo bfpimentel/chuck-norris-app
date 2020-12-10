@@ -20,6 +20,7 @@ import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
 import dev.pimentel.chucknorris.shared.emoji.EmojiFilter
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
+import dev.pimentel.chucknorris.shared.mvi.handleEvent
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
@@ -62,20 +63,20 @@ class SearchFragment : BottomSheetDialogFragment() {
         watch(viewModel.state()) { state ->
             fillCategorySuggestions(state.categorySuggestions)
 
-            state.searchTermsEvent?.value?.also(adapter::submitList)
+            state.searchTermsEvent.handleEvent(adapter::submitList)
 
             binding.apply {
                 searchLoading.root.isVisible = state.isLoading
                 searchCgSuggestions.isVisible = state.hasSuggestions
                 searchTvError.isVisible = state.hasError
 
-                state.newSearch?.value?.also(::setNewSearchResult)
+                state.newSearch.handleEvent(::setNewSearchResult)
 
-                state.selectSuggestionEvent?.value?.also { index ->
+                state.selectSuggestionEvent.handleEvent { index ->
                     searchCgSuggestions[index].isSelected = true
                 }
 
-                state.errorEvent?.value?.also { errorMessage ->
+                state.errorEvent.handleEvent { errorMessage ->
                     searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
                 }
             }

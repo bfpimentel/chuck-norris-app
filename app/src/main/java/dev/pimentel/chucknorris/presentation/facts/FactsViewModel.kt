@@ -66,8 +66,6 @@ class FactsViewModel(
     }
 
     private suspend fun getFacts(newSearchTerm: String? = null) {
-        mutableState.value = FactsState.Loading(isLoading = true)
-
         try {
             if (lastSearch != null && lastSearch == newSearchTerm) {
                 return
@@ -75,6 +73,8 @@ class FactsViewModel(
 
             val searchTerm = newSearchTerm ?: getSearchTerm(NoParams)
             this.lastSearch = searchTerm
+
+            mutableState.value = FactsState.Loading(isLoading = true)
 
             val facts = getFacts(GetFacts.Params(searchTerm))
 
@@ -86,7 +86,7 @@ class FactsViewModel(
             }
 
             mutableState.value = FactsState.WithFacts(
-                facts = factDisplayMapper.map(facts),
+                factsEvent = factDisplayMapper.map(facts).toEvent(),
                 searchTerm = searchTerm,
             )
         } catch (error: Exception) {

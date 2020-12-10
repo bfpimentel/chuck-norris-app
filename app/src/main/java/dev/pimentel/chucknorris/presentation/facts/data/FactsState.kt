@@ -34,7 +34,7 @@ import dev.pimentel.chucknorris.shared.mvi.toEvent
 
 @Suppress("LongParameterList")
 sealed class FactsState(
-    val facts: List<FactDisplay> = emptyList(),
+    val factsEvent: Event<List<FactDisplay>>? = null,
     val searchTerm: String = "",
     val isFirstAccess: Boolean = false,
     val isLoading: Boolean = false,
@@ -60,8 +60,8 @@ sealed class FactsState(
         searchTerm = searchTerm,
     )
 
-    class WithFacts(facts: List<FactDisplay>, searchTerm: String) : FactsState(
-        facts = facts,
+    class WithFacts(factsEvent: Event<List<FactDisplay>>, searchTerm: String) : FactsState(
+        factsEvent = factsEvent,
         searchTerm = searchTerm,
         hasFacts = true,
     )

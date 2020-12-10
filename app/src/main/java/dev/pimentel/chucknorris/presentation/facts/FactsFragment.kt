@@ -13,7 +13,7 @@ import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.presentation.search.SearchFragment
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
-import dev.pimentel.chucknorris.shared.mvi.handle
+import dev.pimentel.chucknorris.shared.mvi.handleEvent
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
@@ -39,7 +39,7 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
 
     private fun bindOutputs() {
         watch(viewModel.state()) { state ->
-            adapter.submitList(state.facts)
+            state.factsEvent.handleEvent(adapter::submitList)
 
             binding.apply {
                 factsTvFirstAccess.isVisible = state.isFirstAccess
@@ -50,11 +50,11 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
                 factsTvListIsEmpty.isVisible = state.isEmpty
                 factsTvError.isVisible = state.hasError
 
-                state.errorEvent?.value?.also { errorMessage ->
+                state.errorEvent.handleEvent { errorMessage ->
                     factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
                 }
 
-                state.shareFactEvent.handle(::shareFact)
+                state.shareFactEvent.handleEvent(::shareFact)
             }
         }
     }

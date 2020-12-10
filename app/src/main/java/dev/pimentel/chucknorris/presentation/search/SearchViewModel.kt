@@ -1,6 +1,5 @@
 package dev.pimentel.chucknorris.presentation.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
@@ -76,8 +75,6 @@ class SearchViewModel(
 
             val searchTerms = getLastSearchTerms(NoParams)
 
-            Log.d("SEARCH_VIEW_MODEL", searchTerms.toString())
-
             val selectedSuggestionIndex = searchTerms
                 .firstOrNull()
                 ?.let { lastSearchTerm ->
@@ -97,11 +94,8 @@ class SearchViewModel(
 
     private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
-        Log.d("SEARCH_VIEW_MODEL", "HANDLE_SEARCH_TERM_SAVING")
         mutableState.value = SearchState.NewSearch(newSearch = term.toEvent())
-        Log.d("SEARCH_VIEW_MODEL", "MUTABLE_STATE")
         navigator.pop()
-        Log.d("SEARCH_VIEW_MODEL", "POP")
     }
 
     private companion object {
