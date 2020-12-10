@@ -75,7 +75,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
 
         assertEquals(viewModel.selectedSuggestionIndex().value, 0)
 
@@ -116,7 +116,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
 
         assertNull(viewModel.selectedSuggestionIndex().value)
 
@@ -154,7 +154,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTerms, lastSearchTerms)
+        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
 
         assertNull(viewModel.selectedSuggestionIndex().value)
 

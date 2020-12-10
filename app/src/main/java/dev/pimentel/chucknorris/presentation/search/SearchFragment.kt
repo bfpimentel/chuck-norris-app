@@ -40,6 +40,7 @@ class SearchFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadKoinModules(searchModule)
+        bindRecyclerView()
         bindOutputs()
         bindInputs()
     }
@@ -49,10 +50,19 @@ class SearchFragment : BottomSheetDialogFragment() {
         unloadKoinModules(searchModule)
     }
 
+    private fun bindRecyclerView() {
+        binding.searchRvLastSearchTerms.also {
+            it.adapter = this@SearchFragment.adapter
+            it.setHasFixedSize(true)
+            it.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
     private fun bindOutputs() {
         watch(viewModel.state()) { state ->
-            adapter.submitList(state.searchTerms)
             fillCategorySuggestions(state.categorySuggestions)
+
+            state.searchTermsEvent?.value?.also(adapter::submitList)
 
             binding.apply {
                 searchLoading.root.isVisible = state.isLoading
@@ -73,17 +83,11 @@ class SearchFragment : BottomSheetDialogFragment() {
     }
 
     private fun bindInputs() {
-        binding.apply {
-            searchRvLastSearchTerms.also {
-                it.adapter = adapter.apply {
-                    onItemClick = { term ->
-                        viewModel.publish(SearchIntention.SaveSearchTerm(term = term))
-                    }
-                }
-                it.setHasFixedSize(true)
-                it.layoutManager = LinearLayoutManager(requireContext())
-            }
+        adapter.onItemClick = { term ->
+            viewModel.publish(SearchIntention.SaveSearchTerm(term = term))
+        }
 
+        binding.apply {
             searchIlSearchTerm.setEndIconOnClickListener {
                 viewModel.publish(
                     SearchIntention.SaveSearchTerm(term = searchEtSearchTerm.text.toString())
@@ -91,16 +95,14 @@ class SearchFragment : BottomSheetDialogFragment() {
                 hideKeyboard()
             }
 
-            searchEtSearchTerm.apply {
-                filters = arrayOf(EmojiFilter)
-                setOnEditorActionListener { _, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        viewModel.publish(SearchIntention.SaveSearchTerm(term = text.toString()))
-                        hideKeyboard()
-                        return@setOnEditorActionListener true
-                    }
-                    return@setOnEditorActionListener false
+            searchEtSearchTerm.filters = arrayOf(EmojiFilter)
+            searchEtSearchTerm.setOnEditorActionListener { view, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    viewModel.publish(SearchIntention.SaveSearchTerm(term = view.text.toString()))
+                    hideKeyboard()
+                    return@setOnEditorActionListener true
                 }
+                return@setOnEditorActionListener false
             }
 
             searchTvError.setOnClickListener {

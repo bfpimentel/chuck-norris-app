@@ -4,7 +4,7 @@ import dev.pimentel.chucknorris.shared.mvi.Event
 
 sealed class SearchState(
     val categorySuggestions: List<String> = emptyList(),
-    val searchTerms: List<String> = emptyList(),
+    val searchTermsEvent: Event<List<String>>? = null,
     val isLoading: Boolean = false,
     val hasSuggestions: Boolean = false,
     val selectSuggestionEvent: Event<Int>? = null,
@@ -21,12 +21,12 @@ sealed class SearchState(
 
     class Success(
         categorySuggestions: List<String>,
-        searchTerms: List<String>,
+        searchTerms: Event<List<String>>,
         selectSuggestionEvent: Event<Int>?,
     ) : SearchState(
         hasSuggestions = true,
         categorySuggestions = categorySuggestions,
-        searchTerms = searchTerms,
+        searchTermsEvent = searchTerms,
         selectSuggestionEvent = selectSuggestionEvent
     )
 
