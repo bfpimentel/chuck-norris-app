@@ -1,21 +1,24 @@
 package dev.pimentel.domain.usecases
 
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.mockk.runs
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class HandleSearchTermSavingTest : UseCaseTest<HandleSearchTermSaving>() {
+class HandleSearchTermSavingTest {
 
     private val doesSearchTermExist = mockk<DoesSearchTermExist>()
     private val saveExistingSearchTerm = mockk<SaveExistingSearchTerm>()
     private val saveNonExistingSearchTerm = mockk<SaveNonExistingSearchTerm>()
-    override lateinit var useCase: HandleSearchTermSaving
+    private lateinit var useCase: HandleSearchTermSaving
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = HandleSearchTermSaving(
             doesSearchTermExist,
             saveExistingSearchTerm,
@@ -24,20 +27,17 @@ class HandleSearchTermSavingTest : UseCaseTest<HandleSearchTermSaving>() {
     }
 
     @Test
-    fun `should save existing search term when search term already exists`() {
+    fun `should save existing search term when search term already exists`() = runBlocking {
         val term = "term"
         val doesSearchTermExistParams = DoesSearchTermExist.Params(term)
         val saveExistingSearchTermParams = SaveExistingSearchTerm.Params(term)
 
-        every { doesSearchTermExist(doesSearchTermExistParams) } returns Single.just(true)
-        every { saveExistingSearchTerm(saveExistingSearchTermParams) } returns Completable.complete()
+        coEvery { doesSearchTermExist(doesSearchTermExistParams) } returns true
+        coEvery { saveExistingSearchTerm(saveExistingSearchTermParams) } just runs
 
         useCase(HandleSearchTermSaving.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertComplete()
 
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             doesSearchTermExist(doesSearchTermExistParams)
             saveExistingSearchTerm(saveExistingSearchTermParams)
         }
@@ -45,20 +45,17 @@ class HandleSearchTermSavingTest : UseCaseTest<HandleSearchTermSaving>() {
     }
 
     @Test
-    fun `should save non existing search term when search term does not exist`() {
+    fun `should save non existing search term when search term does not exist`() = runBlocking {
         val term = "term"
         val doesSearchTermExistParams = DoesSearchTermExist.Params(term)
         val saveNonExistingSearchTermParams = SaveNonExistingSearchTerm.Params(term)
 
-        every { doesSearchTermExist(doesSearchTermExistParams) } returns Single.just(false)
-        every { saveNonExistingSearchTerm(saveNonExistingSearchTermParams) } returns Completable.complete()
+        coEvery { doesSearchTermExist(doesSearchTermExistParams) } returns false
+        coEvery { saveNonExistingSearchTerm(saveNonExistingSearchTermParams) } just runs
 
         useCase(HandleSearchTermSaving.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertComplete()
 
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             doesSearchTermExist(doesSearchTermExistParams)
             saveNonExistingSearchTerm(saveNonExistingSearchTermParams)
         }

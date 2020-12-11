@@ -1,45 +1,43 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class AreCategoriesStoredTest : UseCaseTest<AreCategoriesStored>() {
+class AreCategoriesStoredTest {
 
     private val getAllCategories = mockk<GetAllCategories>()
-    override lateinit var useCase: AreCategoriesStored
+    private lateinit var useCase: AreCategoriesStored
 
-    override fun `setup subject`() {
+    @BeforeEach
+    private fun `setup subject`() {
         useCase = AreCategoriesStored(getAllCategories)
     }
 
     @Test
-    fun `should return false when there are no categories stored`() {
-        every { getAllCategories(NoParams) } returns Single.just(listOf())
+    fun `should return false when there are no categories stored`() = runBlocking {
+        coEvery { getAllCategories(NoParams) } returns listOf()
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(false)
+        assertFalse(useCase(NoParams))
 
-        verify(exactly = 1) { getAllCategories(NoParams) }
+        coVerify(exactly = 1) { getAllCategories(NoParams) }
         confirmVerified(getAllCategories)
     }
 
     @Test
-    fun `should return true when there categories stored`() {
-        every { getAllCategories(NoParams) } returns Single.just(listOf(CategoryModel("category1")))
+    fun `should return true when there categories stored`() = runBlocking {
+        coEvery { getAllCategories(NoParams) } returns listOf("category1")
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(true)
+        assertTrue(useCase(NoParams))
 
-        verify(exactly = 1) { getAllCategories(NoParams) }
+        coVerify(exactly = 1) { getAllCategories(NoParams) }
         confirmVerified(getAllCategories)
     }
 }

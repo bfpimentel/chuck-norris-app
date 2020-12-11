@@ -1,49 +1,54 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.FactsResponse
+import dev.pimentel.domain.entities.Fact
+import dev.pimentel.domain.models.FactModel
 import dev.pimentel.domain.repositories.FactsRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.entities.Fact as FactEntity
-import dev.pimentel.domain.models.FactsResponse.Fact as FactModel
 
-class GetFactsTest : UseCaseTest<GetFacts>() {
+class GetFactsTest {
 
     private val factsRepository = mockk<FactsRepository>()
-    override lateinit var useCase: GetFacts
+    private lateinit var useCase: GetFacts
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = GetFacts(factsRepository)
     }
 
     @Test
-    fun `should get search term and then get facts`() {
+    fun `should get search term and then get facts`() = runBlocking {
         val term = "term"
-        val factsResponse = FactsResponse(
-            listOf(
-                FactModel("id1", listOf("category1"), "url1", "value1"),
-                FactModel("id2", listOf(), "url2", "value2")
-            )
+        val factsResponse = listOf(
+            object : FactModel {
+                override val id: String = "id1"
+                override val categories: List<String> = listOf("category1")
+                override val url: String = "url1"
+                override val value: String = "value1"
+            },
+            object : FactModel {
+                override val id: String = "id2"
+                override val categories: List<String> = listOf()
+                override val url: String = "url2"
+                override val value: String = "value2"
+            }
         )
-        val facts = listOf(
-            FactEntity("id1", "category1", "url1", "value1"),
-            FactEntity("id2", null, "url2", "value2")
+        val expectedResult = listOf(
+            Fact("id1", "category1", "url1", "value1"),
+            Fact("id2", null, "url2", "value2")
         )
 
-        every { factsRepository.getFacts(term) } returns Single.just(factsResponse)
+        coEvery { factsRepository.getFacts(term) } returns factsResponse
 
-        useCase(GetFacts.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertResult(facts)
+        assertEquals(useCase(GetFacts.Params(term)), expectedResult)
 
-        verify(exactly = 1) {
-            factsRepository.getFacts(term)
-        }
+        coVerify(exactly = 1) { factsRepository.getFacts(term) }
         confirmVerified(factsRepository)
     }
 }

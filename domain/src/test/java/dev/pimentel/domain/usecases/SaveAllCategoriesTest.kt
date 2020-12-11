@@ -1,56 +1,39 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.repositories.CategoriesRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertNotNull
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SaveAllCategoriesTest : UseCaseTest<SaveAllCategories>() {
+class SaveAllCategoriesTest {
 
     private val categoriesRepository = mockk<CategoriesRepository>()
-    override lateinit var useCase: SaveAllCategories
+    private lateinit var useCase: SaveAllCategories
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = SaveAllCategories(categoriesRepository)
     }
 
     @Test
-    fun `should route saveAllCategories call to categoriesRepository after mapping the  to categories and then just complete`() {
-        val categoriesNames = listOf(
-            "name1",
-            "name2"
-        )
+    fun `should route saveAllCategories call to categoriesRepository after mapping the  to categories and then just complete`() =
+        runBlocking {
+            val categories = listOf(
+                "name1",
+                "name2"
+            )
 
-        val categories = listOf(
-            CategoryModel("name1"),
-            CategoryModel("name2")
-        )
+            coEvery { categoriesRepository.saveAllCategories(categories) } just runs
 
-        every { categoriesRepository.saveAllCategories(categories) } just runs
+            useCase(SaveAllCategories.Params(categories))
 
-        useCase(SaveAllCategories.Params(categoriesNames))
-            .test()
-            .assertNoErrors()
-            .assertComplete()
-
-        verify(exactly = 1) { categoriesRepository.saveAllCategories(categories) }
-        confirmVerified(categoriesRepository)
-    }
-
-    @Test
-    fun `Params must contain a not null list of categories names`() {
-        val categoriesNames = listOf(
-            "name1",
-            "name2"
-        )
-
-        val params = SaveAllCategories.Params(categoriesNames)
-
-        assertNotNull(params.categoriesNames)
-    }
+            coVerify(exactly = 1) { categoriesRepository.saveAllCategories(categories) }
+            confirmVerified(categoriesRepository)
+        }
 }
