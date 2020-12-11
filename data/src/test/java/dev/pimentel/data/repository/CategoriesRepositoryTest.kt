@@ -1,6 +1,6 @@
 package dev.pimentel.data.repository
 
-import dev.pimentel.data.models.Category
+import dev.pimentel.data.dto.CategoryDTO
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.sources.local.CategoriesLocalDataSource
 import dev.pimentel.data.sources.remote.CategoriesRemoteDataSource
@@ -15,7 +15,7 @@ import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.models.Category as DomainCategory
+import dev.pimentel.domain.models.CategoryModel as DomainCategory
 
 class CategoriesRepositoryTest {
 
@@ -37,8 +37,8 @@ class CategoriesRepositoryTest {
     @Test
     fun `should route getAllCategories call to localDataSource`() {
         val categories = listOf(
-            Category("name1"),
-            Category("name2")
+            CategoryDTO("name1"),
+            CategoryDTO("name2")
         )
 
         val domainCategories = listOf(
@@ -78,8 +78,8 @@ class CategoriesRepositoryTest {
     @Test
     fun `should just route saveAllCategories call to localDataSource`() {
         val categories = listOf(
-            Category("name1"),
-            Category("name2")
+            CategoryDTO("name1"),
+            CategoryDTO("name2")
         )
 
         val domainCategories = listOf(

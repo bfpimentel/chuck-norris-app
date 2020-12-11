@@ -1,9 +1,7 @@
 package dev.pimentel.domain.repositories
 
-import dev.pimentel.domain.models.Category
-
 interface CategoriesRepository {
-    suspend fun getAllCategories(): List<Category>
+    suspend fun getAllCategories(): List<String>
     suspend fun getAllCategoriesNames(): List<String>
-    suspend fun saveAllCategories(categories: List<Category>)
+    suspend fun saveAllCategories(categories: List<String>)
 }

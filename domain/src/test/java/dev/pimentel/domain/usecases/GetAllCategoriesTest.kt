@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.repositories.CategoriesRepository
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
@@ -22,8 +21,8 @@ class GetAllCategoriesTest : UseCaseTest<GetAllCategories>() {
     @Test
     fun `should return a list of categories`() {
         val categories = listOf(
-            Category("name1"),
-            Category("name2")
+            CategoryModel("name1"),
+            CategoryModel("name2")
         )
 
         every { categoriesRepository.getAllCategories() } returns Single.just(categories)

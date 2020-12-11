@@ -10,7 +10,7 @@ class GetSearchTerm(
 
     override suspend fun invoke(params: NoParams): String =
         try {
-            searchTermsRepository.getSearchTerm().term
+            searchTermsRepository.getSearchTerm()
         } catch (exception: Exception) {
             throw SearchTermNotFoundException
         }

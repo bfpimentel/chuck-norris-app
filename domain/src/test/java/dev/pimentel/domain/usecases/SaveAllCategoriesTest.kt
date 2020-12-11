@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.repositories.CategoriesRepository
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -28,8 +27,8 @@ class SaveAllCategoriesTest : UseCaseTest<SaveAllCategories>() {
         )
 
         val categories = listOf(
-            Category("name1"),
-            Category("name2")
+            CategoryModel("name1"),
+            CategoryModel("name2")
         )
 
         every { categoriesRepository.saveAllCategories(categories) } just runs

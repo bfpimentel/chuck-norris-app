@@ -1,4 +1,4 @@
-package dev.pimentel.domain.models
+package dev.pimentel.domain.entities
 
 data class SearchTerm(
     val term: String

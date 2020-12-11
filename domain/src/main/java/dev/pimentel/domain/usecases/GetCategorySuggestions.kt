@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
 
@@ -12,7 +11,6 @@ class GetCategorySuggestions(
         getAllCategories(NoParams)
             .shuffled()
             .subList(fromIndex = FIRST_INDEX, toIndex = LAST_INDEX)
-            .map(Category::name)
 
     private companion object {
         const val FIRST_INDEX = 0

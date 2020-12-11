@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.SearchTerm
 import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
 import dev.pimentel.domain.usecases.shared.UseCase
@@ -10,5 +9,5 @@ class GetLastSearchTerms(
 ) : UseCase<NoParams, List<String>> {
 
     override suspend fun invoke(params: NoParams): List<String> =
-        searchTermsRepository.getLastSearchTerms().map(SearchTerm::term)
+        searchTermsRepository.getLastSearchTerms()
 }

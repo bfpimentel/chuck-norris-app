@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -33,7 +32,7 @@ class AreCategoriesStoredTest : UseCaseTest<AreCategoriesStored>() {
 
     @Test
     fun `should return true when there categories stored`() {
-        every { getAllCategories(NoParams) } returns Single.just(listOf(Category("category1")))
+        every { getAllCategories(NoParams) } returns Single.just(listOf(CategoryModel("category1")))
 
         useCase(NoParams)
             .test()

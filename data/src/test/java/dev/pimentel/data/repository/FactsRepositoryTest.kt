@@ -1,6 +1,6 @@
 package dev.pimentel.data.repository
 
-import dev.pimentel.data.models.FactsResponse
+import dev.pimentel.data.dto.FactsResponseDTO
 import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.sources.remote.FactsRemoteDataSource
 import dev.pimentel.domain.repositories.FactsRepository
@@ -27,10 +27,10 @@ class FactsRepositoryTest {
     @Test
     fun `should route getFacts call to remoteDataSource`() {
         val term = "term"
-        val factResponse = FactsResponse(
+        val factResponse = FactsResponseDTO(
             listOf(
-                FactsResponse.Fact("id1", listOf("category1"), "url1", "value1"),
-                FactsResponse.Fact("id2", listOf("category2"), "url2", "value2")
+                FactsResponseDTO.Fact("id1", listOf("category1"), "url1", "value1"),
+                FactsResponseDTO.Fact("id2", listOf("category2"), "url2", "value2")
             )
         )
 

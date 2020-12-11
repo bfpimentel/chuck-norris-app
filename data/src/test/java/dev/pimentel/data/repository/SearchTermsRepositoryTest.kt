@@ -1,20 +1,20 @@
 package dev.pimentel.data.repository
 
-import dev.pimentel.data.models.SearchTerm
+import dev.pimentel.data.dto.SearchTermDTO
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
 import dev.pimentel.data.sources.local.SearchTermsLocalDataSource
 import dev.pimentel.domain.repositories.SearchTermsRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.models.SearchTerm as DomainSearchTerm
+import dev.pimentel.domain.entities.SearchTerm as DomainSearchTerm
 
 class SearchTermsRepositoryTest {
 
@@ -30,113 +30,113 @@ class SearchTermsRepositoryTest {
     }
 
     @Test
-    fun `should route getSearchTerm call to localDataSource`() {
-        val searchTerm = SearchTerm(0, "term")
+    fun `should route getSearchTerm call to localDataSource`() = runBlocking {
+        val searchTerm = SearchTermDTO(0, "term")
         val domainSearchTerm = DomainSearchTerm("term")
 
-        every { localDataSource.getSearchTerm() } returns Single.just(searchTerm)
+        coEvery { localDataSource.getSearchTerm() } returns searchTerm
 
         searchTermsRepository.getSearchTerm()
             .test()
             .assertNoErrors()
             .assertResult(domainSearchTerm)
 
-        verify(exactly = 1) { localDataSource.getSearchTerm() }
+        coVerify(exactly = 1) { localDataSource.getSearchTerm() }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route getSearchTermsByTerm call to localDataSource`() {
+    fun `should route getSearchTermsByTerm call to localDataSource`() = runBlocking {
         val term = "term"
         val searchTerms = listOf(
-            SearchTerm(1, "term1"),
-            SearchTerm(2, "term2")
+            SearchTermDTO(1, "term1"),
+            SearchTermDTO(2, "term2")
         )
         val domainSearchTerms = listOf(
             DomainSearchTerm("term1"),
             DomainSearchTerm("term2")
         )
 
-        every { localDataSource.getSearchTermByTerm(term) } returns Single.just(searchTerms)
+        coEvery { localDataSource.getSearchTermByTerm(term) } returns searchTerms
 
         searchTermsRepository.getSearchTermByTerm(term)
             .test()
             .assertNoErrors()
             .assertResult(domainSearchTerms)
 
-        verify(exactly = 1) { localDataSource.getSearchTermByTerm(term) }
+        coVerify(exactly = 1) { localDataSource.getSearchTermByTerm(term) }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route getLastSearchTerms call to localDataSource`() {
+    fun `should route getLastSearchTerms call to localDataSource`() = runBlocking {
         val searchTerms = listOf(
-            SearchTerm(1, "term1"),
-            SearchTerm(2, "term2")
+            SearchTermDTO(1, "term1"),
+            SearchTermDTO(2, "term2")
         )
         val domainSearchTerms = listOf(
             DomainSearchTerm("term1"),
             DomainSearchTerm("term2")
         )
 
-        every { localDataSource.getLastSearchTerms() } returns Single.just(searchTerms)
+        coEvery { localDataSource.getLastSearchTerms() } returns searchTerms
 
         searchTermsRepository.getLastSearchTerms()
             .test()
             .assertNoErrors()
             .assertResult(domainSearchTerms)
 
-        verify(exactly = 1) { localDataSource.getLastSearchTerms() }
+        coVerify(exactly = 1) { localDataSource.getLastSearchTerms() }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route insertSearchTerm call to localDataSource`() {
-        val searchTerm = SearchTerm(0, "term")
+    fun `should route insertSearchTerm call to localDataSource`() = runBlocking {
+        val searchTerm = SearchTermDTO(0, "term")
         val domainSearchTerm = DomainSearchTerm("term")
 
-        every { localDataSource.insertSearchTerm(searchTerm) } just runs
+        coEvery { localDataSource.insertSearchTerm(searchTerm) } just runs
 
         searchTermsRepository.saveSearchTerm(domainSearchTerm)
 
-        verify(exactly = 1) { localDataSource.insertSearchTerm(searchTerm) }
+        coVerify(exactly = 1) { localDataSource.insertSearchTerm(searchTerm) }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route deleteSearchTermByTerm call to localDataSource`() {
+    fun `should route deleteSearchTermByTerm call to localDataSource`() = runBlocking {
         val term = "term"
 
-        every { localDataSource.deleteSearchTermByTerm(term) } just runs
+        coEvery { localDataSource.deleteSearchTermByTerm(term) } just runs
 
         searchTermsRepository.deleteSearchTermByTerm(term)
 
-        verify(exactly = 1) { localDataSource.deleteSearchTermByTerm(term) }
+        coVerify(exactly = 1) { localDataSource.deleteSearchTermByTerm(term) }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route getNumberOfSearchTerms call to localDataSource`() {
+    fun `should route getNumberOfSearchTerms call to localDataSource`() = runBlocking {
         val numberOfSearchTerms = 10
 
-        every { localDataSource.getNumberOfSearchTerms() } returns Single.just(numberOfSearchTerms)
+        coEvery { localDataSource.getNumberOfSearchTerms() } returns numberOfSearchTerms
 
         searchTermsRepository.getNumberOfSearchTerms()
             .test()
             .assertNoErrors()
             .assertResult(numberOfSearchTerms)
 
-        verify(exactly = 1) { localDataSource.getNumberOfSearchTerms() }
+        coVerify(exactly = 1) { localDataSource.getNumberOfSearchTerms() }
         confirmVerified(localDataSource)
     }
 
     @Test
-    fun `should route deleteLastSearchTerm call to localDataSource`() {
-        every { localDataSource.deleteLastSearchTerm() } just runs
+    fun `should route deleteLastSearchTerm call to localDataSource`() = runBlocking {
+        coEvery { localDataSource.deleteLastSearchTerm() } just runs
 
         searchTermsRepository.deleteLastSearchTerm()
 
-        verify(exactly = 1) { localDataSource.deleteLastSearchTerm() }
+        coVerify(exactly = 1) { localDataSource.deleteLastSearchTerm() }
         confirmVerified(localDataSource)
     }
 }

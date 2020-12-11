@@ -1,6 +1,5 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -45,16 +44,16 @@ class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
 
     private companion object {
         val allCategories = listOf(
-            Category("name0"),
-            Category("name1"),
-            Category("name2"),
-            Category("name3"),
-            Category("name4"),
-            Category("name5"),
-            Category("name6"),
-            Category("name7"),
-            Category("name8"),
-            Category("name9")
+            CategoryModel("name0"),
+            CategoryModel("name1"),
+            CategoryModel("name2"),
+            CategoryModel("name3"),
+            CategoryModel("name4"),
+            CategoryModel("name5"),
+            CategoryModel("name6"),
+            CategoryModel("name7"),
+            CategoryModel("name8"),
+            CategoryModel("name9")
         )
 
         val categorySuggestions = listOf(

@@ -1,6 +1,6 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.SearchTerm
+import dev.pimentel.domain.entities.SearchTerm
 import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
 import io.mockk.confirmVerified

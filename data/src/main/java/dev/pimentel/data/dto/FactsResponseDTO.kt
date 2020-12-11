@@ -1,8 +1,8 @@
-package dev.pimentel.data.models
+package dev.pimentel.data.dto
 
 import com.squareup.moshi.Json
 
-data class FactsResponse(
+data class FactsResponseDTO(
     @Json(name = "result") val result: List<Fact>
 ) {
 

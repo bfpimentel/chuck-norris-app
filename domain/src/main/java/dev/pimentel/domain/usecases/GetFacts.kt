@@ -9,15 +9,13 @@ class GetFacts(
 ) : UseCase<GetFacts.Params, List<Fact>> {
 
     override suspend fun invoke(params: Params): List<Fact> =
-        factsRepository.getFacts(params.term).let { response ->
-            response.result.map { responseItem ->
-                Fact(
-                    responseItem.id,
-                    responseItem.categories.firstOrNull(),
-                    responseItem.url,
-                    responseItem.value
-                )
-            }
+        factsRepository.getFacts(params.term).map { responseItem ->
+            Fact(
+                id = responseItem.id,
+                category = responseItem.categories.firstOrNull(),
+                url = responseItem.url,
+                value = responseItem.value
+            )
         }
 
     data class Params(
