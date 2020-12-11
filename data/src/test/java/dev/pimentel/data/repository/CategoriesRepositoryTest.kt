@@ -5,17 +5,17 @@ import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.sources.local.CategoriesLocalDataSource
 import dev.pimentel.data.sources.remote.CategoriesRemoteDataSource
 import dev.pimentel.domain.repositories.CategoriesRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.models.CategoryModel as DomainCategory
 
 class CategoriesRepositoryTest {
 
@@ -25,7 +25,7 @@ class CategoriesRepositoryTest {
 
     @BeforeEach
     @Test
-    fun `should setup subject and it must not be null`() {
+    fun `should setup subject and it must not be null`() = runBlocking {
         categoriesRepository = CategoriesRepositoryImpl(
             localDataSource,
             remoteDataSource
@@ -35,63 +35,57 @@ class CategoriesRepositoryTest {
     }
 
     @Test
-    fun `should route getAllCategories call to localDataSource`() {
+    fun `should route getAllCategories call to localDataSource`() = runBlocking {
         val categories = listOf(
             CategoryDTO("name1"),
             CategoryDTO("name2")
         )
 
-        val domainCategories = listOf(
-            DomainCategory("name1"),
-            DomainCategory("name2")
+        val expectedResult = listOf(
+            "name1",
+            "name2",
         )
 
-        every { localDataSource.getAllCategories() } returns Single.just(categories)
+        coEvery { localDataSource.getAllCategories() } returns categories
 
-        categoriesRepository.getAllCategories()
-            .test()
-            .assertNoErrors()
-            .assertResult(domainCategories)
+        assertEquals(categoriesRepository.getAllCategories(), expectedResult)
 
-        verify(exactly = 1) { localDataSource.getAllCategories() }
+        coVerify(exactly = 1) { localDataSource.getAllCategories() }
         confirmVerified(localDataSource, remoteDataSource)
     }
 
     @Test
-    fun `should route getAllCategoriesNames call to remoteDataSource`() {
+    fun `should route getAllCategoriesNames call to remoteDataSource`() = runBlocking {
         val categoriesNames = listOf(
             "name1",
             "name2"
         )
 
-        every { remoteDataSource.getAllCategoriesNames() } returns Single.just(categoriesNames)
+        coEvery { remoteDataSource.getAllCategoriesNames() } returns categoriesNames
 
-        categoriesRepository.getAllCategoriesNames()
-            .test()
-            .assertNoErrors()
-            .assertResult(categoriesNames)
+        assertEquals(categoriesRepository.getAllCategoriesNames(), categoriesNames)
 
-        verify(exactly = 1) { remoteDataSource.getAllCategoriesNames() }
+        coVerify(exactly = 1) { remoteDataSource.getAllCategoriesNames() }
         confirmVerified(localDataSource, remoteDataSource)
     }
 
     @Test
-    fun `should just route saveAllCategories call to localDataSource`() {
+    fun `should just route saveAllCategories call to localDataSource`() = runBlocking {
         val categories = listOf(
             CategoryDTO("name1"),
             CategoryDTO("name2")
         )
 
-        val domainCategories = listOf(
-            DomainCategory("name1"),
-            DomainCategory("name2")
+        val expectedResult = listOf(
+            "name1",
+            "name2",
         )
 
-        every { localDataSource.saveAllCategories(categories) } just runs
+        coEvery { localDataSource.saveAllCategories(categories) } just runs
 
-        categoriesRepository.saveAllCategories(domainCategories)
+        categoriesRepository.saveAllCategories(expectedResult)
 
-        verify(exactly = 1) { localDataSource.saveAllCategories(categories) }
+        coVerify(exactly = 1) { localDataSource.saveAllCategories(categories) }
         confirmVerified(localDataSource, remoteDataSource)
     }
 }

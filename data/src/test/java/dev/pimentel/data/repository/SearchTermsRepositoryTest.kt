@@ -11,10 +11,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.entities.SearchTerm as DomainSearchTerm
 
 class SearchTermsRepositoryTest {
 
@@ -32,14 +31,10 @@ class SearchTermsRepositoryTest {
     @Test
     fun `should route getSearchTerm call to localDataSource`() = runBlocking {
         val searchTerm = SearchTermDTO(0, "term")
-        val domainSearchTerm = DomainSearchTerm("term")
 
         coEvery { localDataSource.getSearchTerm() } returns searchTerm
 
-        searchTermsRepository.getSearchTerm()
-            .test()
-            .assertNoErrors()
-            .assertResult(domainSearchTerm)
+        assertEquals(searchTermsRepository.getSearchTerm(), "term")
 
         coVerify(exactly = 1) { localDataSource.getSearchTerm() }
         confirmVerified(localDataSource)
@@ -52,17 +47,14 @@ class SearchTermsRepositoryTest {
             SearchTermDTO(1, "term1"),
             SearchTermDTO(2, "term2")
         )
-        val domainSearchTerms = listOf(
-            DomainSearchTerm("term1"),
-            DomainSearchTerm("term2")
+        val result = listOf(
+            "term1",
+            "term2",
         )
 
         coEvery { localDataSource.getSearchTermByTerm(term) } returns searchTerms
 
-        searchTermsRepository.getSearchTermByTerm(term)
-            .test()
-            .assertNoErrors()
-            .assertResult(domainSearchTerms)
+        assertEquals(searchTermsRepository.getSearchTermByTerm(term), result)
 
         coVerify(exactly = 1) { localDataSource.getSearchTermByTerm(term) }
         confirmVerified(localDataSource)
@@ -74,17 +66,14 @@ class SearchTermsRepositoryTest {
             SearchTermDTO(1, "term1"),
             SearchTermDTO(2, "term2")
         )
-        val domainSearchTerms = listOf(
-            DomainSearchTerm("term1"),
-            DomainSearchTerm("term2")
+        val result = listOf(
+            "term1",
+            "term2",
         )
 
         coEvery { localDataSource.getLastSearchTerms() } returns searchTerms
 
-        searchTermsRepository.getLastSearchTerms()
-            .test()
-            .assertNoErrors()
-            .assertResult(domainSearchTerms)
+        assertEquals(searchTermsRepository.getLastSearchTerms(), result)
 
         coVerify(exactly = 1) { localDataSource.getLastSearchTerms() }
         confirmVerified(localDataSource)
@@ -93,11 +82,10 @@ class SearchTermsRepositoryTest {
     @Test
     fun `should route insertSearchTerm call to localDataSource`() = runBlocking {
         val searchTerm = SearchTermDTO(0, "term")
-        val domainSearchTerm = DomainSearchTerm("term")
 
         coEvery { localDataSource.insertSearchTerm(searchTerm) } just runs
 
-        searchTermsRepository.saveSearchTerm(domainSearchTerm)
+        searchTermsRepository.saveSearchTerm("term")
 
         coVerify(exactly = 1) { localDataSource.insertSearchTerm(searchTerm) }
         confirmVerified(localDataSource)
@@ -109,7 +97,7 @@ class SearchTermsRepositoryTest {
 
         coEvery { localDataSource.deleteSearchTermByTerm(term) } just runs
 
-        searchTermsRepository.deleteSearchTermByTerm(term)
+        searchTermsRepository.deleteSearchTermByTerm("term")
 
         coVerify(exactly = 1) { localDataSource.deleteSearchTermByTerm(term) }
         confirmVerified(localDataSource)
@@ -121,10 +109,7 @@ class SearchTermsRepositoryTest {
 
         coEvery { localDataSource.getNumberOfSearchTerms() } returns numberOfSearchTerms
 
-        searchTermsRepository.getNumberOfSearchTerms()
-            .test()
-            .assertNoErrors()
-            .assertResult(numberOfSearchTerms)
+        assertEquals(searchTermsRepository.getNumberOfSearchTerms(), numberOfSearchTerms)
 
         coVerify(exactly = 1) { localDataSource.getNumberOfSearchTerms() }
         confirmVerified(localDataSource)
