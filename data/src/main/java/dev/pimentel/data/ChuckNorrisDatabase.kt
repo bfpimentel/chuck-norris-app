@@ -15,7 +15,7 @@ import dev.pimentel.data.sources.local.SearchTermsLocalDataSource
     version = 1,
     exportSchema = false
 )
-abstract class ChuckNorrisDatabase : RoomDatabase() {
+internal abstract class ChuckNorrisDatabase : RoomDatabase() {
 
     abstract fun categoriesLocalDataSource(): CategoriesLocalDataSource
 

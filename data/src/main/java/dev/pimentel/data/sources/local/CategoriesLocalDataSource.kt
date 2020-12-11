@@ -6,7 +6,7 @@ import androidx.room.Query
 import dev.pimentel.data.dto.CategoryDTO
 
 @Dao
-interface CategoriesLocalDataSource {
+internal interface CategoriesLocalDataSource {
 
     @Query("SELECT * FROM CategoryDTO")
     suspend fun getAllCategories(): List<CategoryDTO>

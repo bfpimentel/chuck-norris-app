@@ -6,7 +6,7 @@ import androidx.room.Query
 import dev.pimentel.data.dto.SearchTermDTO
 
 @Dao
-interface SearchTermsLocalDataSource {
+internal interface SearchTermsLocalDataSource {
 
     @Query("SELECT * FROM SearchTermDTO ORDER BY id DESC LIMIT 1")
     suspend fun getSearchTerm(): SearchTermDTO
