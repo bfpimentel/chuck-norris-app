@@ -24,10 +24,10 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*ViewHolder*.*',
             '**/*Activity*.*',
             '**/*Fragment*.*',
-            '**/*Intention.*',
-            '**/*State.*',
+            '**/*Initializer.*',
             '**/EmojiFilter.*',
             '**/DispatchersProvider*.*',
+            '**/presentation/**/data/*.*',
             '**/extensions/*',
     ]
 
