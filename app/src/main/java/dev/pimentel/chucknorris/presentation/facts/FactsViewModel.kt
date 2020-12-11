@@ -89,7 +89,7 @@ class FactsViewModel(
                 factsEvent = factDisplayMapper.map(facts).toEvent(),
                 searchTerm = searchTerm,
             )
-        } catch (error: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             if (error is GetSearchTerm.SearchTermNotFoundException) {
                 mutableState.value = FactsState.FirstAccess
             } else {

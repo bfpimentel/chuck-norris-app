@@ -86,7 +86,7 @@ class SearchViewModel(
                 searchTerms = searchTerms.toEvent(),
                 selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
             )
-        } catch (error: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
             mutableState.value = SearchState.Error(errorMessage = errorMessage.toEvent())
         }

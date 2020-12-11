@@ -2,6 +2,7 @@ package dev.pimentel.chucknorris.presentation.search.data
 
 import dev.pimentel.chucknorris.shared.mvi.Event
 
+@Suppress("LongParameterList")
 sealed class SearchState(
     val categorySuggestions: List<String> = emptyList(),
     val searchTermsEvent: Event<List<String>>? = null,

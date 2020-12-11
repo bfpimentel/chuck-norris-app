@@ -11,7 +11,7 @@ class GetSearchTerm(
     override suspend fun invoke(params: NoParams): String =
         try {
             searchTermsRepository.getSearchTerm()
-        } catch (exception: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") exception: Exception) {
             throw SearchTermNotFoundException
         }
 
