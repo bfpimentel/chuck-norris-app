@@ -1,6 +1,6 @@
 package dev.pimentel.chucknorris.shared.mvi
 
-open class Event<T>(private val content: T) {
+data class Event<T>(private val content: T) {
 
     private var hasBeenHandled = false
 

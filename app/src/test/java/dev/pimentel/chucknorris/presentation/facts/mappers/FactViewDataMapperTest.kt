@@ -4,10 +4,11 @@ import android.content.Context
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 import dev.pimentel.domain.entities.Fact
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -17,28 +18,49 @@ class FactViewDataMapperTest {
     private lateinit var mapper: FactViewDataMapper
 
     @BeforeEach
-    @Test
     fun `should setup subject and it must not be null`() {
         mapper = FactViewDataMapperImpl(context)
-        assertNotNull(mapper)
     }
 
     @Test
     fun `should map facts and return fact displays`() {
         val uncategorized = "Uncategorized"
 
-        every { context.getString(R.string.get_facts_no_category) } returns uncategorized
-
         val facts = listOf(
-            Fact("id1", "category1", "url1", "value1"),
-            Fact("id2", null, "url2", "value2")
+            Fact(
+                id = "id1",
+                category = "category1",
+                url = "url1",
+                value = "value1"
+            ),
+            Fact(
+                id = "id2",
+                category = null,
+                url = "url2",
+                value = "value2value2value2value2value2value2value2value2value2value2value2value2value2value2"
+            ),
         )
 
         val factsDisplays = listOf(
-            FactViewData("id1", "Category1", "value1", R.dimen.text_large),
-            FactViewData("id2", uncategorized, "value2", R.dimen.text_large)
+            FactViewData(
+                id = "id1",
+                category = "Category1",
+                value = "value1",
+                fontSize = R.dimen.text_large
+            ),
+            FactViewData(
+                id = "id2",
+                category = uncategorized,
+                value = "value2value2value2value2value2value2value2value2value2value2value2value2value2value2",
+                fontSize = R.dimen.text_normal
+            )
         )
 
+        every { context.getString(R.string.get_facts_no_category) } returns uncategorized
+
         assertEquals(mapper.map(facts), factsDisplays)
+
+        verify(exactly = 1) { context.getString(R.string.get_facts_no_category) }
+        confirmVerified(context)
     }
 }

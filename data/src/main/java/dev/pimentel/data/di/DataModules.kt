@@ -3,8 +3,8 @@ package dev.pimentel.data.di
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.pimentel.data.database.ChuckNorrisDatabase
 import dev.pimentel.data.R
+import dev.pimentel.data.database.ChuckNorrisDatabase
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
@@ -71,9 +71,14 @@ private val localDataSourceModule = module {
 }
 
 private val repositoryModule = module {
-    single<CategoriesRepository> { CategoriesRepositoryImpl(get(), get()) }
-    single<SearchTermsRepository> { SearchTermsRepositoryImpl(get()) }
-    single<FactsRepository> { FactsRepositoryImpl(get()) }
+    single<CategoriesRepository> {
+        CategoriesRepositoryImpl(
+            localDataSource = get(),
+            remoteDataSource = get()
+        )
+    }
+    single<SearchTermsRepository> { SearchTermsRepositoryImpl(localDataSource = get()) }
+    single<FactsRepository> { FactsRepositoryImpl(remoteDataSource = get()) }
 }
 
 val dataModules = listOf(

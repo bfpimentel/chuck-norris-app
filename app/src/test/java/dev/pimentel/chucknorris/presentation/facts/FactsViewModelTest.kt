@@ -1,14 +1,15 @@
 package dev.pimentel.chucknorris.presentation.facts
 
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.data.FactsState
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
+import dev.pimentel.chucknorris.presentation.facts.data.ShareableFact
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactViewDataMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.Navigator
-import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
@@ -20,6 +21,8 @@ import io.mockk.confirmVerified
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -70,22 +73,32 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             val getFactsParams = GetFacts.Params(term)
 
             val facts = listOf(
-                Fact("id1", "category1", "url1", "smallValue"),
                 Fact(
-                    "id2",
-                    "category2",
-                    "url2",
-                    "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue"
+                    id = "id1",
+                    category = "category1",
+                    url = "url1",
+                    value = "smallValue"
+                ),
+                Fact(
+                    id = "id2",
+                    category = "category2",
+                    url = "url2",
+                    value = "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue"
                 )
             )
 
             val factsDisplays = listOf(
-                FactDisplay("id1", "Category1", "smallValue", R.dimen.text_large),
-                FactDisplay(
-                    "id2",
-                    "Category2",
-                    "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
-                    R.dimen.text_normal
+                FactViewData(
+                    id = "id1",
+                    category = "Category1",
+                    value = "smallValue",
+                    fontSize = R.dimen.text_large
+                ),
+                FactViewData(
+                    id = "id2",
+                    category = "Category2",
+                    value = "bigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValuebigValue",
+                    fontSize = R.dimen.text_normal
                 )
             )
 
@@ -139,6 +152,73 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             getSearchTerm(NoParams)
             getFacts(getFactsParams)
         }
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
+    }
+
+    @Test
+    fun `should do nothing when using the same search term again`() =
+        testDispatcher.runBlockingTest {
+            val term = "term"
+            val getFactsParams = GetFacts.Params(term)
+
+            val facts = listOf<Fact>()
+
+            coEvery { getSearchTerm(NoParams) } returns term
+            coEvery { getFacts(getFactsParams) } returns facts
+
+            viewModel.publish(FactsIntention.GetLastSearchAndFacts)
+
+            val firstExpectedValue = viewModel.state().value
+
+            assertTrue(firstExpectedValue is FactsState.Empty)
+            assertTrue(firstExpectedValue.isEmpty)
+            assertEquals(firstExpectedValue.searchTerm, term)
+
+            viewModel.publish(FactsIntention.NewSearch(term = term))
+
+            val secondExpectedValue = viewModel.state().value
+
+            assertEquals(firstExpectedValue, secondExpectedValue)
+
+            coVerify(exactly = 1) {
+                getSearchTerm(NoParams)
+                getFacts(getFactsParams)
+            }
+            confirmVerified(
+                navigator,
+                factDisplayMapper,
+                shareableFactMapper,
+                getSearchTerm,
+                getFacts,
+                getErrorMessage
+            )
+        }
+
+    @Test
+    fun `should do a new search`() = testDispatcher.runBlockingTest {
+        val term = "term"
+        val getFactsParams = GetFacts.Params(term)
+
+        val facts = listOf<Fact>()
+
+        coEvery { getFacts(getFactsParams) } returns facts
+
+        viewModel.publish(FactsIntention.NewSearch(term = term))
+
+        val firstExpectedValue = viewModel.state().value
+
+        assertTrue(firstExpectedValue is FactsState.Empty)
+        assertTrue(firstExpectedValue.isEmpty)
+        assertEquals(firstExpectedValue.searchTerm, term)
+
+        coVerify(exactly = 1) { getFacts(getFactsParams) }
         confirmVerified(
             navigator,
             factDisplayMapper,
@@ -209,69 +289,67 @@ class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
             )
         }
 
-//    @Test
-//    fun `should get shareable fact`() = testDispatcher.runBlockingTest {
-//        val term = "term"
-//        val getFactsParams = GetFacts.Params(term)
-//
-//        val facts = listOf(
-//            Fact("id1", "category1", "url1", "value1"),
-//            Fact("id2", "category2", "url2", "value2")
-//        )
-//
-//        val factsDisplays = listOf(
-//            FactDisplay("id1", "Category1", "value1", R.dimen.text_large),
-//            FactDisplay("id2", "Category2", "value2", R.dimen.text_large)
-//        )
-//
-//        val shareableFact = ShareableFact(
-//            "url1",
-//            "value1"
-//        )
-//
-//        coEvery { getSearchTerm(NoParams) } returns term
-//        coEvery { getFacts(getFactsParams) } returns facts
-//        coEvery { factDisplayMapper.map(facts) } returns factsDisplays
-//        coEvery { shareableFactMapper.map(facts.first()) } returns shareableFact
-//
-//        val emissions = mutableListOf<FactsState>()
-//        val job = launch { viewModel.state().toList(emissions) }
-//
-//        viewModel.publish(FactsIntention.GetLastSearchAndFacts)
-//        advanceTimeBy(2000L)
-//
-//        val expectedFactsState = emissions.last()
-//
-//        assertTrue(expectedFactsState is FactsState.WithFacts)
-//        assertEquals(expectedFactsState.factsEvent!!.value, factsDisplays)
-//        assertTrue(expectedFactsState.hasFacts)
-//        assertEquals(expectedFactsState.searchTerm, term)
-//
-//        viewModel.publish(FactsIntention.ShareFact(id = factsDisplays.first().id))
-//        advanceTimeBy(2000L)
-//
-//        val expectedShareState = emissions.last()
-//
-//        assertTrue(expectedFactsState is FactsState.Share)
-//        assertEquals(expectedShareState.factsEvent!!.value, shareableFact)
-//
-//        coVerify(exactly = 1) {
-//            getSearchTerm(NoParams)
-//            getFacts(getFactsParams)
-//            factDisplayMapper.map(facts)
-//            shareableFactMapper.map(facts.first())
-//        }
-//        confirmVerified(
-//            navigator,
-//            factDisplayMapper,
-//            shareableFactMapper,
-//            getSearchTerm,
-//            getFacts,
-//            getErrorMessage
-//        )
-//
-//        job.cancel()
-//    }
+    @Test
+    fun `should get shareable fact`() = testDispatcher.runBlockingTest {
+        val term = "term"
+        val getFactsParams = GetFacts.Params(term)
 
-    // TODO: Need to insert test with same search term
+        val facts = listOf(
+            Fact("id1", "category1", "url1", "value1"),
+            Fact("id2", "category2", "url2", "value2")
+        )
+
+        val factsDisplays = listOf(
+            FactViewData("id1", "Category1", "value1", R.dimen.text_large),
+            FactViewData("id2", "Category2", "value2", R.dimen.text_large)
+        )
+
+        val shareableFact = ShareableFact(
+            "url1",
+            "value1"
+        )
+
+        coEvery { getSearchTerm(NoParams) } returns term
+        coEvery { getFacts(getFactsParams) } returns facts
+        coEvery { factDisplayMapper.map(facts) } returns factsDisplays
+        coEvery { shareableFactMapper.map(facts.first()) } returns shareableFact
+
+        val emissions = mutableListOf<FactsState>()
+        val job = launch { viewModel.state().toList(emissions) }
+
+        viewModel.publish(FactsIntention.GetLastSearchAndFacts)
+        advanceTimeBy(2000L)
+
+        val expectedFactsState = emissions.last()
+
+        assertTrue(expectedFactsState is FactsState.WithFacts)
+        assertEquals(expectedFactsState.factsEvent!!.value, factsDisplays)
+        assertTrue(expectedFactsState.hasFacts)
+        assertEquals(expectedFactsState.searchTerm, term)
+
+        viewModel.publish(FactsIntention.ShareFact(id = factsDisplays.first().id))
+        advanceTimeBy(2000L)
+
+        val expectedShareState = emissions.last()
+
+        assertTrue(expectedShareState is FactsState.Share)
+        assertEquals(expectedShareState.shareFactEvent!!.value, shareableFact)
+
+        coVerify(exactly = 1) {
+            getSearchTerm(NoParams)
+            getFacts(getFactsParams)
+            factDisplayMapper.map(facts)
+            shareableFactMapper.map(facts.first())
+        }
+        confirmVerified(
+            navigator,
+            factDisplayMapper,
+            shareableFactMapper,
+            getSearchTerm,
+            getFacts,
+            getErrorMessage
+        )
+
+        job.cancel()
+    }
 }

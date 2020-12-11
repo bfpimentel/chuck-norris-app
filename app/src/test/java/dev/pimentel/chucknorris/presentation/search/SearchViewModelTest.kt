@@ -2,9 +2,9 @@ package dev.pimentel.chucknorris.presentation.search
 
 import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
 import dev.pimentel.chucknorris.presentation.search.data.SearchState
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
-import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions

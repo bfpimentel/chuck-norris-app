@@ -26,9 +26,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*Fragment*.*',
             '**/*Intention.*',
             '**/*State.*',
-            '**/DispatchersProvider**.*',
-            '**/emoji/**',
-            '**/extensions/**',
+            '**/EmojiFilter.*',
+            '**/DispatchersProvider*.*',
+            '**/extensions/*',
     ]
 
     final dataFileExclusions = [

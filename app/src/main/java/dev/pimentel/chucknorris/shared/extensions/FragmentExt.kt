@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -36,5 +35,5 @@ fun <T> Fragment.lifecycleBinding(bindingFactory: (View) -> T): ReadOnlyProperty
     }
 
 inline fun <T> Fragment.watch(source: StateFlow<T>, crossinline block: (T) -> Unit) {
-    lifecycleScope.launch { source.collect { block(it) } }
+    lifecycleScope.launchWhenCreated { source.collect { block(it) } }
 }
