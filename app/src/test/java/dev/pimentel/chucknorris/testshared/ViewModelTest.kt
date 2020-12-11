@@ -1,7 +1,7 @@
 package dev.pimentel.chucknorris.testshared
 
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher

@@ -3,9 +3,9 @@ package dev.pimentel.chucknorris.di
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.Navigator
 import dev.pimentel.chucknorris.shared.navigator.NavigatorImpl
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProviderImpl
-import dev.pimentel.data.dataModules
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProviderImpl
+import dev.pimentel.data.di.dataModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

@@ -1,4 +1,4 @@
-package dev.pimentel.chucknorris.shared.schedulerprovider
+package dev.pimentel.chucknorris.shared.dispatchersprovider
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

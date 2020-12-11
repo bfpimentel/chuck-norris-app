@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts.mappers
 
+import dev.pimentel.chucknorris.presentation.facts.data.ShareableFact
 import dev.pimentel.domain.entities.Fact
 
 interface ShareableFactMapper {
@@ -13,8 +14,3 @@ class ShareableFactMapperImpl : ShareableFactMapper {
         fact.value
     )
 }
-
-data class ShareableFact(
-    val url: String,
-    val value: String
-)

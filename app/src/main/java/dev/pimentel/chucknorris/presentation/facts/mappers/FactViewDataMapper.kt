@@ -1,18 +1,18 @@
 package dev.pimentel.chucknorris.presentation.facts.mappers
 
 import android.content.Context
-import androidx.annotation.DimenRes
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 import dev.pimentel.domain.entities.Fact
 
-interface FactDisplayMapper {
-    fun map(facts: List<Fact>): List<FactDisplay>
+interface FactViewDataMapper {
+    fun map(facts: List<Fact>): List<FactViewData>
 }
 
-class FactDisplayMapperImpl(private val context: Context) : FactDisplayMapper {
+class FactViewDataMapperImpl(private val context: Context) : FactViewDataMapper {
 
-    override fun map(facts: List<Fact>): List<FactDisplay> = facts.map { fact ->
-        FactDisplay(
+    override fun map(facts: List<Fact>): List<FactViewData> = facts.map { fact ->
+        FactViewData(
             fact.id,
             fact.category?.capitalize() ?: context.getString(R.string.get_facts_no_category),
             fact.value,
@@ -25,10 +25,3 @@ class FactDisplayMapperImpl(private val context: Context) : FactDisplayMapper {
         const val SMALL_FONT_LENGTH_LIMIT = 80
     }
 }
-
-data class FactDisplay(
-    val id: String,
-    val category: String,
-    val value: String,
-    @DimenRes val fontSize: Int
-)

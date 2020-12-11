@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.data.FactsState
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactViewDataMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @Suppress("LongParameterList")
 class FactsViewModel(
     private val navigator: NavigatorRouter,
-    private val factDisplayMapper: FactDisplayMapper,
+    private val factDisplayMapper: FactViewDataMapper,
     private val shareableFactMapper: ShareableFactMapper,
     private val getSearchTerm: GetSearchTerm,
     private val getFacts: GetFacts,

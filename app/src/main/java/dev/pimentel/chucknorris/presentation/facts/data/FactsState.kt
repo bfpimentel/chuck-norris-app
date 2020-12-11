@@ -1,40 +1,11 @@
 package dev.pimentel.chucknorris.presentation.facts.data
 
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
-import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
 import dev.pimentel.chucknorris.shared.mvi.Event
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 
-//@Suppress("LongParameterList")
-//data class FactsState(
-//    val facts: List<FactDisplay>,
-//    val searchTerm: String,
-//    val isFirstAccess: Boolean,
-//    val isLoading: Boolean,
-//    val hasError: Boolean,
-//    val isEmpty: Boolean,
-//    val shareFactEvent: Event<ShareableFact>?,
-//    val errorMessageEvent: Event<String>?,
-//) {
-//
-//    companion object {
-//        @JvmStatic
-//        val INITIAL = FactsState(
-//            facts = emptyList(),
-//            searchTerm = "",
-//            isFirstAccess = false,
-//            isLoading = false,
-//            isEmpty = false,
-//            hasError = false,
-//            shareFactEvent = null,
-//            errorMessageEvent = null
-//        )
-//    }
-//}
-
 @Suppress("LongParameterList")
 sealed class FactsState(
-    val factsEvent: Event<List<FactDisplay>>? = null,
+    val factsEvent: Event<List<FactViewData>>? = null,
     val searchTerm: String = "",
     val isFirstAccess: Boolean = false,
     val isLoading: Boolean = false,
@@ -60,7 +31,7 @@ sealed class FactsState(
         searchTerm = searchTerm,
     )
 
-    class WithFacts(factsEvent: Event<List<FactDisplay>>, searchTerm: String) : FactsState(
+    class WithFacts(factsEvent: Event<List<FactViewData>>, searchTerm: String) : FactsState(
         factsEvent = factsEvent,
         searchTerm = searchTerm,
         hasFacts = true,

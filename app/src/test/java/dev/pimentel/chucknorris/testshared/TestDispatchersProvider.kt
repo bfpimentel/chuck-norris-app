@@ -1,6 +1,6 @@
 package dev.pimentel.chucknorris.testshared
 
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 

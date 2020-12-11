@@ -13,8 +13,6 @@ open class Event<T>(private val content: T) {
                 content
             }
         }
-
-    object NoContent : Event<Unit>(Unit)
 }
 
 fun <T> T.toEvent() = Event(this)

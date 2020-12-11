@@ -4,12 +4,11 @@ import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapper
-import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactViewDataMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.Navigator
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
@@ -21,8 +20,6 @@ import io.mockk.confirmVerified
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -31,7 +28,7 @@ import org.junit.jupiter.api.Test
 class FactsViewModelTest : ViewModelTest<FactsContract.ViewModel>() {
 
     private val navigator = mockk<Navigator>()
-    private val factDisplayMapper = mockk<FactDisplayMapper>()
+    private val factDisplayMapper = mockk<FactViewDataMapper>()
     private val shareableFactMapper = mockk<ShareableFactMapper>()
     private val getFacts = mockk<GetFacts>()
     private val getSearchTerm = mockk<GetSearchTerm>()

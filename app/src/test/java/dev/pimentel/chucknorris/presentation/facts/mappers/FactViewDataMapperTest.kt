@@ -2,6 +2,7 @@ package dev.pimentel.chucknorris.presentation.facts.mappers
 
 import android.content.Context
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 import dev.pimentel.domain.entities.Fact
 import io.mockk.every
 import io.mockk.mockk
@@ -10,15 +11,15 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class FactDisplayMapperTest {
+class FactViewDataMapperTest {
 
     private val context = mockk<Context>(relaxed = true)
-    private lateinit var mapper: FactDisplayMapper
+    private lateinit var mapper: FactViewDataMapper
 
     @BeforeEach
     @Test
     fun `should setup subject and it must not be null`() {
-        mapper = FactDisplayMapperImpl(context)
+        mapper = FactViewDataMapperImpl(context)
         assertNotNull(mapper)
     }
 
@@ -34,24 +35,10 @@ class FactDisplayMapperTest {
         )
 
         val factsDisplays = listOf(
-            FactDisplay("id1", "Category1", "value1", R.dimen.text_large),
-            FactDisplay("id2", uncategorized, "value2", R.dimen.text_large)
+            FactViewData("id1", "Category1", "value1", R.dimen.text_large),
+            FactViewData("id2", uncategorized, "value2", R.dimen.text_large)
         )
 
         assertEquals(mapper.map(facts), factsDisplays)
-    }
-
-    @Test
-    fun `FactDisplay must not contain any null properties`() {
-        val factDisplay = FactDisplay(
-            "id1",
-            "category",
-            "value",
-            R.dimen.text_normal
-        )
-
-        assertNotNull(factDisplay.category)
-        assertNotNull(factDisplay.value)
-        assertNotNull(factDisplay.fontSize)
     }
 }

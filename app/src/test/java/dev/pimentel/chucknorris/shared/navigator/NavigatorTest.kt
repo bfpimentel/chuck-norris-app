@@ -2,7 +2,7 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.navigation.NavController
 import dev.pimentel.chucknorris.R
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.testshared.TestDispatchersProvider
 import io.mockk.confirmVerified
 import io.mockk.every

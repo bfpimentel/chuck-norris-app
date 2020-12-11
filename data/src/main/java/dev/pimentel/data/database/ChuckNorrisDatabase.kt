@@ -1,4 +1,4 @@
-package dev.pimentel.data
+package dev.pimentel.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

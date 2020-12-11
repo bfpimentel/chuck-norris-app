@@ -24,9 +24,11 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*ViewHolder*.*',
             '**/*Activity*.*',
             '**/*Fragment*.*',
-            '**/*Application*.*',
-            '**/DisposablesHolder.*',
-            '**/SchedulerProvider**.*'
+            '**/*Intention.*',
+            '**/*State.*',
+            '**/DispatchersProvider**.*',
+            '**/emoji/**',
+            '**/extensions/**',
     ]
 
     final dataFileExclusions = [

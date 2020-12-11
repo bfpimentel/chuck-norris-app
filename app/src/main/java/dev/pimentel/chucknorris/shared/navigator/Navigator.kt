@@ -2,7 +2,7 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
-import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import kotlinx.coroutines.withContext
 
 interface NavigatorBinder {

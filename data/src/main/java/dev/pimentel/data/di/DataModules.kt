@@ -1,8 +1,10 @@
-package dev.pimentel.data
+package dev.pimentel.data.di
 
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dev.pimentel.data.database.ChuckNorrisDatabase
+import dev.pimentel.data.R
 import dev.pimentel.data.repositories.CategoriesRepositoryImpl
 import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.repositories.SearchTermsRepositoryImpl
@@ -31,6 +33,7 @@ private val moshiModule = module {
 private val networkModule = module {
     single {
         val apiUrl = androidContext().getString(R.string.api_url)
+        val moshi = get<Moshi>()
 
         OkHttpClient.Builder()
             .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
@@ -41,7 +44,7 @@ private val networkModule = module {
                 Retrofit.Builder()
                     .baseUrl(apiUrl)
                     .client(client)
-                    .addConverterFactory(MoshiConverterFactory.create(get()))
+                    .addConverterFactory(MoshiConverterFactory.create(moshi))
                     .build()
             }
     }

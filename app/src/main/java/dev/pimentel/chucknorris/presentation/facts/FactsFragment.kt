@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dev.pimentel.chucknorris.R
 import dev.pimentel.chucknorris.databinding.FactsFragmentBinding
 import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
-import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.facts.data.ShareableFact
 import dev.pimentel.chucknorris.presentation.search.SearchFragment
 import dev.pimentel.chucknorris.shared.extensions.lifecycleBinding
 import dev.pimentel.chucknorris.shared.extensions.watch
