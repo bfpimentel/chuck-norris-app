@@ -20,23 +20,41 @@ import dev.pimentel.domain.usecases.SaveSearchTerm
 import org.koin.dsl.module
 
 private val useCasesModule = module {
-    single { GetAllCategories(get()) }
-    single { GetAllCategoriesNames(get()) }
-    single { SaveAllCategories(get()) }
-    single { AreCategoriesStored(get()) }
-    single { SaveAndGetCategoriesSuggestions(get(), get(), get()) }
-    single { GetCategorySuggestions(get()) }
-    single { SaveSearchTerm(get()) }
-    single { DeleteSearchTerm(get()) }
-    single { DeleteLastSearchTerm(get()) }
-    single { AreSearchTermsOnLimit(get()) }
-    single { SaveExistingSearchTerm(get(), get()) }
-    single { SaveNonExistingSearchTerm(get(), get(), get()) }
-    single { DoesSearchTermExist(get()) }
-    single { HandleSearchTermSaving(get(), get(), get()) }
-    single { GetLastSearchTerms(get()) }
-    single { GetSearchTerm(get()) }
-    single { GetFacts(get()) }
+    single { GetAllCategories(categoriesRepository = get()) }
+    single { GetAllCategoriesNames(categoriesRepository = get()) }
+    single { SaveAllCategories(categoriesRepository = get()) }
+    single { AreCategoriesStored(getAllCategories = get()) }
+    single {
+        SaveAndGetCategoriesSuggestions(
+            getAllCategoriesNames = get(),
+            saveAllCategories = get(),
+            getCategorySuggestions = get()
+        )
+    }
+    single { GetCategorySuggestions(getAllCategories = get()) }
+    single { SaveSearchTerm(searchTermsRepository = get()) }
+    single { DeleteSearchTerm(searchTermsRepository = get()) }
+    single { DeleteLastSearchTerm(searchTermsRepository = get()) }
+    single { AreSearchTermsOnLimit(searchTermsRepository = get()) }
+    single { SaveExistingSearchTerm(deleteSearchTerm = get(), saveSearchTerm = get()) }
+    single {
+        SaveNonExistingSearchTerm(
+            areSearchTermsOnLimit = get(),
+            deleteLastSearchTerm = get(),
+            saveSearchTerm = get()
+        )
+    }
+    single { DoesSearchTermExist(searchTermsRepository = get()) }
+    single {
+        HandleSearchTermSaving(
+            doesSearchTermExist = get(),
+            saveExistingSearchTerm = get(),
+            saveNonExistingSearchTerm = get()
+        )
+    }
+    single { GetLastSearchTerms(searchTermsRepository = get()) }
+    single { GetSearchTerm(searchTermsRepository = get()) }
+    single { GetFacts(factsRepository = get()) }
 }
 
 val domainModules = listOf(

@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.support.KotlinCompilerKt
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -61,6 +59,7 @@ dependencies {
 
     implementation projectDependencies.kotlinStdlib
     implementation projectDependencies.kotlinReflect
+    implementation projectDependencies.startup
     implementation projectDependencies.coroutinesCore
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat
