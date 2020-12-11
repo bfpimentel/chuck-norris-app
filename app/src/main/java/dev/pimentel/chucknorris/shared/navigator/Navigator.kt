@@ -3,8 +3,7 @@ package dev.pimentel.chucknorris.shared.navigator
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 interface NavigatorBinder {
     fun bind(navController: NavController)
@@ -12,8 +11,8 @@ interface NavigatorBinder {
 }
 
 interface NavigatorRouter {
-    fun navigate(@IdRes destinationId: Int)
-    fun pop()
+    suspend fun navigate(@IdRes destinationId: Int)
+    suspend fun pop()
 }
 
 interface Navigator : NavigatorBinder, NavigatorRouter
@@ -30,14 +29,14 @@ class NavigatorImpl(private val dispatchersProvider: DispatchersProvider) : Navi
         this.navController = null
     }
 
-    override fun navigate(@IdRes destinationId: Int) {
-        GlobalScope.launch(dispatchersProvider.ui) {
+    override suspend fun navigate(@IdRes destinationId: Int) {
+        withContext(dispatchersProvider.ui) {
             navController?.navigate(destinationId)
         }
     }
 
-    override fun pop() {
-        GlobalScope.launch(dispatchersProvider.ui) {
+    override suspend fun pop() {
+        withContext(dispatchersProvider.ui) {
             navController?.popBackStack()
         }
     }

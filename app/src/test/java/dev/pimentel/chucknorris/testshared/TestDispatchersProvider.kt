@@ -1,14 +1,12 @@
 package dev.pimentel.chucknorris.testshared
 
 import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.TestScheduler
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 
-internal class TestDispatchersProvider(
-    testScheduler: TestScheduler
-) : DispatchersProvider {
+class TestDispatchersProvider(testDispatcher: TestCoroutineDispatcher) : DispatchersProvider {
 
-    override val ui: Scheduler = testScheduler
+    override val ui: CoroutineDispatcher = testDispatcher
 
-    override val io: Scheduler = testScheduler
+    override val io: CoroutineDispatcher = testDispatcher
 }

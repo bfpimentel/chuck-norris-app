@@ -8,11 +8,10 @@ interface ShareableFactMapper {
 
 class ShareableFactMapperImpl : ShareableFactMapper {
 
-    override fun map(fact: Fact): ShareableFact =
-        ShareableFact(
-            fact.url,
-            fact.value
-        )
+    override fun map(fact: Fact): ShareableFact = ShareableFact(
+        fact.url,
+        fact.value
+    )
 }
 
 data class ShareableFact(

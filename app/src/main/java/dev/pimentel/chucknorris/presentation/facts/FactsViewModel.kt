@@ -90,8 +90,6 @@ class FactsViewModel(
                 searchTerm = searchTerm,
             )
         } catch (error: Exception) {
-            error.printStackTrace()
-
             if (error is GetSearchTerm.SearchTermNotFoundException) {
                 mutableState.value = FactsState.FirstAccess
             } else {
@@ -101,7 +99,7 @@ class FactsViewModel(
         }
     }
 
-    private fun navigateToSearch() {
+    private suspend fun navigateToSearch() {
         navigator.navigate(R.id.facts_fragment_to_search_fragment)
     }
 

@@ -1,8 +1,10 @@
 package dev.pimentel.chucknorris.presentation.search
 
+import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
 import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
+import dev.pimentel.chucknorris.shared.schedulerprovider.DispatchersProvider
 import dev.pimentel.chucknorris.testshared.ViewModelTest
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
@@ -10,14 +12,13 @@ import dev.pimentel.domain.usecases.GetLastSearchTerms
 import dev.pimentel.domain.usecases.HandleSearchTermSaving
 import dev.pimentel.domain.usecases.SaveAndGetCategoriesSuggestions
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
-import io.reactivex.Completable
-import io.reactivex.Single
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -34,7 +35,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
     private val getLastSearchTerms = mockk<GetLastSearchTerms>()
     override lateinit var viewModel: SearchContract.ViewModel
 
-    override fun `setup subject`() {
+    override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
         viewModel = SearchViewModel(
             navigator,
             areCategoriesStored,
@@ -52,7 +53,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         """should save and get category suggestions when categories are not stored and 
             get search terms with one being equal to one category"""
     )
-    fun test1() {
+    fun test1() = testDispatcher.runBlockingTest {
         val categorySuggestions = listOf(
             "nameThatIsTheSameAsOneCategory",
             "name1",
@@ -64,22 +65,20 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             "term2"
         )
 
-        every { areCategoriesStored(NoParams) } returns Single.just(false)
-        every { saveAndGetCategoriesSuggestions(NoParams) } returns Single.just(categorySuggestions)
-        every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
+        coEvery { areCategoriesStored(NoParams) } returns false
+        coEvery { saveAndGetCategoriesSuggestions(NoParams) } returns categorySuggestions
+        coEvery { getLastSearchTerms(NoParams) } returns lastSearchTerms
 
-        viewModel.getCategorySuggestionsAndSearchTerms()
-        testScheduler.triggerActions()
+        viewModel.publish(SearchIntention.GetCategorySuggestionsAndSearchTerms)
 
-        val expectedSearchState = viewModel.state().value!!
+        val expectedSearchState = viewModel.state().value
 
         assertTrue(expectedSearchState is SearchState.Success)
         assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
+        assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
+        assertEquals(expectedSearchState.selectSuggestionEvent!!.value, 0)
 
-        assertEquals(viewModel.selectedSuggestionIndex().value, 0)
-
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             areCategoriesStored(NoParams)
             saveAndGetCategoriesSuggestions(NoParams)
             getLastSearchTerms(NoParams)
@@ -95,130 +94,127 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
     }
 
     @Test
-    fun `should just get category suggestions and last search terms`() {
-        val categorySuggestions = listOf(
-            "name1",
-            "name2"
-        )
-        val lastSearchTerms = listOf(
-            "term1",
-            "term2"
-        )
+    fun `should just get category suggestions and last search terms`() =
+        testDispatcher.runBlockingTest {
+            val categorySuggestions = listOf(
+                "name1",
+                "name2"
+            )
+            val lastSearchTerms = listOf(
+                "term1",
+                "term2"
+            )
 
-        every { areCategoriesStored(NoParams) } returns Single.just(true)
-        every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
-        every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
+            coEvery { areCategoriesStored(NoParams) } returns true
+            coEvery { getCategorySuggestions(NoParams) } returns categorySuggestions
+            coEvery { getLastSearchTerms(NoParams) } returns lastSearchTerms
 
-        viewModel.getCategorySuggestionsAndSearchTerms()
-        testScheduler.triggerActions()
+            viewModel.publish(SearchIntention.GetCategorySuggestionsAndSearchTerms)
 
-        val expectedSearchState = viewModel.state().value!!
+            val expectedSearchState = viewModel.state().value
 
-        assertTrue(expectedSearchState is SearchState.Success)
-        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
+            assertTrue(expectedSearchState is SearchState.Success)
+            assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+            assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
+            assertNull(expectedSearchState.selectSuggestionEvent?.value)
 
-        assertNull(viewModel.selectedSuggestionIndex().value)
-
-        verify(exactly = 1) {
-            areCategoriesStored(NoParams)
-            getCategorySuggestions(NoParams)
-            getLastSearchTerms(NoParams)
+            coVerify(exactly = 1) {
+                areCategoriesStored(NoParams)
+                getCategorySuggestions(NoParams)
+                getLastSearchTerms(NoParams)
+            }
+            confirmVerified(
+                navigator,
+                areCategoriesStored,
+                saveAndGetCategoriesSuggestions,
+                getCategorySuggestions,
+                handleSearchTermSaving,
+                getLastSearchTerms
+            )
         }
-        confirmVerified(
-            navigator,
-            areCategoriesStored,
-            saveAndGetCategoriesSuggestions,
-            getCategorySuggestions,
-            handleSearchTermSaving,
-            getLastSearchTerms
-        )
-    }
 
     @Test
-    fun `should just get category suggestions and last search terms with empty list of search terms`() {
-        val categorySuggestions = listOf(
-            "name1",
-            "name2"
-        )
-        val lastSearchTerms = listOf<String>()
+    fun `should just get category suggestions and last search terms with empty list of search terms`() =
+        testDispatcher.runBlockingTest {
+            val categorySuggestions = listOf(
+                "name1",
+                "name2"
+            )
+            val lastSearchTerms = listOf<String>()
 
-        every { areCategoriesStored(NoParams) } returns Single.just(true)
-        every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
-        every { getLastSearchTerms(NoParams) } returns Single.just(lastSearchTerms)
+            coEvery { areCategoriesStored(NoParams) } returns true
+            coEvery { getCategorySuggestions(NoParams) } returns categorySuggestions
+            coEvery { getLastSearchTerms(NoParams) } returns lastSearchTerms
 
-        viewModel.getCategorySuggestionsAndSearchTerms()
-        testScheduler.triggerActions()
+            viewModel.publish(SearchIntention.GetCategorySuggestionsAndSearchTerms)
 
-        val expectedSearchState = viewModel.state().value!!
+            val expectedSearchState = viewModel.state().value
 
-        assertTrue(expectedSearchState is SearchState.Success)
-        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
-        assertEquals(expectedSearchState.searchTermsEvent, lastSearchTerms)
+            assertTrue(expectedSearchState is SearchState.Success)
+            assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+            assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
+            assertNull(expectedSearchState.selectSuggestionEvent?.value)
 
-        assertNull(viewModel.selectedSuggestionIndex().value)
-
-        verify(exactly = 1) {
-            areCategoriesStored(NoParams)
-            getCategorySuggestions(NoParams)
-            getLastSearchTerms(NoParams)
+            coVerify(exactly = 1) {
+                areCategoriesStored(NoParams)
+                getCategorySuggestions(NoParams)
+                getLastSearchTerms(NoParams)
+            }
+            confirmVerified(
+                navigator,
+                areCategoriesStored,
+                saveAndGetCategoriesSuggestions,
+                getCategorySuggestions,
+                handleSearchTermSaving,
+                getLastSearchTerms
+            )
         }
-        confirmVerified(
-            navigator,
-            areCategoriesStored,
-            saveAndGetCategoriesSuggestions,
-            getCategorySuggestions,
-            handleSearchTermSaving,
-            getLastSearchTerms
-        )
-    }
 
     @Test
-    fun `should post error message when failing to get category suggestions`() {
-        val error = IllegalArgumentException()
-        val errorMessage = "errorMessage"
-        val getErrorMessageParams = GetErrorMessage.Params(error)
+    fun `should post error message when failing to get category suggestions`() =
+        testDispatcher.runBlockingTest {
+            val error = IllegalArgumentException()
+            val errorMessage = "errorMessage"
+            val getErrorMessageParams = GetErrorMessage.Params(error)
 
-        every { areCategoriesStored(NoParams) } returns Single.just(false)
-        every { saveAndGetCategoriesSuggestions(NoParams) } returns Single.error(error)
-        every { getErrorMessage(getErrorMessageParams) } returns errorMessage
+            coEvery { areCategoriesStored(NoParams) } returns false
+            coEvery { saveAndGetCategoriesSuggestions(NoParams) } throws error
+            coEvery { getErrorMessage(getErrorMessageParams) } returns errorMessage
 
-        viewModel.getCategorySuggestionsAndSearchTerms()
-        testScheduler.triggerActions()
+            viewModel.publish(SearchIntention.GetCategorySuggestionsAndSearchTerms)
 
-        val expectedSearchState = viewModel.state().value!!
+            val expectedSearchState = viewModel.state().value
 
-        assertTrue(expectedSearchState is SearchState.Error)
-        assertEquals(expectedSearchState.errorEvent, errorMessage)
-        assertTrue(expectedSearchState.hasError)
+            assertTrue(expectedSearchState is SearchState.Error)
+            assertEquals(expectedSearchState.errorEvent!!.value, errorMessage)
+            assertTrue(expectedSearchState.hasError)
 
-        verify(exactly = 1) {
-            areCategoriesStored(NoParams)
-            saveAndGetCategoriesSuggestions(NoParams)
-            getErrorMessage(getErrorMessageParams)
+            coVerify(exactly = 1) {
+                areCategoriesStored(NoParams)
+                saveAndGetCategoriesSuggestions(NoParams)
+                getErrorMessage(getErrorMessageParams)
+            }
+            confirmVerified(
+                navigator,
+                areCategoriesStored,
+                saveAndGetCategoriesSuggestions,
+                getCategorySuggestions,
+                handleSearchTermSaving,
+                getLastSearchTerms
+            )
         }
-        confirmVerified(
-            navigator,
-            areCategoriesStored,
-            saveAndGetCategoriesSuggestions,
-            getCategorySuggestions,
-            handleSearchTermSaving,
-            getLastSearchTerms
-        )
-    }
 
     @Test
-    fun `should save search term`() {
+    fun `should save search term`() = testDispatcher.runBlockingTest {
         val term = "term"
         val handleSearchTermSavingParams = HandleSearchTermSaving.Params(term)
 
-        every { handleSearchTermSaving(handleSearchTermSavingParams) } returns Completable.complete()
-        every { navigator.pop() } just runs
+        coEvery { handleSearchTermSaving(handleSearchTermSavingParams) } just runs
+        coEvery { navigator.pop() } just runs
 
-        viewModel.saveSearchTerm(term)
-        testScheduler.triggerActions()
+        viewModel.publish(SearchIntention.SaveSearchTerm(term = term))
 
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             handleSearchTermSaving(handleSearchTermSavingParams)
             navigator.pop()
         }

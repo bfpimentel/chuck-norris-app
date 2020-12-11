@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.KotlinCompilerKt
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -69,8 +71,13 @@ dependencies {
     implementation projectDependencies.lifecycleCommon
     implementation projectDependencies.lifecycleLiveData
 
+    testImplementation testDependencies.coroutinesCore
     testImplementation testDependencies.androidTestCore
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI
     testRuntimeOnly testDependencies.junitEngine
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
 }
