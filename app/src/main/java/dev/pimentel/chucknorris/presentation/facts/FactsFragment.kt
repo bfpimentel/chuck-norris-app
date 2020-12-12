@@ -39,7 +39,10 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
 
     private fun bindOutputs() {
         watch(viewModel.state()) { state ->
-            state.factsEvent.handleEvent(adapter::submitList)
+            state.factsEvent.handleEvent { facts ->
+                adapter.submitList(facts)
+                binding.factsList.scrollToPosition(0)
+            }
 
             binding.loading.isVisible = state.isLoading
 
