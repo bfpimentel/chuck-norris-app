@@ -6,6 +6,7 @@ import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
 import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
+import dev.pimentel.chucknorris.shared.extensions.update
 import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.domain.usecases.AreCategoriesStored
@@ -67,10 +68,10 @@ class SearchViewModel(
             val suggestions = if (areCategoriesStored) {
                 getCategorySuggestions(NoParams)
             } else {
-                mutableState.value = SearchState.Loading(isLoading = true)
-                saveAndGetCategoriesSuggestions(NoParams).also {
-                    mutableState.value = SearchState.Loading(isLoading = false)
-                }
+                mutableState.update { SearchState.Loading(isLoading = true) }
+                val suggestions = saveAndGetCategoriesSuggestions(NoParams)
+                mutableState.update { SearchState.Loading(isLoading = false) }
+                suggestions
             }
 
             val searchTerms = getLastSearchTerms(NoParams)
@@ -81,20 +82,22 @@ class SearchViewModel(
                     suggestions.indexOfFirst { suggestion -> suggestion == lastSearchTerm }
                 }?.takeIf { index -> index != NOT_FOUND_INDEX }
 
-            mutableState.value = SearchState.Success(
-                categorySuggestions = suggestions,
-                searchTerms = searchTerms.toEvent(),
-                selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
-            )
+            mutableState.update {
+                SearchState.Success(
+                    categorySuggestions = suggestions,
+                    searchTerms = searchTerms.toEvent(),
+                    selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
+                )
+            }
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-            mutableState.value = SearchState.Error(errorMessage = errorMessage.toEvent())
+            mutableState.update { SearchState.Error(errorMessage = errorMessage.toEvent()) }
         }
     }
 
     private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
-        mutableState.value = SearchState.NewSearch(newSearch = term.toEvent())
+        mutableState.update { SearchState.NewSearch(newSearch = term.toEvent()) }
         navigator.pop()
     }
 

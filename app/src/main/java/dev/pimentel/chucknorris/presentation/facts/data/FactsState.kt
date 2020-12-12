@@ -1,7 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts.data
 
 import dev.pimentel.chucknorris.shared.mvi.Event
-import dev.pimentel.chucknorris.shared.mvi.toEvent
 
 @Suppress("LongParameterList")
 sealed class FactsState(
@@ -37,8 +36,16 @@ sealed class FactsState(
         hasFacts = true,
     )
 
-    class Share(shareableFact: ShareableFact) : FactsState(
-        shareFactEvent = shareableFact.toEvent(),
+    class Share(oldState: FactsState, shareFactEvent: Event<ShareableFact>) : FactsState(
+        factsEvent = oldState.factsEvent,
+        searchTerm = oldState.searchTerm,
+        isFirstAccess = oldState.isFirstAccess,
+        isLoading = oldState.isLoading,
+        isEmpty = oldState.isEmpty,
+        hasFacts = oldState.hasFacts,
+        hasError = oldState.hasError,
+        errorEvent = oldState.errorEvent,
+        shareFactEvent = shareFactEvent,
     )
 
     class Error(errorEvent: Event<String>) : FactsState(
