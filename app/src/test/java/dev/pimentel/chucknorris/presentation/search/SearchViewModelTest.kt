@@ -74,7 +74,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
         val expectedSearchState = viewModel.state().value
 
         assertTrue(expectedSearchState is SearchState.Success)
-        assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+        assertEquals(expectedSearchState.suggestionsEvent!!.value, categorySuggestions)
         assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
         assertEquals(expectedSearchState.selectSuggestionEvent!!.value, 0)
 
@@ -114,7 +114,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             val expectedSearchState = viewModel.state().value
 
             assertTrue(expectedSearchState is SearchState.Success)
-            assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+            assertEquals(expectedSearchState.suggestionsEvent!!.value, categorySuggestions)
             assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
             assertNull(expectedSearchState.selectSuggestionEvent?.value)
 
@@ -151,7 +151,7 @@ class SearchViewModelTest : ViewModelTest<SearchContract.ViewModel>() {
             val expectedSearchState = viewModel.state().value
 
             assertTrue(expectedSearchState is SearchState.Success)
-            assertEquals(expectedSearchState.categorySuggestions, categorySuggestions)
+            assertEquals(expectedSearchState.suggestionsEvent!!.value, categorySuggestions)
             assertEquals(expectedSearchState.searchTermsEvent!!.value, lastSearchTerms)
             assertNull(expectedSearchState.selectSuggestionEvent?.value)
 

@@ -29,7 +29,7 @@ class SearchTermsAdapter : ListAdapter<String, SearchTermsAdapter.ViewHolder>(DI
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(term: String) {
-            binding.searchLastTermsItemTvTerm.also {
+            binding.root.also {
                 it.text = term
                 it.setOnClickListener { onItemClick(term) }
             }

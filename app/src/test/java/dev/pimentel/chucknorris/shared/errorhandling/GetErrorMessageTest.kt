@@ -56,14 +56,4 @@ class GetErrorMessageTest {
             verify(exactly = 1) { context.getString(R.string.error_message_default) }
             confirmVerified(context)
         }
-
-    @Test
-    fun `GetErrorTypeParams must contain a non null throwable`() = runBlocking {
-        val throwable = IllegalArgumentException()
-
-        val params = GetErrorMessage.Params(throwable)
-
-        assertNotNull(params.throwable)
-        assertEquals(params.throwable, throwable)
-    }
 }

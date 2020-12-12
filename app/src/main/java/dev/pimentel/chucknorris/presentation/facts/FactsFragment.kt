@@ -39,19 +39,23 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
 
     private fun bindOutputs() {
         watch(viewModel.state()) { state ->
-            state.factsEvent.handleEvent(adapter::submitList)
+            state.factsEvent.handleEvent { facts ->
+                adapter.submitList(facts)
+                binding.factsList.scrollToPosition(0)
+            }
+
+            binding.loading.isVisible = state.isLoading
 
             binding.apply {
-                factsTvFirstAccess.isVisible = state.isFirstAccess
-                factsTvSearchTerm.text = state.searchTerm
-                loading.root.isVisible = state.isLoading
-                factsAblSearchTerm.isVisible = state.hasFacts
-                factsRvFacts.isVisible = state.hasFacts
-                factsTvListIsEmpty.isVisible = state.isEmpty
-                factsTvError.isVisible = state.hasError
+                searchTermContainer.isVisible = state.hasFacts
+                searchTerm.text = state.searchTerm
+                factsList.isVisible = state.hasFacts
+                firstAccessText.isVisible = state.isFirstAccess
+                emptyListText.isVisible = state.isEmpty
+                errorText.isVisible = state.hasError
 
                 state.errorEvent.handleEvent { errorMessage ->
-                    factsTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+                    errorText.text = getString(R.string.facts_tv_error_message, errorMessage)
                 }
 
                 state.shareFactEvent.handleEvent(::shareFact)
@@ -63,18 +67,18 @@ class FactsFragment : Fragment(R.layout.facts_fragment) {
         bindResultListener()
 
         binding.apply {
-            factsRvFacts.also {
+            factsList.also {
                 it.adapter = adapter.apply {
                     onItemClick = { id -> viewModel.publish(FactsIntention.ShareFact(id = id)) }
                 }
                 it.layoutManager = LinearLayoutManager(requireContext())
             }
 
-            factsFabGoToSearch.setOnClickListener {
+            search.setOnClickListener {
                 viewModel.publish(FactsIntention.NavigateToSearch)
             }
 
-            factsTvError.setOnClickListener {
+            errorText.setOnClickListener {
                 viewModel.publish(FactsIntention.GetLastSearchAndFacts)
             }
         }

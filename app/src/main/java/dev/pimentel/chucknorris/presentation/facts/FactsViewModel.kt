@@ -7,10 +7,10 @@ import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
 import dev.pimentel.chucknorris.presentation.facts.data.FactsState
 import dev.pimentel.chucknorris.presentation.facts.mappers.FactViewDataMapper
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
-import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
-import dev.pimentel.chucknorris.shared.mvi.toEvent
-import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
+import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
+import dev.pimentel.chucknorris.shared.extensions.update
+import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
 import dev.pimentel.domain.usecases.GetSearchTerm
@@ -74,27 +74,29 @@ class FactsViewModel(
             val searchTerm = newSearchTerm ?: getSearchTerm(NoParams)
             this.lastSearch = searchTerm
 
-            mutableState.value = FactsState.Loading(isLoading = true)
+            mutableState.update { FactsState.Loading(isLoading = true) }
 
             val facts = getFacts(GetFacts.Params(searchTerm))
 
             this.facts = facts
 
             if (facts.isEmpty()) {
-                mutableState.value = FactsState.Empty(searchTerm = searchTerm)
+                mutableState.update { FactsState.Empty(searchTerm = searchTerm) }
                 return
             }
 
-            mutableState.value = FactsState.WithFacts(
-                factsEvent = factDisplayMapper.map(facts).toEvent(),
-                searchTerm = searchTerm,
-            )
+            mutableState.update {
+                FactsState.WithFacts(
+                    facts = factDisplayMapper.map(facts),
+                    searchTerm = searchTerm,
+                )
+            }
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             if (error is GetSearchTerm.SearchTermNotFoundException) {
-                mutableState.value = FactsState.FirstAccess
+                mutableState.update { FactsState.FirstAccess }
             } else {
                 val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-                mutableState.value = FactsState.Error(errorEvent = errorMessage.toEvent())
+                mutableState.update { FactsState.Error(errorMessage = errorMessage) }
             }
         }
     }
@@ -107,7 +109,12 @@ class FactsViewModel(
         facts.first { it.id == id }
             .let(shareableFactMapper::map)
             .also { shareableFact ->
-                mutableState.value = FactsState.Share(shareableFact = shareableFact)
+                mutableState.update { oldState ->
+                    FactsState.Share(
+                        oldState = oldState,
+                        shareableFact = shareableFact,
+                    )
+                }
             }
     }
 }

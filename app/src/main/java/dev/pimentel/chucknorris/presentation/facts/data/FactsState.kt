@@ -31,18 +31,26 @@ sealed class FactsState(
         searchTerm = searchTerm,
     )
 
-    class WithFacts(factsEvent: Event<List<FactViewData>>, searchTerm: String) : FactsState(
-        factsEvent = factsEvent,
+    class WithFacts(facts: List<FactViewData>, searchTerm: String) : FactsState(
+        factsEvent = facts.toEvent(),
         searchTerm = searchTerm,
         hasFacts = true,
     )
 
-    class Share(shareableFact: ShareableFact) : FactsState(
+    class Share(oldState: FactsState, shareableFact: ShareableFact) : FactsState(
+        factsEvent = oldState.factsEvent,
+        searchTerm = oldState.searchTerm,
+        isFirstAccess = oldState.isFirstAccess,
+        isLoading = oldState.isLoading,
+        isEmpty = oldState.isEmpty,
+        hasFacts = oldState.hasFacts,
+        hasError = oldState.hasError,
+        errorEvent = oldState.errorEvent,
         shareFactEvent = shareableFact.toEvent(),
     )
 
-    class Error(errorEvent: Event<String>) : FactsState(
+    class Error(errorMessage: String) : FactsState(
         hasError = true,
-        errorEvent = errorEvent,
+        errorEvent = errorMessage.toEvent(),
     )
 }
