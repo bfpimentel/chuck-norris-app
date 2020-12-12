@@ -1,14 +1,13 @@
 package dev.pimentel.chucknorris.presentation.search
 
-import androidx.lifecycle.LiveData
+import dev.pimentel.chucknorris.presentation.search.data.SearchIntention
+import dev.pimentel.chucknorris.presentation.search.data.SearchState
+import kotlinx.coroutines.flow.StateFlow
 
 interface SearchContract {
 
     interface ViewModel {
-        fun getCategorySuggestionsAndSearchTerms()
-        fun saveSearchTerm(term: String)
-
-        fun searchState(): LiveData<SearchState>
-        fun selectedSuggestionIndex(): LiveData<Int>
+        fun publish(intention: SearchIntention)
+        fun state(): StateFlow<SearchState>
     }
 }

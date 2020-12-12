@@ -1,52 +1,49 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.SearchTerm
 import dev.pimentel.domain.repositories.SearchTermsRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class DoesSearchTermExistTest : UseCaseTest<DoesSearchTermExist>() {
+class DoesSearchTermExistTest {
 
     private val searchTermsRepository = mockk<SearchTermsRepository>()
-    override lateinit var useCase: DoesSearchTermExist
+    private lateinit var useCase: DoesSearchTermExist
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = DoesSearchTermExist(searchTermsRepository)
     }
 
     @Test
-    fun `should return false when search term does not exist`() {
+    fun `should return false when search term does not exist`() = runBlocking {
         val term = "term"
-        val searchTerms = listOf<SearchTerm>()
+        val searchTerms = emptyList<String>()
 
-        every { searchTermsRepository.getSearchTermByTerm(term) } returns Single.just(searchTerms)
+        coEvery { searchTermsRepository.getSearchTermByTerm(term) } returns searchTerms
 
-        useCase(DoesSearchTermExist.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertResult(false)
+        assertFalse(useCase(DoesSearchTermExist.Params(term)))
 
-        verify(exactly = 1) { searchTermsRepository.getSearchTermByTerm(term) }
+        coVerify(exactly = 1) { searchTermsRepository.getSearchTermByTerm(term) }
         confirmVerified(searchTermsRepository)
     }
 
     @Test
-    fun `should return true when search term exists`() {
+    fun `should return true when search term exists`() = runBlocking {
         val term = "term"
-        val searchTerms = listOf(SearchTerm(term))
+        val searchTerms = listOf(term)
 
-        every { searchTermsRepository.getSearchTermByTerm(term) } returns Single.just(searchTerms)
+        coEvery { searchTermsRepository.getSearchTermByTerm(term) } returns searchTerms
 
-        useCase(DoesSearchTermExist.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertResult(true)
+        assertTrue(useCase(DoesSearchTermExist.Params(term)))
 
-        verify(exactly = 1) { searchTermsRepository.getSearchTermByTerm(term) }
+        coVerify(exactly = 1) { searchTermsRepository.getSearchTermByTerm(term) }
         confirmVerified(searchTermsRepository)
     }
 }

@@ -3,15 +3,14 @@ package dev.pimentel.data.sources.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import dev.pimentel.data.models.Category
-import io.reactivex.Single
+import dev.pimentel.data.dto.CategoryDTO
 
 @Dao
-interface CategoriesLocalDataSource {
+internal interface CategoriesLocalDataSource {
 
-    @Query("SELECT * FROM Category")
-    fun getAllCategories(): Single<List<Category>>
+    @Query("SELECT * FROM CategoryDTO")
+    suspend fun getAllCategories(): List<CategoryDTO>
 
     @Insert
-    fun saveAllCategories(categories: List<Category>)
+    suspend fun saveAllCategories(categories: List<CategoryDTO>)
 }

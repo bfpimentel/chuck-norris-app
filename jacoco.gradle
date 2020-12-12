@@ -2,6 +2,10 @@ apply(plugin: "jacoco")
 
 subprojects {
     apply(plugin: "jacoco")
+
+    jacoco {
+        toolVersion = "0.8.6"
+    }
 }
 
 task jacocoTestReport(type: JacocoReport, dependsOn: [
@@ -24,9 +28,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
             '**/*ViewHolder*.*',
             '**/*Activity*.*',
             '**/*Fragment*.*',
-            '**/*Application*.*',
-            '**/DisposablesHolder.*',
-            '**/SchedulerProvider**.*'
+            '**/*Initializer.*',
+            '**/*Params.*',
+            '**/EmojiFilter.*',
+            '**/DispatchersProvider*.*',
+            '**/presentation/**/data/*.*',
+            '**/extensions/*',
     ]
 
     final dataFileExclusions = [

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.pimentel.chucknorris.databinding.FactsItemLayoutBinding
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
+import dev.pimentel.chucknorris.databinding.FactsItemBinding
+import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 
-class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
+class FactsAdapter : ListAdapter<FactViewData, FactsAdapter.ViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -17,7 +17,7 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            FactsItemLayoutBinding.inflate(
+            FactsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -30,10 +30,10 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
 
 
     inner class ViewHolder(
-        private val binding: FactsItemLayoutBinding
+        private val binding: FactsItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: FactDisplay) {
+        fun bind(item: FactViewData) {
             binding.apply {
                 factsItemCard.setOnClickListener {
                     onItemClick(item.id)
@@ -51,15 +51,15 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
     }
 
     private companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactDisplay>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactViewData>() {
             override fun areItemsTheSame(
-                oldItem: FactDisplay,
-                newItem: FactDisplay
+                oldItem: FactViewData,
+                newItem: FactViewData
             ) = oldItem == newItem
 
             override fun areContentsTheSame(
-                oldItem: FactDisplay,
-                newItem: FactDisplay
+                oldItem: FactViewData,
+                newItem: FactViewData
             ) = oldItem == newItem
         }
     }

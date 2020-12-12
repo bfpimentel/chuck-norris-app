@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-android-extensions")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -34,8 +33,8 @@ android {
         }
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {
@@ -60,22 +59,24 @@ dependencies {
 
     implementation projectDependencies.kotlinStdlib
     implementation projectDependencies.kotlinReflect
+    implementation projectDependencies.startup
+    implementation projectDependencies.coroutinesCore
     implementation projectDependencies.materialDesign
     implementation projectDependencies.appCompat
+    implementation projectDependencies.fragment
     implementation projectDependencies.koin
     implementation projectDependencies.navigationFragment
     implementation projectDependencies.navigationUI
-    implementation projectDependencies.rxJava
-    implementation projectDependencies.rxAndroid
-    implementation projectDependencies.lifecycleRuntime
     implementation projectDependencies.lifecycleCommon
-    implementation projectDependencies.lifecycleViewModel
     implementation projectDependencies.lifecycleLiveData
 
+    testImplementation testDependencies.coroutinesCore
     testImplementation testDependencies.androidTestCore
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI
     testRuntimeOnly testDependencies.junitEngine
+}
 
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
 }

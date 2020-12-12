@@ -6,11 +6,16 @@ plugins {
 apply(from: "../dependencies.gradle")
 apply(from: "../project.gradle")
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
 test {
     useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
 dependencies {
@@ -18,7 +23,6 @@ dependencies {
 
     implementation projectDependencies.kotlinStdlib
     implementation projectDependencies.koin
-    implementation projectDependencies.rxJava
 
     testImplementation testDependencies.mockk
     testImplementation testDependencies.junitAPI

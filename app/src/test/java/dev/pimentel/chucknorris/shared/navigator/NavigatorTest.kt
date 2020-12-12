@@ -2,30 +2,38 @@ package dev.pimentel.chucknorris.shared.navigator
 
 import androidx.navigation.NavController
 import dev.pimentel.chucknorris.R
+import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
+import dev.pimentel.chucknorris.testshared.TestDispatchersProvider
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class NavigatorTest {
 
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+    private val dispatchersProvider: DispatchersProvider = TestDispatchersProvider(
+        testCoroutineDispatcher
+    )
     private lateinit var navigator: Navigator
 
     @BeforeEach
     @Test
     fun setupSubject() {
-        navigator = NavigatorImpl()
+        navigator = NavigatorImpl(dispatchersProvider)
 
         assertNotNull(navigator)
     }
 
     @Test
-    fun `should bind navigator and navigate`() {
+    fun `should bind navigator and navigate`() = testCoroutineDispatcher.runBlockingTest {
         val navController = mockk<NavController>(relaxed = true)
         val destinationId = R.id.facts_fragment
 
@@ -39,19 +47,20 @@ class NavigatorTest {
     }
 
     @Test
-    fun `should unbind navigator and do nothing when trying to navigate`() {
-        val navController = mockk<NavController>(relaxed = true)
-        val destinationId = R.id.facts_fragment
+    fun `should unbind navigator and do nothing when trying to navigate`() =
+        testCoroutineDispatcher.runBlockingTest {
+            val navController = mockk<NavController>(relaxed = true)
+            val destinationId = R.id.facts_fragment
 
-        navigator.bind(navController)
-        navigator.unbind()
-        navigator.navigate(destinationId)
+            navigator.bind(navController)
+            navigator.unbind()
+            navigator.navigate(destinationId)
 
-        confirmVerified(navController)
-    }
+            confirmVerified(navController)
+        }
 
     @Test
-    fun `should bind navigator and pop`() {
+    fun `should bind navigator and pop`() = testCoroutineDispatcher.runBlockingTest {
         val navController = mockk<NavController>(relaxed = true)
 
         every { navController.popBackStack() } returns true
@@ -64,13 +73,14 @@ class NavigatorTest {
     }
 
     @Test
-    fun `should unbind navigator and do nothing when trying to pop`() {
-        val navController = mockk<NavController>(relaxed = true)
+    fun `should unbind navigator and do nothing when trying to pop`() =
+        testCoroutineDispatcher.runBlockingTest {
+            val navController = mockk<NavController>(relaxed = true)
 
-        navigator.bind(navController)
-        navigator.unbind()
-        navigator.pop()
+            navigator.bind(navController)
+            navigator.unbind()
+            navigator.pop()
 
-        confirmVerified(navController)
-    }
+            confirmVerified(navController)
+        }
 }

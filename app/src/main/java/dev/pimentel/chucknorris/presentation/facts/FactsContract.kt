@@ -1,16 +1,13 @@
 package dev.pimentel.chucknorris.presentation.facts
 
-import androidx.lifecycle.LiveData
-import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFact
+import dev.pimentel.chucknorris.presentation.facts.data.FactsIntention
+import dev.pimentel.chucknorris.presentation.facts.data.FactsState
+import kotlinx.coroutines.flow.StateFlow
 
 interface FactsContract {
 
     interface ViewModel {
-        fun getSearchTermAndFacts()
-        fun navigateToSearch()
-        fun getShareableFact(id: String)
-
-        fun factsState(): LiveData<FactsState>
-        fun shareableFact(): LiveData<ShareableFact>
+        fun publish(intention: FactsIntention)
+        fun state(): StateFlow<FactsState>
     }
 }

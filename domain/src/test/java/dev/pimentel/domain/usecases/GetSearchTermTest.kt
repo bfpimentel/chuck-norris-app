@@ -1,51 +1,51 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.SearchTerm
 import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-class GetSearchTermTest : UseCaseTest<GetSearchTerm>() {
+class GetSearchTermTest {
 
     private val searchTermsRepository = mockk<SearchTermsRepository>()
-    override lateinit var useCase: GetSearchTerm
+    private lateinit var useCase: GetSearchTerm
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = GetSearchTerm(searchTermsRepository)
     }
 
     @Test
-    fun `should get search term and map it to string after getting it successfully from repository`() {
-        val term = "term"
-        val searchTerm = SearchTerm(term)
+    fun `should get search term and map it to string after getting it successfully from repository`() =
+        runBlocking {
+            val term = "term"
+            val expectedResult = "term"
 
-        every { searchTermsRepository.getSearchTerm() } returns Single.just(searchTerm)
+            coEvery { searchTermsRepository.getSearchTerm() } returns term
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(term)
+            Assertions.assertEquals(useCase(NoParams), expectedResult)
 
-        verify(exactly = 1) { searchTermsRepository.getSearchTerm() }
-        confirmVerified(searchTermsRepository)
-    }
+            coVerify(exactly = 1) { searchTermsRepository.getSearchTerm() }
+            confirmVerified(searchTermsRepository)
+        }
 
     @Test
-    fun `should return SearchTermNotFoundException when failing to get search term from repository`() {
-        every {
-            searchTermsRepository.getSearchTerm()
-        } returns Single.error(GetSearchTerm.SearchTermNotFoundException())
+    fun `should return SearchTermNotFoundException when failing to get search term from repository`() =
+        runBlocking {
+            coEvery {
+                searchTermsRepository.getSearchTerm()
+            } throws IllegalStateException()
 
-        useCase(NoParams)
-            .test()
-            .assertError(GetSearchTerm.SearchTermNotFoundException::class.java)
+            assertThrows<GetSearchTerm.SearchTermNotFoundException> { useCase(NoParams) }
 
-        verify(exactly = 1) { searchTermsRepository.getSearchTerm() }
-        confirmVerified(searchTermsRepository)
-    }
+            coVerify(exactly = 1) { searchTermsRepository.getSearchTerm() }
+            confirmVerified(searchTermsRepository)
+        }
 }
