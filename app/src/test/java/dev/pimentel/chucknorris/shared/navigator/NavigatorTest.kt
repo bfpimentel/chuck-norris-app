@@ -12,7 +12,6 @@ import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -25,11 +24,8 @@ class NavigatorTest {
     private lateinit var navigator: Navigator
 
     @BeforeEach
-    @Test
-    fun setupSubject() {
+    fun `setup subject`() {
         navigator = NavigatorImpl(dispatchersProvider)
-
-        assertNotNull(navigator)
     }
 
     @Test

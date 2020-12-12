@@ -10,7 +10,6 @@ import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapper
 import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.extensions.update
-import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.domain.entities.Fact
 import dev.pimentel.domain.usecases.GetFacts
@@ -88,7 +87,7 @@ class FactsViewModel(
 
             mutableState.update {
                 FactsState.WithFacts(
-                    factsEvent = factDisplayMapper.map(facts).toEvent(),
+                    facts = factDisplayMapper.map(facts),
                     searchTerm = searchTerm,
                 )
             }
@@ -97,7 +96,7 @@ class FactsViewModel(
                 mutableState.update { FactsState.FirstAccess }
             } else {
                 val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-                mutableState.update { FactsState.Error(errorEvent = errorMessage.toEvent()) }
+                mutableState.update { FactsState.Error(errorMessage = errorMessage) }
             }
         }
     }
@@ -113,7 +112,7 @@ class FactsViewModel(
                 mutableState.update { oldState ->
                     FactsState.Share(
                         oldState = oldState,
-                        shareFactEvent = shareableFact.toEvent(),
+                        shareableFact = shareableFact,
                     )
                 }
             }

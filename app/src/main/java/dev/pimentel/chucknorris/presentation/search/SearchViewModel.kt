@@ -7,7 +7,6 @@ import dev.pimentel.chucknorris.presentation.search.data.SearchState
 import dev.pimentel.chucknorris.shared.dispatchersprovider.DispatchersProvider
 import dev.pimentel.chucknorris.shared.errorhandling.GetErrorMessage
 import dev.pimentel.chucknorris.shared.extensions.update
-import dev.pimentel.chucknorris.shared.mvi.toEvent
 import dev.pimentel.chucknorris.shared.navigator.NavigatorRouter
 import dev.pimentel.domain.usecases.AreCategoriesStored
 import dev.pimentel.domain.usecases.GetCategorySuggestions
@@ -85,19 +84,19 @@ class SearchViewModel(
             mutableState.update {
                 SearchState.Success(
                     categorySuggestions = suggestions,
-                    searchTerms = searchTerms.toEvent(),
-                    selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
+                    searchTerms = searchTerms,
+                    selectedSuggestionIndex = selectedSuggestionIndex
                 )
             }
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             val errorMessage = getErrorMessage(GetErrorMessage.Params(error))
-            mutableState.update { SearchState.Error(errorMessage = errorMessage.toEvent()) }
+            mutableState.update { SearchState.Error(errorMessage = errorMessage) }
         }
     }
 
     private suspend fun saveSearchTerm(term: String) {
         handleSearchTermSaving(HandleSearchTermSaving.Params(term))
-        mutableState.update { SearchState.NewSearch(newSearch = term.toEvent()) }
+        mutableState.update { SearchState.NewSearch(newSearchTerm = term) }
         navigator.pop()
     }
 

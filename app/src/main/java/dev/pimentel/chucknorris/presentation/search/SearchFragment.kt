@@ -61,11 +61,10 @@ class SearchFragment : BottomSheetDialogFragment() {
 
     private fun bindOutputs() {
         watch(viewModel.state()) { state ->
-            fillCategorySuggestions(state.categorySuggestions)
-
-            state.searchTermsEvent.handleEvent(adapter::submitList)
-
             binding.loading.isVisible = state.isLoading
+
+            state.suggestionsEvent.handleEvent(::fillCategorySuggestions)
+            state.searchTermsEvent.handleEvent(adapter::submitList)
 
             binding.apply {
                 suggestions.isVisible = state.hasSuggestions

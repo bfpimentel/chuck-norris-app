@@ -1,10 +1,11 @@
 package dev.pimentel.chucknorris.presentation.search.data
 
 import dev.pimentel.chucknorris.shared.mvi.Event
+import dev.pimentel.chucknorris.shared.mvi.toEvent
 
 @Suppress("LongParameterList")
 sealed class SearchState(
-    val categorySuggestions: List<String> = emptyList(),
+    val suggestionsEvent: Event<List<String>>? = null,
     val searchTermsEvent: Event<List<String>>? = null,
     val isLoading: Boolean = false,
     val hasSuggestions: Boolean = false,
@@ -22,21 +23,21 @@ sealed class SearchState(
 
     class Success(
         categorySuggestions: List<String>,
-        searchTerms: Event<List<String>>,
-        selectSuggestionEvent: Event<Int>?,
+        searchTerms: List<String>,
+        selectedSuggestionIndex: Int?,
     ) : SearchState(
         hasSuggestions = true,
-        categorySuggestions = categorySuggestions,
-        searchTermsEvent = searchTerms,
-        selectSuggestionEvent = selectSuggestionEvent
+        suggestionsEvent = categorySuggestions.toEvent(),
+        searchTermsEvent = searchTerms.toEvent(),
+        selectSuggestionEvent = selectedSuggestionIndex?.toEvent()
     )
 
-    class NewSearch(newSearch: Event<String>) : SearchState(
-        newSearch = newSearch
+    class NewSearch(newSearchTerm: String) : SearchState(
+        newSearch = newSearchTerm.toEvent()
     )
 
-    class Error(errorMessage: Event<String>) : SearchState(
+    class Error(errorMessage: String) : SearchState(
         hasError = true,
-        errorEvent = errorMessage
+        errorEvent = errorMessage.toEvent()
     )
 }
