@@ -48,9 +48,10 @@ class EventTest {
     fun `null event must not execute any block`() {
         val event: Event<String>? = null
 
+        val nonNullString = ""
         var expectedResult: String? = null
 
-        event.handleEvent { expectedResult = it }
+        event.handleEvent { expectedResult = nonNullString }
 
         assertNull(expectedResult)
     }
