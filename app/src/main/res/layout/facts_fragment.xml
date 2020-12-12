@@ -7,11 +7,12 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/facts_abl_search_term"
+        android:id="@+id/search_term_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,13 +23,13 @@
             app:layout_scrollFlags="scroll|enterAlways">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/facts_tv_searching_for"
+                android:id="@+id/search_term_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/facts_tv_searching_for" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/facts_tv_search_term"
+                android:id="@+id/search_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
@@ -41,27 +42,29 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/facts_rv_facts"
+        android:id="@+id/facts_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:overScrollMode="never"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_constraintTop_toBottomOf="@id/search_term_container"
         tools:itemCount="10"
         tools:listitem="@layout/facts_item" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/facts_tv_first_access"
+        android:id="@+id/first_access_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/spacing_medium"
         android:gravity="center"
         android:text="@string/facts_tv_first_access"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/search_term_container" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/facts_tv_error"
+        android:id="@+id/error_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -69,21 +72,23 @@
         android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/search_term_container"
         tools:text="An error occurred.\nYou can tap here to try again."
         tools:visibility="gone" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/facts_tv_list_is_empty"
+        android:id="@+id/empty_list_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/spacing_medium"
         android:gravity="center"
         android:text="@string/facts_tv_list_is_empty"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/search_term_container" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/facts_fab_go_to_search"
+        android:id="@+id/search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -91,11 +96,17 @@
         android:layout_marginStart="@dimen/spacing_medium"
         app:backgroundTint="@color/colorAccent"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@android:drawable/ic_menu_search" />
+        app:srcCompat="@android:drawable/ic_menu_search"
+        tools:ignore="ContentDescription" />
 
-    <include
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loading"
-        layout="@layout/loading_frame"
-        tools:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="gone">
+
+        <include layout="@layout/loading_frame" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

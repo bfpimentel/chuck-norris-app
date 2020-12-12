@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/facts_item_card"
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_medium"
@@ -20,17 +20,17 @@
             android:padding="@dimen/spacing_small">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/facts_item_tv_value"
+                android:id="@+id/fact_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 tools:text="Value" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/facts_item_chip_category"
+                android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/facts_item_tv_value"
+                android:layout_below="@id/fact_description"
                 tools:text="Explicit" />
 
         </RelativeLayout>

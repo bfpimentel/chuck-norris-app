@@ -12,7 +12,7 @@
         android:padding="@dimen/spacing_medium">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search_il_search_term"
+            android:id="@+id/search_term_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             app:endIconTint="@color/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/search_et_search_term"
+                android:id="@+id/search_term_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionSearch"
@@ -41,13 +41,13 @@
             android:textStyle="bold" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/search_cg_suggestions"
+            android:id="@+id/suggestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_tiny" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/search_tv_error"
+            android:id="@+id/error_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -68,7 +68,7 @@
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_rv_last_search_terms"
+            android:id="@+id/last_searches"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_tiny"
@@ -76,9 +76,14 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/search_loading"
-        layout="@layout/loading_frame"
-        tools:visibility="gone" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="gone">
+
+        <include layout="@layout/loading_frame" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.pimentel.chucknorris.databinding.FactsItemBinding
 import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 
-class FactsAdapter : ListAdapter<FactViewData, FactsAdapter.ViewHolder>(
-    DIFF_CALLBACK
-) {
+class FactsAdapter : ListAdapter<FactViewData, FactsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     lateinit var onItemClick: (String) -> Unit
 
@@ -35,17 +33,17 @@ class FactsAdapter : ListAdapter<FactViewData, FactsAdapter.ViewHolder>(
 
         fun bind(item: FactViewData) {
             binding.apply {
-                factsItemCard.setOnClickListener {
+                card.setOnClickListener {
                     onItemClick(item.id)
                 }
-                factsItemTvValue.let {
+                factDescription.let {
                     it.text = item.value
                     it.setTextSize(
                         TypedValue.COMPLEX_UNIT_PX,
                         itemView.resources.getDimension(item.fontSize)
                     )
                 }
-                factsItemChipCategory.text = item.category
+                category.text = item.category
             }
         }
     }

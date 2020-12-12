@@ -52,7 +52,7 @@ class SearchFragment : BottomSheetDialogFragment() {
     }
 
     private fun bindRecyclerView() {
-        binding.searchRvLastSearchTerms.also {
+        binding.lastSearches.also {
             it.adapter = this@SearchFragment.adapter
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(context)
@@ -65,48 +65,41 @@ class SearchFragment : BottomSheetDialogFragment() {
 
             state.searchTermsEvent.handleEvent(adapter::submitList)
 
+            binding.loading.isVisible = state.isLoading
+
             binding.apply {
-                searchLoading.root.isVisible = state.isLoading
-                searchCgSuggestions.isVisible = state.hasSuggestions
-                searchTvError.isVisible = state.hasError
+                suggestions.isVisible = state.hasSuggestions
+                errorText.isVisible = state.hasError
 
                 state.newSearch.handleEvent(::setNewSearchResult)
 
                 state.selectSuggestionEvent.handleEvent { index ->
-                    searchCgSuggestions[index].isSelected = true
+                    suggestions[index].isSelected = true
                 }
 
                 state.errorEvent.handleEvent { errorMessage ->
-                    searchTvError.text = getString(R.string.facts_tv_error_message, errorMessage)
+                    errorText.text = getString(R.string.facts_tv_error_message, errorMessage)
                 }
             }
         }
     }
 
     private fun bindInputs() {
+        prepareSearchInput()
+
         adapter.onItemClick = { term ->
             viewModel.publish(SearchIntention.SaveSearchTerm(term = term))
         }
 
         binding.apply {
-            searchIlSearchTerm.setEndIconOnClickListener {
+            searchTermInputLayout.setEndIconOnClickListener {
                 viewModel.publish(
-                    SearchIntention.SaveSearchTerm(term = searchEtSearchTerm.text.toString())
+                    SearchIntention.SaveSearchTerm(term = searchTermInput.text.toString())
                 )
                 hideKeyboard()
             }
 
-            searchEtSearchTerm.filters = arrayOf(EmojiFilter)
-            searchEtSearchTerm.setOnEditorActionListener { view, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    viewModel.publish(SearchIntention.SaveSearchTerm(term = view.text.toString()))
-                    hideKeyboard()
-                    return@setOnEditorActionListener true
-                }
-                return@setOnEditorActionListener false
-            }
-
-            searchTvError.setOnClickListener {
+            errorText.setOnClickListener {
                 viewModel.publish(SearchIntention.GetCategorySuggestionsAndSearchTerms)
             }
         }
@@ -117,13 +110,34 @@ class SearchFragment : BottomSheetDialogFragment() {
     private fun fillCategorySuggestions(categorySuggestions: List<String>) {
         categorySuggestions.forEach { suggestion ->
             val chipBinding = SearchCategoriesItemBinding.inflate(layoutInflater)
-            chipBinding.searchCategoriesItemChip.apply {
+            chipBinding.root.apply {
                 text = suggestion
                 setOnClickListener {
                     viewModel.publish(SearchIntention.SaveSearchTerm(term = suggestion))
                 }
             }
-            binding.searchCgSuggestions.addView(chipBinding.root)
+            binding.suggestions.addView(chipBinding.root)
+        }
+    }
+
+    private fun setNewSearchResult(term: String) {
+        parentFragmentManager.setFragmentResult(
+            FactsFragment.RESULT_LISTENER_KEY,
+            bundleOf(NEW_SEARCH_KEY to term)
+        )
+    }
+
+    private fun prepareSearchInput() {
+        binding.searchTermInput.apply {
+            filters = arrayOf(EmojiFilter)
+            setOnEditorActionListener { view, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    viewModel.publish(SearchIntention.SaveSearchTerm(term = view.text.toString()))
+                    hideKeyboard()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
         }
     }
 
@@ -132,13 +146,6 @@ class SearchFragment : BottomSheetDialogFragment() {
             .also { inputMethodManager ->
                 inputMethodManager.hideSoftInputFromWindow(requireView().rootView.windowToken, 0)
             }
-    }
-
-    private fun setNewSearchResult(term: String) {
-        parentFragmentManager.setFragmentResult(
-            FactsFragment.RESULT_LISTENER_KEY,
-            bundleOf(NEW_SEARCH_KEY to term)
-        )
     }
 
     companion object {
