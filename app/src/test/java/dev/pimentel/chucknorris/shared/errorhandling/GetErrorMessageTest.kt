@@ -6,6 +6,7 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -25,42 +26,34 @@ class GetErrorMessageTest {
     }
 
     @Test
-    fun `should return no connection error type when throwable is an instance of IOException`() {
-        val message = "message"
+    fun `should return no connection error type when throwable is an instance of IOException`() =
+        runBlocking {
+            val message = "message"
 
-        every { context.getString(R.string.error_message_no_connection) } returns message
+            every { context.getString(R.string.error_message_no_connection) } returns message
 
-        assertEquals(
-            message,
-            useCase(GetErrorMessage.Params(IOException()))
-        )
+            assertEquals(
+                message,
+                useCase(GetErrorMessage.Params(IOException()))
+            )
 
-        verify(exactly = 1) { context.getString(R.string.error_message_no_connection) }
-        confirmVerified(context)
-    }
-
-    @Test
-    fun `should return default error type when throwable is not a mapped throwable type`() {
-        val message = "message"
-
-        every { context.getString(R.string.error_message_default) } returns message
-
-        assertEquals(
-            message,
-            useCase(GetErrorMessage.Params(IllegalArgumentException()))
-        )
-
-        verify(exactly = 1) { context.getString(R.string.error_message_default) }
-        confirmVerified(context)
-    }
+            verify(exactly = 1) { context.getString(R.string.error_message_no_connection) }
+            confirmVerified(context)
+        }
 
     @Test
-    fun `GetErrorTypeParams must contain a non null throwable`() {
-        val throwable = IllegalArgumentException()
+    fun `should return default error type when throwable is not a mapped throwable type`() =
+        runBlocking {
+            val message = "message"
 
-        val params = GetErrorMessage.Params(throwable)
+            every { context.getString(R.string.error_message_default) } returns message
 
-        assertNotNull(params.throwable)
-        assertEquals(params.throwable, throwable)
-    }
+            assertEquals(
+                message,
+                useCase(GetErrorMessage.Params(IllegalArgumentException()))
+            )
+
+            verify(exactly = 1) { context.getString(R.string.error_message_default) }
+            confirmVerified(context)
+        }
 }

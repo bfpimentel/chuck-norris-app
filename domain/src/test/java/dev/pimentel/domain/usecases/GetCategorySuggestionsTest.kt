@@ -1,63 +1,67 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.Category
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
+class GetCategorySuggestionsTest {
 
     private val fetchAllCategories = mockk<GetAllCategories>()
     private val fetchAllCategoriesNames = mockk<GetAllCategoriesNames>()
     private val saveAllCategories = mockk<SaveAllCategories>()
-    private val shuffleList = mockk<ShuffleList>()
-    override lateinit var useCase: GetCategorySuggestions
+    private lateinit var useCase: GetCategorySuggestions
 
-    override fun `setup subject`() {
-        useCase = GetCategorySuggestions(
+    @BeforeEach
+    fun `setup subject`() {
+        useCase = GetCategorySuggestions(fetchAllCategories)
+    }
+
+    @Test
+    fun `should return a categories list with 8 random items`() = runBlocking {
+        coEvery { fetchAllCategories(NoParams) } returns allCategories
+
+        val result = useCase(NoParams)
+
+        assertTrue(result.size == 8)
+        result.forEach { suggestion -> assertTrue(allCategories.contains(suggestion)) }
+
+        coVerify(exactly = 1) {
+            fetchAllCategories(NoParams)
+        }
+        confirmVerified(
             fetchAllCategories,
-            shuffleList
+            fetchAllCategoriesNames,
+            saveAllCategories
         )
     }
 
     @Test
-    fun `should return a categories list with 8 random items when there are already saved items`() {
-        val shuffleListParams = ShuffleList.Params(allCategories)
+    fun `should return a categories list with less than 8 random items`() = runBlocking {
+        coEvery { fetchAllCategories(NoParams) } returns allCategories.subList(0, 4)
 
-        every { fetchAllCategories(NoParams) } returns Single.just(allCategories)
-        every { shuffleList(shuffleListParams) } returns allCategories
+        val result = useCase(NoParams)
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(categorySuggestions)
+        assertTrue(result.size == 4)
+        result.forEach { suggestion -> assertTrue(allCategories.contains(suggestion)) }
 
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             fetchAllCategories(NoParams)
-            shuffleList(shuffleListParams)
         }
-        confirmVerified(fetchAllCategories, fetchAllCategoriesNames, saveAllCategories, shuffleList)
+        confirmVerified(
+            fetchAllCategories,
+            fetchAllCategoriesNames,
+            saveAllCategories
+        )
     }
 
     private companion object {
         val allCategories = listOf(
-            Category("name0"),
-            Category("name1"),
-            Category("name2"),
-            Category("name3"),
-            Category("name4"),
-            Category("name5"),
-            Category("name6"),
-            Category("name7"),
-            Category("name8"),
-            Category("name9")
-        )
-
-        val categorySuggestions = listOf(
             "name0",
             "name1",
             "name2",
@@ -65,7 +69,9 @@ class GetCategorySuggestionsTest : UseCaseTest<GetCategorySuggestions>() {
             "name4",
             "name5",
             "name6",
-            "name7"
+            "name7",
+            "name8",
+            "name9"
         )
     }
 }

@@ -6,18 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.pimentel.chucknorris.databinding.FactsItemLayoutBinding
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplay
+import dev.pimentel.chucknorris.databinding.FactsItemBinding
+import dev.pimentel.chucknorris.presentation.facts.data.FactViewData
 
-class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
-    DIFF_CALLBACK
-) {
+class FactsAdapter : ListAdapter<FactViewData, FactsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     lateinit var onItemClick: (String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            FactsItemLayoutBinding.inflate(
+            FactsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -30,36 +28,36 @@ class FactsAdapter : ListAdapter<FactDisplay, FactsAdapter.ViewHolder>(
 
 
     inner class ViewHolder(
-        private val binding: FactsItemLayoutBinding
+        private val binding: FactsItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: FactDisplay) {
+        fun bind(item: FactViewData) {
             binding.apply {
-                factsItemCard.setOnClickListener {
+                card.setOnClickListener {
                     onItemClick(item.id)
                 }
-                factsItemTvValue.let {
+                factDescription.let {
                     it.text = item.value
                     it.setTextSize(
                         TypedValue.COMPLEX_UNIT_PX,
                         itemView.resources.getDimension(item.fontSize)
                     )
                 }
-                factsItemChipCategory.text = item.category
+                category.text = item.category
             }
         }
     }
 
     private companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactDisplay>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FactViewData>() {
             override fun areItemsTheSame(
-                oldItem: FactDisplay,
-                newItem: FactDisplay
+                oldItem: FactViewData,
+                newItem: FactViewData
             ) = oldItem == newItem
 
             override fun areContentsTheSame(
-                oldItem: FactDisplay,
-                newItem: FactDisplay
+                oldItem: FactViewData,
+                newItem: FactViewData
             ) = oldItem == newItem
         }
     }

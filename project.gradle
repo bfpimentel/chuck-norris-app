@@ -1,13 +1,13 @@
 ext.projectConfig = [
-        compileSdkVersion: 29,
-        targetSdkVersion : 29,
-        buildToolsVersion: "29.0.3",
+        compileSdkVersion: 30,
+        targetSdkVersion : 30,
+        buildToolsVersion: "30.0.2",
         minSdkVersion    : 21,
         applicationId    : "dev.pimentel.chucknorris"
 ]
 
 ext.projectVersion = [
-        major: 1,
-        minor: 1,
+        major: 2,
+        minor: 0,
         patch: 0
 ]

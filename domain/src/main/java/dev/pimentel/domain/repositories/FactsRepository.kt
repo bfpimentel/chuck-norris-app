@@ -1,8 +1,7 @@
 package dev.pimentel.domain.repositories
 
-import dev.pimentel.domain.models.FactsResponse
-import io.reactivex.Single
+import dev.pimentel.domain.models.FactModel
 
 interface FactsRepository {
-    fun getFacts(searchTerm: String): Single<FactsResponse>
+    suspend fun getFacts(searchTerm: String): List<FactModel>
 }

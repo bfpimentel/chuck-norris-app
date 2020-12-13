@@ -1,43 +1,43 @@
 package dev.pimentel.domain.usecases
 
-import dev.pimentel.domain.models.SearchTerm
 import dev.pimentel.domain.repositories.SearchTermsRepository
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetLastSearchTermsTest : UseCaseTest<GetLastSearchTerms>() {
+class GetLastSearchTermsTest {
 
     private val searchTermsRepository = mockk<SearchTermsRepository>()
-    override lateinit var useCase: GetLastSearchTerms
+    private lateinit var useCase: GetLastSearchTerms
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = GetLastSearchTerms(searchTermsRepository)
     }
 
     @Test
-    fun `should fetch last search terms and map them to string`() {
+    fun `should fetch last search terms and map them to string`() = runBlocking {
         val searchTerms = listOf(
-            SearchTerm("term1"),
-            SearchTerm("term2")
-        )
-        val terms = listOf(
             "term1",
             "term2"
         )
 
-        every { searchTermsRepository.getLastSearchTerms() } returns Single.just(searchTerms)
+        val expectedResult = listOf(
+            "term1",
+            "term2"
+        )
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(terms)
+        coEvery { searchTermsRepository.getLastSearchTerms() } returns searchTerms
 
-        verify(exactly = 1) { searchTermsRepository.getLastSearchTerms() }
+        assertEquals(useCase(NoParams), expectedResult)
+
+        coVerify(exactly = 1) { searchTermsRepository.getLastSearchTerms() }
         confirmVerified(searchTermsRepository)
     }
 }

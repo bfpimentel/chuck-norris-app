@@ -1,17 +1,18 @@
 package dev.pimentel.data.repository
 
-import dev.pimentel.data.models.FactsResponse
+import dev.pimentel.data.dto.FactsResponseDTO
+import dev.pimentel.data.models.FactModelImpl
 import dev.pimentel.data.repositories.FactsRepositoryImpl
 import dev.pimentel.data.sources.remote.FactsRemoteDataSource
 import dev.pimentel.domain.repositories.FactsRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dev.pimentel.domain.models.FactsResponse as DomainFactsResponse
 
 class FactsRepositoryTest {
 
@@ -25,30 +26,26 @@ class FactsRepositoryTest {
     }
 
     @Test
-    fun `should route getFacts call to remoteDataSource`() {
+    fun `should route getFacts call to remoteDataSource`() = runBlocking {
         val term = "term"
-        val factResponse = FactsResponse(
+
+        val factResponse = FactsResponseDTO(
             listOf(
-                FactsResponse.Fact("id1", listOf("category1"), "url1", "value1"),
-                FactsResponse.Fact("id2", listOf("category2"), "url2", "value2")
+                FactsResponseDTO.Fact("id1", listOf("category1"), "url1", "value1"),
+                FactsResponseDTO.Fact("id2", listOf("category2"), "url2", "value2")
             )
         )
 
-        val domainFactResponse = DomainFactsResponse(
-            listOf(
-                DomainFactsResponse.Fact("id1", listOf("category1"), "url1", "value1"),
-                DomainFactsResponse.Fact("id2", listOf("category2"), "url2", "value2")
-            )
+        val expectedResult = listOf(
+            FactModelImpl("id1", listOf("category1"), "url1", "value1"),
+            FactModelImpl("id2", listOf("category2"), "url2", "value2")
         )
 
-        every { remoteDataSource.getFacts(term) } returns Single.just(factResponse)
+        coEvery { remoteDataSource.getFacts(term) } returns factResponse
 
-        factsRepository.getFacts(term)
-            .test()
-            .assertNoErrors()
-            .assertResult(domainFactResponse)
+        assertEquals(factsRepository.getFacts(term), expectedResult)
 
-        verify(exactly = 1) { remoteDataSource.getFacts(term) }
+        coVerify(exactly = 1) { remoteDataSource.getFacts(term) }
         confirmVerified(remoteDataSource)
     }
 }

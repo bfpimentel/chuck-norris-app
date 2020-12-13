@@ -9,28 +9,16 @@
         android:id="@+id/facts_fragment"
         android:name="dev.pimentel.chucknorris.presentation.facts.FactsFragment"
         android:label="FactsFragment"
-        tools:layout="@layout/facts_layout">
+        tools:layout="@layout/facts_fragment">
         <action
             android:id="@+id/facts_fragment_to_search_fragment"
-            app:destination="@id/search_fragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:destination="@id/search_fragment" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/search_fragment"
         android:name="dev.pimentel.chucknorris.presentation.search.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/search_layout">
-        <action
-            android:id="@+id/action_search_fragment_to_facts_fragment"
-            app:destination="@id/facts_fragment"
-            app:enterAnim="@anim/slide_out_left"
-            app:exitAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_out_right"
-            app:popExitAnim="@anim/slide_in_left" />
-    </fragment>
+        tools:layout="@layout/search_fragment" />
 
 </navigation>

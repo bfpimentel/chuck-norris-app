@@ -1,35 +1,35 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.repositories.SearchTermsRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class DeleteSearchTermTest : UseCaseTest<DeleteSearchTerm>() {
+class DeleteSearchTermTest {
 
     private val searchTermsRepository = mockk<SearchTermsRepository>()
-    override lateinit var useCase: DeleteSearchTerm
+    private lateinit var useCase: DeleteSearchTerm
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = DeleteSearchTerm(searchTermsRepository)
     }
 
     @Test
-    fun `should delete search term and then just complete`() {
+    fun `should delete search term and then just complete`() = runBlocking {
         val term = "term"
 
-        every { searchTermsRepository.deleteSearchTermByTerm(term) } just runs
+        coEvery { searchTermsRepository.deleteSearchTermByTerm(term) } just runs
 
         useCase(DeleteSearchTerm.Params(term))
-            .test()
-            .assertNoErrors()
-            .assertComplete()
 
-        verify(exactly = 1) { searchTermsRepository.deleteSearchTermByTerm(term) }
+        coVerify(exactly = 1) { searchTermsRepository.deleteSearchTermByTerm(term) }
         confirmVerified(searchTermsRepository)
     }
 }

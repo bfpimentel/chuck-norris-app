@@ -1,6 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts
 
-import dev.pimentel.chucknorris.presentation.facts.mappers.FactDisplayMapperImpl
+import dev.pimentel.chucknorris.presentation.facts.mappers.FactViewDataMapperImpl
 import dev.pimentel.chucknorris.presentation.facts.mappers.ShareableFactMapperImpl
 import dev.pimentel.chucknorris.shared.navigator.Navigator
 import org.koin.android.ext.koin.androidContext
@@ -11,13 +11,13 @@ val factsModule = module {
     factory { FactsAdapter() }
     viewModel {
         FactsViewModel(
-            get<Navigator>(),
-            FactDisplayMapperImpl(androidContext()),
-            ShareableFactMapperImpl(),
-            get(),
-            get(),
-            get(),
-            get()
+            navigator = get<Navigator>(),
+            factDisplayMapper = FactViewDataMapperImpl(androidContext()),
+            shareableFactMapper = ShareableFactMapperImpl(),
+            getSearchTerm = get(),
+            getFacts = get(),
+            getErrorMessage = get(),
+            dispatchersProvider = get()
         )
     }
 }

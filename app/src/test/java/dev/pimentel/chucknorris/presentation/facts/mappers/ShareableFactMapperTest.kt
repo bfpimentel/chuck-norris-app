@@ -1,5 +1,6 @@
 package dev.pimentel.chucknorris.presentation.facts.mappers
 
+import dev.pimentel.chucknorris.presentation.facts.data.ShareableFact
 import dev.pimentel.domain.entities.Fact
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -23,16 +24,5 @@ class ShareableFactMapperTest {
         val shareableFact = ShareableFact("url1", "value1")
 
         assertEquals(mapper.map(fact), shareableFact)
-    }
-
-    @Test
-    fun `ShareableFact must not contain any null properties`() {
-        val shareableFact = ShareableFact(
-            "url",
-            "value"
-        )
-
-        assertNotNull(shareableFact.url)
-        assertNotNull(shareableFact.value)
     }
 }

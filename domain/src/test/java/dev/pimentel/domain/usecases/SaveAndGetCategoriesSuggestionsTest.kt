@@ -1,22 +1,26 @@
 package dev.pimentel.domain.usecases
 
 import dev.pimentel.domain.usecases.shared.NoParams
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.mockk.runs
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SaveAndGetCategoriesSuggestionsTest : UseCaseTest<SaveAndGetCategoriesSuggestions>() {
+class SaveAndGetCategoriesSuggestionsTest {
 
     private val getAllCategoriesNames = mockk<GetAllCategoriesNames>()
     private val saveAllCategories = mockk<SaveAllCategories>()
     private val getCategorySuggestions = mockk<GetCategorySuggestions>()
-    override lateinit var useCase: SaveAndGetCategoriesSuggestions
+    private lateinit var useCase: SaveAndGetCategoriesSuggestions
 
-    override fun `setup subject`() {
+    @BeforeEach
+    fun `setup subject`() {
         useCase = SaveAndGetCategoriesSuggestions(
             getAllCategoriesNames,
             saveAllCategories,
@@ -25,25 +29,23 @@ class SaveAndGetCategoriesSuggestionsTest : UseCaseTest<SaveAndGetCategoriesSugg
     }
 
     @Test
-    fun `should return a list of category suggestions after getting their names and saving them`() {
-        val saveAllCategoriesParams = SaveAllCategories.Params(categoriesNames)
+    fun `should return a list of category suggestions after getting their names and saving them`() =
+        runBlocking {
+            val saveAllCategoriesParams = SaveAllCategories.Params(categoriesNames)
 
-        every { getAllCategoriesNames(NoParams) } returns Single.just(categoriesNames)
-        every { saveAllCategories(saveAllCategoriesParams) } returns Completable.complete()
-        every { getCategorySuggestions(NoParams) } returns Single.just(categorySuggestions)
+            coEvery { getAllCategoriesNames(NoParams) } returns categoriesNames
+            coEvery { saveAllCategories(saveAllCategoriesParams) } just runs
+            coEvery { getCategorySuggestions(NoParams) } returns categorySuggestions
 
-        useCase(NoParams)
-            .test()
-            .assertNoErrors()
-            .assertResult(categorySuggestions)
+            assertEquals(useCase(NoParams), categorySuggestions)
 
-        verify(exactly = 1) {
-            getAllCategoriesNames(NoParams)
-            saveAllCategories(saveAllCategoriesParams)
-            getCategorySuggestions(NoParams)
+            coVerify(exactly = 1) {
+                getAllCategoriesNames(NoParams)
+                saveAllCategories(saveAllCategoriesParams)
+                getCategorySuggestions(NoParams)
+            }
+            confirmVerified(getAllCategoriesNames, saveAllCategories, getCategorySuggestions)
         }
-        confirmVerified(getAllCategoriesNames, saveAllCategories, getCategorySuggestions)
-    }
 
     private companion object {
         val categoriesNames = listOf(
